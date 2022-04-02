@@ -16,14 +16,14 @@ export class Login extends Component {
     }
 
     onSignIn() {
-        const { email, password, name } = this.state;
-        firebase.auth().signInUserWithEmailAndPassword(email, password)
-        .then((result) => {
-            console.log(result)
-        })
-        .catch((error) => {
-            console.log(error)
-        })
+        const { email, password } = this.state;
+        firebase.auth().signInWithEmailAndPassword(email, password)
+            .then((result) => {
+                console.log(result)
+            })
+            .catch((error) => {
+                console.log(error)
+            })
     }
 
     render () {
