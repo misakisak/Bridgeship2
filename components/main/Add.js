@@ -16,9 +16,10 @@ export default function Add({navigation}) {
       const cameraStatus = await Camera.requestCameraPermissionsAsync();
       setHasCameraPermission(cameraStatus.status === 'granted');
 
-      const galleryStatus = await ImagePicker.requestCameraRollPermissionsAsync();
-      setHasGalleryPermission(galleryStatus.status === 'granted');
+      // const galleryStatus = await ImagePicker.requestCameraRollPermissionsAsync();
+      const galleryStatus = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
+      setHasGalleryPermission(galleryStatus.status === 'granted');
 
     })();
   }, []);
@@ -72,13 +73,12 @@ export default function Add({navigation}) {
                         : Camera.Constrants.Type.back
                 );
             }}>
-            {/* <Text style={{ fontSize: 18, marginBottom: 10, color: 'white '}}>Flip</Text> */}
         </Button>
         <Button title="Take Picture" onPress={() => takePicture()}/>
         <Button title="Pick Image From Gallery" onPress={() => pickImage()}/>
         <Button title="Save" onPress={() => navigation.navigate('Save', {image})}/>
 
-        {image && <Image source={{uri: image}} style={{flex: 1}}/>}
+        {image && <Image source={{uri: image}} style={{flex: 1, flexDirection: 'row'}}/>}
       
     </View>
   );

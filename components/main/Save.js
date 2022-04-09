@@ -23,12 +23,13 @@ export default function Save(props) {
                .child(childPath)
                .put(blob);
 
-          const taskProgress = () => {
+          const taskProgress = snapshot => {
                console.log(`transferred: ${snapshot.bytesTransferred}`)
           }
 
-          const taskCompleted = snapshot => {
+          const taskCompleted = () => {
                task.snapshot.ref.getDownloadURL().then((snapshot) => {
+                    savePostData(snapshot);
                     console.log(snapshot)
                })
           }
@@ -37,7 +38,22 @@ export default function Save(props) {
                console.log(snapshot)
           }
 
-          task.on("state_changed", taskProgress, taskError, taskCompleted)
+          task.on("state_changed", taskProgress, taskError, taskCompleted);
+     }
+
+     const savePostData = (downloadURL) => {
+
+          firebase.firestore()
+              .collection('posts')
+              .doc(firebase.auth().currentUser.uid)
+              .collection("userPosts")
+              .add({
+                  downloadURL,
+                  caption,
+                  creation: firebase.firestore.FieldValue.serverTimestamp()
+              }).then((function () {
+                  props.navigation.popToTop()
+              }))
      }
 
      return (

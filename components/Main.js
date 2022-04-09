@@ -5,7 +5,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { View, Text, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { fetchUser } from '../redux/actions/index';
+import { fetchUser, fetchUserPosts } from '../redux/actions/index';
 // import { TabActions } from '@react-navigation/native';
 
 import FeedScreen from './main/Feed';
@@ -22,13 +22,11 @@ const EmptyScreen = () => {
 export class Main extends Component {
     // componentDidMount(){
     //     this.props.fetchUser();
+    //     this.props.fetchUserPosts(); //前に動かなくてcomponentDidMountコメントアウトしていた
     // }
+
     render() {
         return ( 
-            // <View style={styles.text}>
-            //     <Text>a</Text>
-            // </View>
-            
            <Tab.Navigator initialRouteName="Feed" labeled={false}>
                <Tab.Screen name="Feed" component={FeedScreen}
                     options={{
@@ -65,13 +63,6 @@ export class Main extends Component {
 const mapStateToProps = (store) => ({
     currentUser: store.userState.currentUser
 })
-const mapDispatchProps = (dispatch) => bindActionCreators({fetchUser}, dispatch);
+const mapDispatchProps = (dispatch) => bindActionCreators({fetchUser, fetchUserPosts}, dispatch);
 
 export default connect(mapStateToProps, mapDispatchProps)(Main);
-
-const styles = StyleSheet.create({
-    text: {
-        justifyContent: 'center',
-        alignItems: 'center'
-    }
-})
