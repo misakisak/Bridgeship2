@@ -1,5 +1,7 @@
 import { USER_STATE_CHANGE, USER_POSTS_STATE_CHANGE } from "../constants/index";
 import firebase from "firebase";
+import { SnapshotViewIOSComponent } from "react-native";
+require('firebase/firestore')
 
 export function fetchUser(){
     return((dispatch) => {
@@ -26,7 +28,7 @@ export function fetchUserPosts(){
             .orderBy("creation", "asc")
             .get()
             .then((snapshot) => {
-                let posts = snapshot.docs.map(doc=> {
+                let posts = snapshot.docs.map(doc => {
                     const data = doc.data();
                     const id = doc.id;
                     return { id, ...data }

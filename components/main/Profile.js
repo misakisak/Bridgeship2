@@ -1,16 +1,32 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { StyleSheet, View, Text, Image, FlatList } from 'react-native';
+
+import firebase from 'firebase';
+require('firebase/firestore')
 
 import { connect } from 'react-redux';
 
+
 function Profile(props) {
-    const { currentUser, posts } = props;
-    console.log({ currentUser, posts })
+    const user = firebase.auth().currentUser
+    const [posts, setPosts] = useState([])
+
+    console.log(user.uid)
+    firebase.firestore()
+    .collection('posts')
+    .doc(user.uid)
+    .get()
+    .then((snapshot) => {
+        console.log(snapshot.exists)
+        setPosts(snapshot.data)
+    })
+        
+    
     return (
         <View style={styles.container}>
             <View style={styles.containerInfo}>
-                <Text>{currentUser.name}</Text>
-                <Text>{currentUser.email}</Text>
+                <Text>{user.name}</Text>
+                <Text>{user.email}</Text>
             </View>
 
             <View style={styles.containerGallery}>
@@ -18,11 +34,12 @@ function Profile(props) {
                     numColumns={3}
                     horizontal={false}
                     data={posts}
+                    keyExtractor={post => post.id}
                     renderItem={({item}) => (
                         <View style={styles.image}>
                             <Image
                                style={styles.image}
-                                source={{uri: item.downloadURL}}
+                               source={{uri: item.downloadURL}}
                             />
                         </View>
                        
@@ -33,11 +50,6 @@ function Profile(props) {
         </View>
     )
 }
-
-const mapStateToProps = (store) => ({
-    currentUser: store.userState.currentUser,
-    posts: store.userState.posts
-})
 
 
 const styles = StyleSheet.create({
@@ -59,6 +71,11 @@ const styles = StyleSheet.create({
         flex: 1,
         aspectRatio: 1/1,
     }
+})
+
+const mapStateToProps = (store) => ({
+    // currentUser: store.userState.currentUser,
+    posts: store.userState.posts
 })
 
 export default connect(mapStateToProps, null)(Profile)
