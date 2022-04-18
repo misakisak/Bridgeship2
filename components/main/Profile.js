@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { StyleSheet, View, Text, Image, FlatList } from 'react-native';
 
 import firebase from 'firebase';
@@ -8,18 +8,75 @@ import { connect } from 'react-redux';
 
 
 function Profile(props) {
-    const user = firebase.auth().currentUser
-    const [posts, setPosts] = useState([])
+    // const[userPosts, setUserPosts] = useState([]);
+    // const[user, serUser] = useState(null);
 
-    console.log(user.uid)
-    firebase.firestore()
-    .collection('posts')
-    .doc(user.uid)
-    .get()
-    .then((snapshot) => {
-        console.log(snapshot.exists)
-        setPosts(snapshot.data)
-    })
+
+    const loggedInUser = firebase.auth().currentUser
+    const [posts, setPosts] = useState([])
+    const [ user, setUser ] = useState({name: "MISAKI", email: ""})
+
+    
+
+    useEffect(()=> {
+        const { currentUser, posts } = props;
+
+        if (props.route.params.uid === firebase.auth().currentUser.uid) {
+            console.log(user.uid)
+            setUser(loggedInUser)
+            firebase.firestore()
+            .collection('posts')
+            .doc(loggedInUser.uid)
+            .collection('userPosts')
+            .get()
+            .then((snapshot) => {
+                const newAuthors = [];
+                snapshot.forEach(querySnapshot => {
+                    const author = {
+                        ...querySnapshot.data(),
+                        id: querySnapshot.id
+                    }
+                newAuthors.push(author);
+            });
+            setPosts(newAuthors);
+            console.log(snapshot.exists)
+            })
+            
+        } else {
+            firebase.firestore()
+                .collection("users")
+                .doc(props.route.params.uid)
+                .get()
+                .then((snapshot) => {
+                    setUser(snapshot.data())
+
+                })
+            firebase.firestore()
+            .collection('posts')
+            .doc(props.route.params.uid)
+            .collection('userPosts')
+            .get()
+            .then((snapshot) => {
+                const newAuthors = [];
+                snapshot.forEach(querySnapshot => {
+                    const author = {
+                        ...querySnapshot.data(),
+                        id: querySnapshot.id
+                    }
+                newAuthors.push(author);
+            });
+            setPosts(newAuthors);
+            console.log(snapshot.exists)
+            console.log(props.route.params.uid)
+        })
+        }
+    }, [props.route.params.uid])
+
+    if (user === null) {
+        return <View/>
+    }
+
+    
         
     
     return (
@@ -36,7 +93,7 @@ function Profile(props) {
                     data={posts}
                     keyExtractor={post => post.id}
                     renderItem={({item}) => (
-                        <View style={styles.image}>
+                        <View style={styles.containerImage}>
                             <Image
                                style={styles.image}
                                source={{uri: item.downloadURL}}
@@ -55,7 +112,6 @@ function Profile(props) {
 const styles = StyleSheet.create({
     container:{
         flex: 1,
-        marginTop: 40,
     },
     containerInfo: {
         margin: 20,
@@ -74,7 +130,7 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = (store) => ({
-    // currentUser: store.userState.currentUser,
+    currentUser: store.userState.currentUser,
     posts: store.userState.posts
 })
 
