@@ -100,7 +100,7 @@ function Profile(props) {
         .doc(props.route.params.uid)
         .delete()
         .then(() => {
-            setFollowing(false)
+            setFollowing(true)
         })
     }
 

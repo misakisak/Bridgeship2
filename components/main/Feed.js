@@ -8,16 +8,11 @@ import { connect } from 'react-redux';
 
 
 function Feed(props) {
-    // const[userPosts, setUserPosts] = useState([]);
-    // const[user, serUser] = useState(null);
-
-
     const loggedInUser = firebase.auth().currentUser
-    // const followingUser = firebase.
     const [ posts, setPosts ] = useState([])
     const [ user, setUser ] = useState({name: "", email: ""})
     const [ followed, setFollowed ] = useState([])
-    console.log(followed)
+    const [ posts1, setPosts1] = useState([])
 
     useEffect(()=> {
         setUser(loggedInUser)
@@ -26,13 +21,44 @@ function Feed(props) {
         .doc(loggedInUser.uid)
         .collection('userFollowing')
         .get()
-        console.log(firebase.firestore().collection("following").doc(loggedInUser.uid).collection("userFollowing").get())
+        .then(snapshot => {
+            const followingIds = [];
+            snapshot.forEach(querySnapshot => {
+                const followings = {
+                    ...querySnapshot.data(),
+                    id: querySnapshot.id
+                }
+                followingIds.push(followings);
+            });
+            setPosts(followingIds);
+        })
+        .catch(err => {
+            console.error(err)
+        });
+        
+        for ( let i = 0; i < props.posts.length; i++) {
+            firebase.firestore()
+            .collection('posts')
+            .doc(posts[i])
+            .collection('userPosts')
+            .get()
+            .then(snapshot => {
+                const posting = [];
+                snapshot.forEach(querySnapshot => {
+                    const postings = {
+                        ...querySnapshot.data(),
+                        id: querySnapshot.id
+                    }
+                    posting.push(postings);
+                });
+                setPosts1(posting)
+                console.log(props.posts1[i])
+            })
+        }
+        
+    })
 
-        // .then((snapshot)=> {
-        //     setFollowed(snapshot.data())
-        // })
-        // // setPosts(newAuthors)
-        // console.log(snapshot.exists)
+            // console.log(firebase.firestore().collection("following").doc(loggedInUser.uid).collection("userFollowing").get())
         
             // setUser(loggedInUser)
             // firebase.firestore()
@@ -53,34 +79,53 @@ function Feed(props) {
             // console.log(snapshot.exists)
             // })
 
-    } /*props.route.params.uid*/)
 
     if (user === null) {
         return <View/>
     }
     
     return (
-        <View style={styles.container}>
-            <View style={styles.containerGallery}>
-                <FlatList
-                    numColumns={3}
-                    horizontal={false}
-                    data={posts}
-                    keyExtractor={post => post.id}
-                    renderItem={({item}) => (
-                        <View style={styles.containerImage}>
-                            <Image
-                               style={styles.image}
-                               source={{uri: item.downloadURL}}
-                            />
-                        </View>
+        // <View style={styles.container}>
+        //     <View style={styles.containerGallery}>
+        //         <Text>a</Text>
+        //         <FlatList
+        //             numColumns={3}
+        //             horizontal={false}
+        //             data={posts1}
+        //             keyExtractor={post => post.id}
+        //             renderItem={({item}) => (
+        //                 <View style={styles.containerImage}>
+        //                     <Image
+        //                        style={styles.image}
+        //                        source={{uri: item.downloadURL}}
+        //                     />
+        //                 </View>
                        
-                    )}
-                />
-            </View>
+        //             )}
+        //         />
+        //     </View>
             
+        // </View>
+
+        <View style={styles.container}>
+            <FlatList
+                numColumns={1}
+                horizontal={false}
+                data={posts}
+                keyExtractor={posts => posts.id}
+                renderItem={({item}) => (
+                    <View style={styles.containerImage}>
+                        <Text style={styles.container}>{item.posting}</Text>
+                            <Image
+                                style={styles.image}
+                                source={{uri: item.downloadURL}}
+                            />
+                    </View>
+                               
+                )}
+            />
         </View>
-    )
+    )   
 }
 
 
