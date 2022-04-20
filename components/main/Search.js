@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { View, Text, TextInput, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
 
 import firebase from 'firebase';
 require('firebase/firestore')
@@ -25,23 +25,47 @@ export default function Search(props) {
 
     return (
         <View>
-            <TextInput 
-               placeholder="Type Here..."
-               onChangeText={(search)=> fetchUsers(search)}/>
-            <FlatList
-               numColumns={1}
-               horizontal={false}
-               data={users}
-               renderItem={({item}) => (
-                    <TouchableOpacity
-                        onPress={() => props.navigation.navigate("Profile", {uid: item.id})}
-                    >
-                        <Text>{item.name}</Text>
-                    </TouchableOpacity>
+                <TextInput 
+                    placeholder="Type Here..."
+                    onChangeText={(search)=> fetchUsers(search)}
+                    // style={ styles.input1 }
+                />
+            {/* </View> */}
 
-               )}
-            />
-
+            {/* <View style={styles.flatlist}> */}
+                <FlatList
+                    numColumns={1}
+                    horizontal={false}
+                    data={users}
+                    renderItem={({item}) => (
+                        <TouchableOpacity
+                            onPress={() => props.navigation.navigate("Profile", {uid: item.id})}
+                        >
+                            <Text>{item.name}</Text>
+                        </TouchableOpacity>
+                        )}
+                />
+            {/* </View> */}
         </View>
     )
 }
+
+const styles = StyleSheet.create({
+    input1: {
+        backgroundColor: 'white',
+        paddingVertical:10,
+        borderRadius: 0,
+        borderColor:'#95E1D3',
+        borderWidth:2,
+        margin:10,
+        padding:10,
+        marginTop: 5
+    },
+    inputContainer: {
+        width: '100%',
+        padding: 10,
+    },
+    flatlist: {
+        fontSize: 30
+    }
+})

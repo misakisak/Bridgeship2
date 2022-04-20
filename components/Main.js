@@ -6,13 +6,14 @@ import firebase from 'firebase';
 // import { View, Text, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { fetchUser, fetchUserPosts, fetchUserFollowing } from '../redux/actions/index';
+import { fetchUser, fetchUserPosts, fetchUserFollowing, clearData } from '../redux/actions/index';
 // import { TabActions } from '@react-navigation/native';
 
 import FeedScreen from './main/Feed';
 // import AddScreen from './main/Add';
 import ProfileScreen from './main/Profile';
 import SearchScreen from './main/Search';
+import TeamupScreen from './main/Teamup'
 
 
 
@@ -27,11 +28,13 @@ export class Main extends Component {
     //     this.props.fetchUser();
     //     this.props.fetchUserPosts(); //前に動かなくてcomponentDidMountコメントアウトしていた
     //     this.props.fetchUserFollowing();
+    //     this.props.clearData();
+
     // }
 
     render() {
         return ( 
-           <Tab.Navigator initialRouteName="Feed" labeled={false}>
+           <Tab.Navigator initialRouteName="Feed" labeled={false} >
                <Tab.Screen name="Feed" component={FeedScreen}
                     options={{
                        tabBarIcon: ({ color, size }) => (
@@ -43,6 +46,13 @@ export class Main extends Component {
                     options={{
                        tabBarIcon: ({ color, size }) => (
                            <MaterialCommunityIcons name="magnify" color={color} size={26}/>
+                        ),
+                    }}
+                />
+                <Tab.Screen name="Teamup" component={TeamupScreen}
+                    options={{
+                       tabBarIcon: ({ color, size }) => (
+                           <MaterialCommunityIcons name="account-group" color={color} size={26}/>
                         ),
                     }}
                 />
@@ -79,6 +89,6 @@ export class Main extends Component {
 const mapStateToProps = (store) => ({
     currentUser: store.userState.currentUser
 })
-const mapDispatchProps = (dispatch) => bindActionCreators({ fetchUser, fetchUserPosts, fetchUserFollowing }, dispatch);
+const mapDispatchProps = (dispatch) => bindActionCreators({ fetchUser, fetchUserPosts, fetchUserFollowing, clearData }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchProps)(Main);
