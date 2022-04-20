@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { StyleSheet, View, Text, Image, FlatList } from 'react-native';
+import { StyleSheet, View, Text, Image, FlatList, Button } from 'react-native';
 
 import firebase from 'firebase';
 require('firebase/firestore')
@@ -13,8 +13,9 @@ function Profile(props) {
 
 
     const loggedInUser = firebase.auth().currentUser
-    const [posts, setPosts] = useState([])
-    const [ user, setUser ] = useState({name: "MISAKI", email: ""})
+    const [ posts, setPosts ] = useState([])
+    const [ user, setUser ] = useState({name: "", email: ""})
+    const [ following, setFollowing ] = useState(false)
 
     
 
@@ -70,20 +71,64 @@ function Profile(props) {
             console.log(props.route.params.uid)
         })
         }
-    }, [props.route.params.uid])
+
+        if (props.following.indexOf(props.route.params.uid) > -1 ) {
+            setFollowing(true);
+        } else {
+            setFollowing(false);
+        }
+
+    }, [props.route.params.uid, props.following])
+
+    const onFollow = () => {
+        firebase.firestore()
+        .collection("following")
+        .doc(firebase.auth().currentUser.uid)
+        .collection("userFollowing")
+        .doc(props.route.params.uid)
+        .set({})
+        .then(() => {
+            setFollowing(true)
+        })
+    }
+
+    const onUnfollow = () => {
+        firebase.firestore()
+        .collection("following")
+        .doc(firebase.auth().currentUser.uid)
+        .collection("userFollowing")
+        .doc(props.route.params.uid)
+        .delete()
+        .then(() => {
+            setFollowing(false)
+        })
+    }
 
     if (user === null) {
         return <View/>
     }
-
-    
-        
     
     return (
         <View style={styles.container}>
             <View style={styles.containerInfo}>
                 <Text>{user.name}</Text>
                 <Text>{user.email}</Text>
+
+                {props.route.params.uid !== firebase.auth().currentUser.uid ? (
+                    <View>
+                        {following ? (
+                            <Button
+                                title= "Following"
+                                onPress={() => onUnfollow()}
+                            />
+                        ) : (
+                            <Button
+                                title="Follow"
+                                onPress={() => onFollow()}
+                            />
+                        )}
+                    </View>
+                ) : null}
             </View>
 
             <View style={styles.containerGallery}>
@@ -131,7 +176,8 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (store) => ({
     currentUser: store.userState.currentUser,
-    posts: store.userState.posts
+    posts: store.userState.posts,
+    following: store.userState.following,
 })
 
 export default connect(mapStateToProps, null)(Profile)
