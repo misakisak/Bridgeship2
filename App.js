@@ -34,6 +34,7 @@ import LoginScreen from './components/auth/Login'
 import AddScreen from './components/main/Add';
 import SaveScreen from './components/main/Save';
 import {Main} from './components/Main';
+import TeamScreen from './components/main/Team'
 
 const Stack = createStackNavigator();
 
@@ -96,6 +97,7 @@ export class App extends Component {
               <Stack.Screen name="Main" component={Main} />
               <Stack.Screen name="Add" component={AddScreen} navigation={this.props.navigation}/>
               <Stack.Screen name="Save" component={SaveScreen}/>
+              <Stack.Screen name="Team" component={TeamScreen} navigation={this.props.navigation}/>
           </Stack.Navigator>
         </NavigationContainer>
 

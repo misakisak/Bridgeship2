@@ -1,8 +1,10 @@
 import React, {useState, useEffect} from 'react';
-import { StyleSheet, View, Text, Image, FlatList, Button } from 'react-native';
+import { StyleSheet, View, Text, Image, FlatList, Button, TouchableOpacity } from 'react-native';
 
 import firebase from 'firebase';
 require('firebase/firestore')
+import * as ImagePicker from 'expo-image-picker';
+
 
 import { connect } from 'react-redux';
 
@@ -16,11 +18,32 @@ function Profile(props) {
     const [ posts, setPosts ] = useState([])
     const [ user, setUser ] = useState({name: "", email: ""})
     const [ following, setFollowing ] = useState(false)
+    const [ icon, setIcon ] = useState(null)
+    const [ userIcon, setUserIcon] = useState([])
+    const [ followed, setFollowed ] = useState([])
 
-    
+
 
     useEffect(()=> {
         const { currentUser, posts } = props;
+
+        setUser(loggedInUser)
+        firebase.firestore()
+        .collection('following')
+        .doc(loggedInUser.uid)
+        .collection('userFollowing')
+        .get()
+        .then(snapshot => {
+            const followingIds = [];
+            snapshot.forEach(querySnapshot => {
+                const followings = {
+                    ...querySnapshot.data(),
+                    id: querySnapshot.id
+                }
+                followingIds.push(followings);
+            });
+            setFollowed(followingIds);
+        })
 
         if (props.route.params.uid === firebase.auth().currentUser.uid) {
             console.log(user.uid)
@@ -40,7 +63,24 @@ function Profile(props) {
                 newAuthors.push(author);
             });
             setPosts(newAuthors);
-            console.log(snapshot.exists)
+            // console.log(snapshot.exists)
+
+            firebase.firestore()
+            .collection('posts')
+            .doc(loggedInUser.uid)
+            .collection('userIcon')
+            .get()
+            .then((snapshot) => {
+                const icon1 = [];
+                snapshot(querySnapshot => {
+                    const icon2 ={
+                        ...querySnapshot.data(),
+                        id: querySnapshot.id
+                    }
+                    icon1.push(icon2)
+                })
+                setUserIcon(icon1)
+            });
             })
             
         } else {
@@ -50,7 +90,6 @@ function Profile(props) {
                 .get()
                 .then((snapshot) => {
                     setUser(snapshot.data())
-
                 })
             firebase.firestore()
             .collection('posts')
@@ -67,12 +106,12 @@ function Profile(props) {
                 newAuthors.push(author);
             });
             setPosts(newAuthors);
-            console.log(snapshot.exists)
-            console.log(props.route.params.uid)
+            // console.log(snapshot.exists)
+            // console.log(props.route.params.uid)
         })
         }
 
-        if (props.following.indexOf(props.route.params.uid) > -1 ) {
+        if (followed.indexOf(props.route.params.uid) > -1 ) {
             setFollowing(true);
         } else {
             setFollowing(false);
@@ -104,6 +143,39 @@ function Profile(props) {
         })
     }
 
+    const onLogout = () => {
+        firebase.auth().signOut();
+    }
+
+    const uploadImage = () => {
+        firebase.firestore()
+        .collection('posts')
+        .doc(loggedInUser)
+        .collection('userIcon')
+        .add({icon})
+        .then((function () {
+            props.navigation.popToTop()
+        }))
+    }
+
+    const pickIcon = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+          //   mediaTypes: ImagePicker.MediaTypeOptions.All, <- if it was all it allow any type of image, video...
+            allowsEditing: true,
+            aspect: [1, 1],
+            quality: 1,
+        });
+        console.log('result')
+        console.log(result);
+  
+        if (!result.cancelled) {
+            setIcon(result.uri);
+        }
+        console.log('icon')
+        console.log(icon)
+    }; 
+ 
     if (user === null) {
         return <View/>
     }
@@ -111,6 +183,10 @@ function Profile(props) {
     return (
         <View style={styles.container}>
             <View style={styles.containerInfo}>
+                <Text></Text>
+                <Image
+                    source={{uri: userIcon.uri}}
+                />
                 <Text>{user.name}</Text>
                 <Text>{user.email}</Text>
 
@@ -128,7 +204,13 @@ function Profile(props) {
                             />
                         )}
                     </View>
-                ) : null}
+                ) : 
+                    <Button
+                    title="Logout"
+                    onPress={() => onLogout()}/>  
+                }
+
+            
             </View>
 
             <View style={styles.containerGallery}>
@@ -147,6 +229,20 @@ function Profile(props) {
                        
                     )}
                 />
+                <View style={[styles.buttonContainer, { flexDirection: "columun"}]}>
+                    <TouchableOpacity
+                        onPress={() => pickIcon()}
+                        style={styles.button}
+                    >
+                        <Text style={styles.buttonText}>Pick Icon</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={() => uploadImage()}
+                        style={styles.button}
+                    >
+                            <Text style={styles.buttonText}>Save Icon</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
             
         </View>
@@ -171,7 +267,32 @@ const styles = StyleSheet.create({
     image: {
         flex: 1,
         aspectRatio: 1/1,
-    }
+    },
+    buttonText: {
+        color: 'white',
+        fontWeight: '700',
+        fontSize: 16,
+    },
+    buttonContainer: {
+        width: '60%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 5,
+    },
+    button: {
+        // buttonAlign:'center',
+        // buttonJustify:'center',
+        backgroundColor: '#F38181',
+        width: '85%',
+        padding: 15,
+        borderRadius: 0,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginLeft:30,
+        marginRight:30,
+        marginTop:10,
+    },
+
 })
 
 const mapStateToProps = (store) => ({
