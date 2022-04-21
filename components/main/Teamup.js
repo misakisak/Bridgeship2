@@ -34,14 +34,20 @@ export class Teamup extends Component {
     render (){
         return (
             <View>
+                <Text></Text>
+                <Text></Text>
+                <Text></Text>
+                <Text></Text>
                 <TextInput
                     placeholder="team name"
                     onChangeText={(teamName) => this.setState({ teamName })}
+                    style={styles.input1}
                 />
                 <TextInput
                     placeholder="team password"
                     secureTextEntry={true}
                     onChangeText={(teamPassword) => this.setState({ teamPassword })}
+                    style={styles.input1}
                 />
                 <TouchableOpacity
                     onPress={()=> this.props.navigation.navigate('Register')}
@@ -71,7 +77,17 @@ const styles = StyleSheet.create({
     image: {
         flex: 1,
         aspectRatio: 1/1,
-    }
+    },
+    input1: {
+        backgroundColor: 'white',
+        paddingVertical:10,
+        borderRadius: 0,
+        borderColor:'#95E1D3',
+        borderWidth:2,
+        margin:10,
+        padding:10,
+        marginTop: 5
+    },
 })
 
 export default Teamup

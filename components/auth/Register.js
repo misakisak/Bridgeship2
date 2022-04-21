@@ -1,6 +1,7 @@
-import React, { Component, useCallback } from 'react';
+import React, { Component, useCallback, useState } from 'react';
 import { View, Button, TextInput, SafeAreaView, Text, Image, StyleSheet, TouchableOpacity, Alert, Linking } from 'react-native';
 
+import * as ImagePicker from 'expo-image-picker';
 import firebase from 'firebase';
 
 const OpenURLButton = ({ url, children }) => {
@@ -22,7 +23,7 @@ export class Register extends Component {
         this.state = {
             email: '',
             password: '',
-            name: ''
+            name: '',
         }
 
         this.onSignUp = this.onSignUp.bind(this)
@@ -36,7 +37,7 @@ export class Register extends Component {
                   .doc(firebase.auth().currentUser.uid)
                   .set({
                       name,
-                      email
+                      email,
                   })
               console.log(result)
           })
@@ -82,6 +83,7 @@ export class Register extends Component {
                     </View>
 
                     <View styles={[styles.buttonContainer, {flexDirection: "column"}]}>
+
                         <TouchableOpacity
                             onPress={() => this.onSignUp()}
                             style={styles.button}

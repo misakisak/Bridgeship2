@@ -15,7 +15,26 @@ function Feed(props) {
     const [ posts1, setPosts1] = useState([])
 
     useEffect(()=> {
-        setUser(loggedInUser)
+        // setUser(loggedInUser)
+        // firebase.firestore()
+        // .collection('following')
+        // .doc(loggedInUser.uid)
+        // .collection('userFollowing')
+        // .get()
+        // .then(snapshot => {
+        //     const followingIds = [];
+        //     snapshot.forEach(querySnapshot => {
+        //         const followings = {
+        //             ...querySnapshot.data(),
+        //             id: querySnapshot.id
+        //         }
+        //         followingIds.push(followings);
+        //     });
+        //     setPosts(followingIds);
+        // })
+        if (loggedInUser == null){
+            return
+        }
         firebase.firestore()
         .collection('following')
         .doc(loggedInUser.uid)
@@ -24,39 +43,48 @@ function Feed(props) {
         .then(snapshot => {
             const followingIds = [];
             snapshot.forEach(querySnapshot => {
-                const followings = {
-                    ...querySnapshot.data(),
-                    id: querySnapshot.id
-                }
-                followingIds.push(followings);
+                followingIds.push(querySnapshot.id);
             });
-            setPosts(followingIds);
-        })
-        .catch(err => {
-            console.error(err)
-        });
-        
-        for ( let i = 0; i < props.posts.length; i++) {
+            console.log(followingIds);
             firebase.firestore()
-            .collection('posts')
-            .doc(posts[i])
-            .collection('userPosts')
+            .collection("posts")
+            .where(firebase.firestore.FieldPath.documentId(), 'in', followingIds)
+            .collection("userPosts")
             .get()
-            .then(snapshot => {
-                const posting = [];
-                snapshot.forEach(querySnapshot => {
-                    const postings = {
-                        ...querySnapshot.data(),
-                        id: querySnapshot.id
-                    }
-                    posting.push(postings);
-                });
-                setPosts1(posting)
-                console.log(props.posts1[i])
+            .then(storySnapshot => {
+                const followingPosts = []
+                console.log('The stories i am following');
+                storySnapshot.forEach(posts => {
+                    followingPosts.push(posts.data());
+                })
+                console.log(followingPosts)
+                setPosts(followingPosts)
+            }).catch(err => {
+                console.error(err)
             })
-        }
+        })
+    }, [props])
         
-    })
+        // for ( let i = 0; i < props.posts.length; i++) {
+        //     firebase.firestore()
+        //     .collection('posts')
+        //     .doc(posts[i])
+        //     .collection('userPosts')
+        //     .get()
+        //     .then(snapshot => {
+        //         const posting = [];
+        //         snapshot.forEach(querySnapshot => {
+        //             const postings = {
+        //                 ...querySnapshot.data(),
+        //                 id: querySnapshot.id
+        //             }
+        //             posting.push(postings);
+        //         });
+        //         setPosts1(posting)
+        //         console.log(props.posts1[i])
+        //     })
+        // }
+    
 
             // console.log(firebase.firestore().collection("following").doc(loggedInUser.uid).collection("userFollowing").get())
         

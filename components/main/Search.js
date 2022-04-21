@@ -25,14 +25,18 @@ export default function Search(props) {
 
     return (
         <View>
+                <Text></Text>
+                <Text></Text>
+                <Text></Text>
+            <View style={styles.input1}>
                 <TextInput 
                     placeholder="Type Here..."
                     onChangeText={(search)=> fetchUsers(search)}
                     // style={ styles.input1 }
                 />
-            {/* </View> */}
+            </View>
 
-            {/* <View style={styles.flatlist}> */}
+            <View style={styles.flatlist}>
                 <FlatList
                     numColumns={1}
                     horizontal={false}
@@ -45,7 +49,7 @@ export default function Search(props) {
                         </TouchableOpacity>
                         )}
                 />
-            {/* </View> */}
+            </View>
         </View>
     )
 }
