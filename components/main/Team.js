@@ -10,7 +10,7 @@ export default function Teamup () {
         <View>
             <Text>a</Text>
             <Text></Text>
-            <Text></Text>
+            <Text>{resultTeam}</Text>
             <Text></Text>
         </View>
     )

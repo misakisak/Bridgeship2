@@ -38,72 +38,56 @@ export default function Teamup (navigate) {
                 })
             setTeams(newAuthors)
         })
-        console.log('onTeamUp teams2')
-        console.log(teams)
-
-        // for (let i = 0; i < teams2.length; i++) {
-        for (let i = 0; i < 5; i++) {
-            const team2 = teams2[i]
-            console.log('onTeamUp team2')
-            console.log(team2)
-            firebase.firestore()
-            .collection('teams')
-            .doc(team2)
-            .collection('teamName')
-            .get()
-            .then(snapshot => {
-                const a = [];
-                snapshot.forEach(querySnapshot => {
-                  a.push(querySnapshot.id);
-                });
-            setTheTeam(a)
-            console.log('onTeamUp theTeam1')
-            console.log(theTeam)
-            })
-
-            if (teamName === theTeam) {
+        // console.log('onTeamUp teams2')
+        // console.log(teams)
+        console.log(teams.length)
+        for (let i = 0; i < 4; i++) {
+            const team2 = teams[i]
+            if (team2.teamName === theTeam) {
                 break
-            } else {
-                firebase.firestore()
-                .collection('teams')
-                .doc()
-                .add({
-                    teamName,
-                    teamPassword
-                })
-                // for (let i = 0; i < props.teams2.length; i++) {
-                for (let i = 0; i < props.teams2.length; i++) {
-                    const team2 = teams2[i]
-                    firebase.firestore()
-                    .collection('teams')
-                    .doc(team2)
-                    .collection('teamName')
-                    .get()
-                    .then(snapshot => {
-                        const a = [];
-                        snapshot.forEach(querySnapshot => {
-                            a.push(querySnapshot.id);
-                            console.log('onTeamUp a')
-                            console.log(a)
-                    });
-                    setTheTeam(a)
-                    console.log('onTeamUp theTeam2')
-                    console.log(theTeam)
+            }
+            // console.log('onTeamUp team2')
+            // console.log(team2.teamName)
+        }
+            // if (team2.teamName === theTeam) {
+            //     return
+            // } else {
+        firebase.firestore()
+        .collection('teams')
+        // .doc()
+        .add({
+            teamName,
+            teamPassword
+        })
+                    
+        firebase.firestore()
+            .collection('teams')
+            .get()
+            .then((snapshot) => {
+                const newAuthors = [];
+                    snapshot.forEach(querySnapshot => {
+                        const author = {
+                            ...querySnapshot.data(),
+                            id: querySnapshot.id
+                        }
+                        newAuthors.push(author);
                     })
+                    setTeams(newAuthors)
+            })
+            console.log(teams)
 
-                    if (teamName === theTeam) {
-                        setResultTeam(team2)
-                        console.log('onTeamUp resultTeam')
-                        console.log(resultTeam)
-                        navigation.navigate("Team", {resultTeam})
-                    } else {
-                        console.log('onTeamup no')
-                        break
-                    }
-                }
+        for (let i = 0; i < 5; i++) {
+            const team2 = teams[i]
+            console.log(team2.teamName)
+            if (team2.teamName === teamName) {
+                setResultTeam(team2.id)
+                // console.log('onTeamUp resultTeam')
+                // console.log(resultTeam)
+                navigation.navigate("Team", {resultTeam})
+            } else {
+                console.log('onTeamup no')
             }
         }
-        navigation.navigate("Team", {resultTeam})
     }
 
     const onJoinTeam = async () => {
