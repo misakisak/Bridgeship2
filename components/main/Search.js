@@ -25,9 +25,6 @@ export default function Search(props) {
 
     return (
         <View>
-            <Text></Text>
-            <Text></Text>
-            <Text></Text>
             <TextInput 
                placeholder="Type Here..."
                onChangeText={(search)=> fetchUsers(search)}
@@ -59,7 +56,7 @@ const styles = StyleSheet.create({
         borderWidth:2,
         margin:10,
         padding:10,
-        marginTop: 5
+        marginTop: 50
     },
     inputContainer: {
         width: '100%',

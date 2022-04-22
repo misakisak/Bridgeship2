@@ -1,11 +1,13 @@
 import React, {useState, useEffect, Component} from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, TextInput } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { StyleSheet, View, Text, TouchableOpacity, TextInput, Image } from 'react-native';
 import firebase from 'firebase'
 import { NavigationContainer } from '@react-navigation/native';
+import { backgroundColor } from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
 require('firebase/firestore')
 
 
-export default function Teamup () {
+export default function Teamup (navigate) {
     const [ teamMember, setTeamMember] = useState([])
     const [ teamName, setTeamName ] = useState("")
     const [ teamPassword, setTeamPassword] = useState("")
@@ -18,8 +20,9 @@ export default function Teamup () {
     const [ theTeamPassword, setTheTeamPassword ] = useState("")
     const [ resultTeam, setResultTeam ] = useState("") 
 
+    const navigation = useNavigation()
 
-    const onTeamUp = () => {
+    const onTeamUp = (navigate) => {
         console.log(teamName)
         firebase.firestore()
         .collection('teams')
@@ -92,14 +95,18 @@ export default function Teamup () {
                         setResultTeam(team2)
                         console.log('onTeamUp resultTeam')
                         console.log(resultTeam)
+                        navigation.navigate("Team", {resultTeam})
+                    } else {
+                        console.log('onTeamup no')
+                        break
                     }
                 }
             }
         }
-        
+        navigation.navigate("Team", {resultTeam})
     }
 
-    const onJoinTeam = () => {
+    const onJoinTeam = async () => {
         console.log(teamName2)
         console.log(teamPassword2)
         firebase.firestore()
@@ -123,23 +130,34 @@ export default function Teamup () {
             const team2 = teams2[i]
             console.log('onJoinTeam team2')
             console.log(team2)
+            // firebase.firestore()
+            // .collection('teams')
+            // .doc(team2)
+            // .collection('teamName')
+            // .get()
+            // .then(snapshot => {
+            //     const a = [];
+            //     snapshot.forEach(querySnapshot => {
+            //       a.push(querySnapshot.id);
+            //     });
+            //     console.log('onJoinTeam a')
+            //     console.log(a)
+            // setTheTeam(a)
+            // console.log('onJoinTeam theTeam')
+            // console.log(theTeam)
+            // })
+            const team2Snapshot = await
             firebase.firestore()
             .collection('teams')
             .doc(team2)
             .collection('teamName')
-            .get()
-            .then(snapshot => {
-                const a = [];
-                snapshot.forEach(querySnapshot => {
-                  a.push(querySnapshot.id);
-                });
-                console.log('onJoinTeam a')
-                console.log(a)
-            setTheTeam(a)
-            console.log('onJoinTeam theTeam')
-            console.log(theTeam)
-            })
-
+            .get();
+            // team2Snapshot.forEach(querySnapshot => {
+            //     ...querySnapshot.data(),
+            //     id: querySnapshot.id
+            // });
+            setTheTeam(team2Snapshot)
+           
             if (teamName2 === theTeam) {
                 const team2 = teams2[i]
                 firebase.firestore()
@@ -158,6 +176,7 @@ export default function Teamup () {
                     setResultTeam(teams2)
                     console.log('onJoinTeam resultTeam')
                     console.log(resultTeam)
+                    navigation.navigate("Team", {resultTeam})
                 } else {
                     console.log('onJoinTeam resultTeam')
                     console.log('no')
@@ -172,11 +191,16 @@ export default function Teamup () {
     }
 
     return (
-        <View>
-            <Text></Text>
-            <Text></Text>
-            <Text></Text>
-            <Text></Text>
+        <View style={[styles.color, {backgroundColor: 'white'}]}>
+                <View>
+                    <Text style={[styles.paragraph2, {flexDirection: "column"}]}>Bridgeship</Text>
+                </View>
+                <View style={styles.container2}>
+                    <Image
+                        source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/instagram-dev-5878d.appspot.com/o/Ellipse%203.png?alt=media&token=fd22f7f9-09e4-4d11-86b7-15043784c2d6' }}
+                        style={{ height: 80, width: 80, shape: 'curcl', }}
+                    />
+                </View>
                 <View>
                     <TextInput
                     placeholder="new team name"
@@ -199,7 +223,7 @@ export default function Teamup () {
                     <TextInput
                     placeholder="team name"
                     onChangeText={(teamName) => setTeamName2( teamName )}
-                    style={styles.input1}
+                    style={styles.input}
                     />
                     <TextInput
                         placeholder="team password"
@@ -221,6 +245,14 @@ export default function Teamup () {
 const styles = StyleSheet.create({
     container:{
         flex: 1,
+    },
+    container2: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        // paddingTop: Constants.statusBarHeight,
+        backgroundColor: 'white',
+        padding:5,
+        marginTop:10,
     },
     containerInfo: {
         margin: 20,
@@ -244,6 +276,57 @@ const styles = StyleSheet.create({
         borderWidth:2,
         margin:10,
         padding:10,
-        marginTop: 5
+        marginTop: 20,
+        width: '90%',
+        alignSelf: 'center'
+    },
+    input: {
+        backgroundColor: 'white',
+        paddingVertical:10,
+        borderRadius: 0,
+        borderColor:'#95E1D3',
+        borderWidth:2,
+        margin:10,
+        padding:10,
+        marginTop: 30,
+        width: '90%',
+        alignSelf: 'center'
+    },
+    button2: {
+        // buttonAlign:'center',
+        // buttonJustify:'center',
+        backgroundColor: 'white',
+        width: '65%',
+        padding: 15,
+        borderRadius: 0,
+        alignItems: 'center',
+        marginLeft:30,
+        marginRight:30,
+        marginTop:20,
+        alignSelf: 'center'
+    },
+    buttonOutline: {
+        backgroundColor: 'white',
+        marginTop: 10,
+        // borderColor: '#F38181',
+        borderWidth: 1,
+    },
+    buttonText: {
+        color: 'white',
+        fontWeight: '700',
+        fontSize: 16,
+    },
+    color: {
+        color: 'white',
+        height: '100%'
+    },
+    paragraph2:{
+        textAlign:'center',
+        alignItems:'center',
+        justifyContent:'center',
+        marginTop:60,
+        color:'#FCE38A',
+        fontWeight:'800',
+        fontSize:30,
     },
 })

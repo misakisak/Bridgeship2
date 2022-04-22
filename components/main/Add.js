@@ -1,99 +1,182 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Button, Image } from 'react-native';
+import { StyleSheet, Text, View, Button, Image, TouchableOpacity } from 'react-native';
 import { Camera } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
 import { NavigationContainer } from '@react-navigation/native';
 
 export default function Add({navigation}) {
-  const [hasCameraPermission, setHasCameraPermission] = useState(null);
-  const [hasGalleryPermission, setHasGalleryPermission] = useState(null);
-  const [camera, setCamera] = useState(null);
-  const [image, setImage] = useState(null);
-  const [type, setType] = useState(Camera.Constants.Type.back);
+    const [hasCameraPermission, setHasCameraPermission] = useState(null);
+    const [hasGalleryPermission, setHasGalleryPermission] = useState(null);
+    const [camera, setCamera] = useState(null);
+    const [image, setImage] = useState(null);
+    const [type, setType] = useState(Camera.Constants.Type.back);
 
-  useEffect(() => {
-    (async () => {
-      const cameraStatus = await Camera.requestCameraPermissionsAsync();
-      setHasCameraPermission(cameraStatus.status === 'granted');
+    useEffect(() => {
+        (async () => {
+            const cameraStatus = await Camera.requestCameraPermissionsAsync();
+            setHasCameraPermission(cameraStatus.status === 'granted');
 
-      // const galleryStatus = await ImagePicker.requestCameraRollPermissionsAsync();
-      const galleryStatus = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      setHasGalleryPermission(galleryStatus.status === 'granted');
+            // const galleryStatus = await ImagePicker.requestCameraRollPermissionsAsync();
+            const galleryStatus = await ImagePicker.requestMediaLibraryPermissionsAsync();
+            setHasGalleryPermission(galleryStatus.status === 'granted');
 
-    })();
-  }, []);
+        })();
+    }, []);
 
-  const takePicture = async() => {
-      if(camera) {
-          const data = await camera.takePictureAsync(null);
-        //   console.log(data.uri)
-        setImage(data.uri);
-      }
-  }
+    const takePicture = async() => {
+        if(camera) {
+            const data = await camera.takePictureAsync(null);
+            //   console.log(data.uri)
+            setImage(data.uri);
+        }
+    }
 
-  const pickImage = async () => {
-      let result = await ImagePicker.launchImageLibraryAsync({
-          mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        //   mediaTypes: ImagePicker.MediaTypeOptions.All, <- if it was all it allow any type of image, video...
-          allowsEditing: true,
-          aspect: [1, 1],
-          quality: 1,
-      });
-      // console.log(result);
+    const pickImage = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            //   mediaTypes: ImagePicker.MediaTypeOptions.All, <- if it was all it allow any type of image, video...
+            allowsEditing: true,
+            aspect: [1, 1],
+            quality: 1,
+        });
+        // console.log(result);
 
-      if (!result.cancelled) {
-          setImage(result.uri);
-      }
-  }; 
+        if (!result.cancelled) {
+            setImage(result.uri);
+        }
+    }; 
 
 
-  if (hasCameraPermission === null || hasGalleryPermission === false) {
-    return <View />;
-  }
-  if (hasCameraPermission === false || hasGalleryPermission === false) {
-    return <Text>No access to camera</Text>;
-  }
-  return (
-    <View style={{ flex: 1 }}>
-        <View style={styles.cameraContainer}>
-            <Camera
-                ref={ref => setCamera(ref)} 
-                style={styles.fixedRatio}
-                type={type}
-                ratio={'1:1'}
-            />
-        </View>
+    if (hasCameraPermission === null || hasGalleryPermission === false) {
+        return <View />;
+    }
+    if (hasCameraPermission === false || hasGalleryPermission === false) {
+        return <Text>No access to camera</Text>;
+    }
+    return (
+        <View style={[{ flex: 1 }]}>
+            <View style={styles.cameraContainer}>
+                <Camera
+                    ref={ref => setCamera(ref)} 
+                    style={styles.fixedRatio}
+                    type={type}
+                    ratio={'1:1'}
+                />
+            </View>
 
-        <Button
-            title="Flip Image"
-            onPress={() => {
-                setType(
-                    type === Camera.Constants.Type.back
+            <View style={styles.buttonContainer}>
+                <TouchableOpacity
+                    onPress={() => {
+                    setType(
+                        type === Camera.Constants.Type.back
                         ? Camera.Constants.Type.front
                         : Camera.Constrants.Type.back
-                );
-            }}>
-        </Button>
+                    );}}
+                    style={styles.button1}
+                >
+                    <Text style={styles.text}>Flip Image</Text>
+                </TouchableOpacity>
 
-        <Button title="Take Picture" onPress={() => takePicture()}/>
-        <Button title="Pick Image From Gallery" onPress={() => pickImage()}/>
-        <Button title="Save" onPress={() => navigation.navigate('Save', { image })}/>
+                <TouchableOpacity
+                    onPress={() => takePicture()}
+                    style={styles.button}
+                >
+                    <Text style={styles.text}>Take Picture</Text>
+                </TouchableOpacity>
+            </View>
+            <View style={styles.buttonContainer}>
+                <TouchableOpacity
+                    onPress={() => pickImage()}
+                    style={styles.button1}
+                >
+                    <Text style={styles.text}>Pick Image From Gallery</Text>
+                </TouchableOpacity>
 
-        {image && <Image source={{uri: image}} style={{flex: 1, flexDirection: 'row'}}/>}
+                <TouchableOpacity
+                    onPress={() => navigation.navigate('Save', { image })}
+                    style={styles.button}
+                >
+                    <Text style={styles.text}>Save</Text>
+                </TouchableOpacity>
+
+            </View>
+
+            <View style={styles.container}>
+            {image && <Image source={{uri: image}} style={styles.image}/>}
+            </View>
       
-    </View>
-  );
+        </View>
+    );
 }
 const styles = StyleSheet.create({
     cameraContainer: {
         flex: 1,
-        flexDirection: 'row'
-
+        // flexDirection: 'row',
+        // width: 200,
+        // height: 200,
+        alignSelf: 'center'
     },
     fixedRatio: {
         flex: 1,
-        aspectRatio: 1
+        aspectRatio: 1.5
     },
+    image: {
+        flex: 1,
+        // flexDirection: 'row',
+        aspectRatio: 1.5,
+        alignSelf: 'center'
+    },
+    // button: {
+    //   alignItems: 'center',
+    //   justifyContent: 'center'
+    // },
+    container: {
+        aspectRatio: 1.5,
+        flex: 1
+    },
+    buttonContainer: {
+        width: '50%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 5,
+        flexDirection: 'row'
+    },
+    button: {
+        // buttonAlign:'center',
+        // buttonJustify:'center',
+        backgroundColor: '#F38181',
+        width: '85%',
+        padding: 8,
+        borderRadius: 20,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginLeft:2,
+        marginRight:2,
+        marginTop:10,
+        alignSelf: 'center',
+        justifyContent: 'space-between',
+        flexWrap: "wrap",
+        alignContent: "space-around"
+    },
+    button1: {
+      // buttonAlign:'center',
+      // buttonJustify:'center',
+      backgroundColor: '#F38181',
+      width: '85%',
+      padding: 8,
+      borderRadius: 20,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginLeft:180,
+      marginRight:2,
+      marginTop:2,
+      alignSelf: 'center',
+      justifyContent: 'space-between',
+      flexWrap: "wrap",
+      alignContent: "space-around"
+  },
+  text: {
+    color: 'white',
+  }
 })
 
-// // const styles = StyleSheet.create({ ... }); 

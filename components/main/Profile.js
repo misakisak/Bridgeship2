@@ -185,13 +185,13 @@ function Profile(props) {
     }
     
     return (
-        <View style={styles.container}>
+        <View style={[styles.container]}>
             <View style={styles.containerInfo}>
                 <Text></Text>
                 <Image
                     source={{uri: userIcon.uri}}
                 />
-                <Text>{user.name}</Text>
+                <Text style={styles.text}>{user.name}</Text>
                 <Text>{user.email}</Text>
 
                 {props.route.params.uid !== firebase.auth().currentUser.uid ? (
@@ -209,9 +209,12 @@ function Profile(props) {
                         )}
                     </View>
                 ) : 
-                    <Button
-                    title="Logout"
-                    onPress={() => onLogout()}/>  
+                    <TouchableOpacity 
+                        onPress={()=> onLogout()}
+                        style={[styles.button2, styles.buttonOutline]}
+                    >
+                        <Text>Logout</Text>
+                    </TouchableOpacity>
                 }
 
             
@@ -244,7 +247,7 @@ function Profile(props) {
                         onPress={() => uploadImage()}
                         style={styles.button}
                     >
-                            <Text style={styles.buttonText}>Save Icon</Text>
+                            <Text style={[styles.buttonText]}>Save Icon</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -274,11 +277,11 @@ const styles = StyleSheet.create({
     },
     buttonText: {
         color: 'white',
-        fontWeight: '700',
-        fontSize: 16,
+        fontWeight: '500',
+        fontSize: 12,
     },
     buttonContainer: {
-        width: '60%',
+        width: '30%',
         justifyContent: 'center',
         alignItems: 'center',
         marginTop: 5,
@@ -288,13 +291,48 @@ const styles = StyleSheet.create({
         // buttonJustify:'center',
         backgroundColor: '#F38181',
         width: '85%',
-        padding: 15,
-        borderRadius: 0,
+        padding: 8,
+        borderRadius: 20,
         alignItems: 'center',
         justifyContent: 'center',
         marginLeft:30,
         marginRight:30,
         marginTop:10,
+        alignSelf: 'center'
+    },
+    button3:{
+        backgroundColor: 'white',
+        width: '50%',
+        padding: 10,
+        alignItems: 'center',
+        margin:5,
+        borderRadius:40,
+        // marginLeft: 40,
+        // marginRight: 40,
+        // marginTop: 10,
+        alignSelf: 'center',
+    },
+    text: {
+        fontSize: 50
+    },
+    button2: {
+        // buttonAlign:'center',
+        // buttonJustify:'center',
+        backgroundColor: 'white',
+        width: '60%',
+        padding: 10,
+        borderRadius: 0,
+        alignItems: 'center',
+        marginLeft:30,
+        marginRight:30,
+        marginTop:20,
+        alignSelf: 'center'
+    },
+    buttonOutline: {
+        backgroundColor: 'white',
+        marginTop: 10,
+        // borderColor: '#F38181',
+        borderWidth: 1,
     },
 
 })

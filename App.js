@@ -95,9 +95,35 @@ export class App extends Component {
         <NavigationContainer>
           <Stack.Navigator initialRouteName="Main">
               <Stack.Screen name="Main" component={Main} options={{headerShown: false}}/>
-              <Stack.Screen name="Add" component={AddScreen} navigation={this.props.navigation}/>
-              <Stack.Screen name="Save" component={SaveScreen}/>
-              <Stack.Screen name="Team" component={TeamScreen} navigation={this.props.navigation}/>
+              <Stack.Screen 
+                name="Add" 
+                component={AddScreen} 
+                navigation={this.props.navigation} 
+                options={{
+                  headerStyle: {backgroundColor: "#95E1D3"},
+                  headerTintColor: "white",
+                  headerTitleStyle: {fontWeight: 'bold'},
+                }}
+              />
+              <Stack.Screen 
+                name="Save" 
+                component={SaveScreen}
+                options={{
+                  headerStyle: {backgroundColor: "#95E1D3"},
+                  headerTintColor: "white",
+                  headerTitleStyle: {fontWeight: 'bold'}
+                }}
+              />
+              <Stack.Screen 
+                name="Team" 
+                component={TeamScreen} 
+                navigation={this.props.navigation}
+                options={{
+                  headerStyle: {backgroundColor: "#95E1D3"},
+                  headerTintColor: "white",
+                  headerTitleStyle: {fontWeight: 'bold'},
+                }}
+              />
           </Stack.Navigator>
         </NavigationContainer>
 
