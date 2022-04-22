@@ -22,8 +22,6 @@ function Profile(props) {
     const [ userIcon, setUserIcon] = useState([])
     const [ followed, setFollowed ] = useState([])
 
-
-
     useEffect(()=> {
         const { currentUser, posts } = props;
 
@@ -45,8 +43,14 @@ function Profile(props) {
             setFollowed(followingIds);
         })
 
+        if (followed.indexOf(props.route.params.uid) > -1 ) {
+            setFollowing(true);
+        } else {
+            setFollowing(false);
+        }
+
         if (props.route.params.uid === firebase.auth().currentUser.uid) {
-            console.log(user.uid)
+            // console.log(user.uid)
             setUser(loggedInUser)
             firebase.firestore()
             .collection('posts')
@@ -65,22 +69,22 @@ function Profile(props) {
             setPosts(newAuthors);
             // console.log(snapshot.exists)
 
-            firebase.firestore()
-            .collection('posts')
-            .doc(loggedInUser.uid)
-            .collection('userIcon')
-            .get()
-            .then((snapshot) => {
-                const icon1 = [];
-                snapshot(querySnapshot => {
-                    const icon2 ={
-                        ...querySnapshot.data(),
-                        id: querySnapshot.id
-                    }
-                    icon1.push(icon2)
-                })
-                setUserIcon(icon1)
-            });
+            // firebase.firestore()
+            // .collection('posts')
+            // .doc(loggedInUser.uid)
+            // .collection('userIcon')
+            // .get()
+            // .then((snapshot) => {
+            //     const icon1 = [];
+            //     snapshot(querySnapshot => {
+            //         const icon2 ={
+            //             ...querySnapshot.data(),
+            //             id: querySnapshot.id
+            //         }
+            //         icon1.push(icon2)
+            //     })
+            //     setUserIcon(icon1)
+            // });
             })
             
         } else {
@@ -111,11 +115,11 @@ function Profile(props) {
         })
         }
 
-        if (followed.indexOf(props.route.params.uid) > -1 ) {
-            setFollowing(true);
-        } else {
-            setFollowing(false);
-        }
+        // if (followed.indexOf(props.route.params.uid) > -1 ) {
+        //     setFollowing(true);
+        // } else {
+        //     setFollowing(false);
+        // }
 
     }, [props.route.params.uid, props.following])
 
@@ -166,14 +170,14 @@ function Profile(props) {
             aspect: [1, 1],
             quality: 1,
         });
-        console.log('result')
-        console.log(result);
+        // console.log('result')
+        // console.log(result);
   
         if (!result.cancelled) {
             setIcon(result.uri);
         }
-        console.log('icon')
-        console.log(icon)
+        // console.log('icon')
+        // console.log(icon)
     }; 
  
     if (user === null) {

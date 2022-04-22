@@ -13,6 +13,7 @@ import FeedScreen from './main/Feed';
 // import AddScreen from './main/Add';
 import ProfileScreen from './main/Profile';
 import SearchScreen from './main/Search';
+import TeamupScreen from './main/Teamup'
 
 
 
@@ -43,6 +44,13 @@ export class Main extends Component {
                     options={{
                        tabBarIcon: ({ color, size }) => (
                            <MaterialCommunityIcons name="magnify" color={color} size={26}/>
+                        ),
+                    }}
+                />
+                <Tab.Screen name="Teamup" component={TeamupScreen}
+                    options={{
+                       tabBarIcon: ({ color, size }) => (
+                           <MaterialCommunityIcons name="account-group" color={color} size={26}/>
                         ),
                     }}
                 />

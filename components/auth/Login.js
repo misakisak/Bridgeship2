@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
         width: '60%',
         justifyContent: 'center',
         alignItems: 'center',
-        marginTop: 15,
+        marginTop: 10,
     },
     button: {
         // buttonAlign:'center',
@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginLeft:30,
         marginRight:30,
-        marginTop:10,
+        marginTop:1,
     },
     button2: {
         // buttonAlign:'center',
@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginLeft:30,
         marginRight:30,
-        marginTop:10,
+        marginTop:5,
     },
     buttonOutline: {
         backgroundColor: 'white',
@@ -248,6 +248,7 @@ const styles = StyleSheet.create({
     },
     button33: {
         flexWrap: 'wrap',
-        alignContent: 'space-around'
+        alignContent: 'space-around',
+        marginTop: 8,
     }
 })

@@ -7,56 +7,165 @@ require('firebase/firestore')
 import { connect } from 'react-redux';
 
 
-function Feed(props) {
+function Feed() {
     const loggedInUser = firebase.auth().currentUser
-    const [ posts, setPosts ] = useState([])
-    const [ user, setUser ] = useState({name: "", email: ""})
-    const [ followed, setFollowed ] = useState([])
-    const [ posts1, setPosts1] = useState([])
+    // const [ posts, setPosts ] = useState([])
+    // const [ user, setUser ] = useState({name: "", email: ""})
+    // const [ followed, setFollowed ] = useState([])
+    // const [ posts1, setPosts1] = useState([])
+    const [authors, setAuthors] = useState([]);
 
-    useEffect(()=> {
-        setUser(loggedInUser)
-        firebase.firestore()
-        .collection('following')
-        .doc(loggedInUser.uid)
-        .collection('userFollowing')
-        .get()
-        .then(snapshot => {
-            const followingIds = [];
-            snapshot.forEach(querySnapshot => {
-                const followings = {
-                    ...querySnapshot.data(),
-                    id: querySnapshot.id
-                }
-                followingIds.push(followings);
-            });
-            setPosts(followingIds);
-        })
-        .catch(err => {
-            console.error(err)
+    useEffect(async()=> {
+        const user = loggedInUser;
+        const db = firebase.firestore();
+
+        const followingResult = await db.collection("following")
+            .doc(user)
+            .collection('userFollowing')
+            .get();
+
+        const followingIds = []
+        followingResult.foreEach(following => {
+            followingIds.push(following.id);
         });
-        
-        for ( let i = 0; i < props.posts.length; i++) {
-            firebase.firestore()
-            .collection('posts')
-            .doc(posts[i])
-            .collection('userPosts')
-            .get()
-            .then(snapshot => {
-                const posting = [];
-                snapshot.forEach(querySnapshot => {
-                    const postings = {
-                        ...querySnapshot.data(),
-                        id: querySnapshot.id
-                    }
-                    posting.push(postings);
+
+        const newAuthors = []
+        for await (const followingId of followingIds) {
+            const authorResults = await db.collection("posts")
+                .doc(followingId)
+                .collection('userPosts')
+                .get();
+            authorResults.forEach(author => {
+                newAuthors.push({
+                    ...author.data(),
+                    id: author.id,
                 });
-                setPosts1(posting)
-                console.log(props.posts1[i])
-            })
+            });
         }
+        setAuthors(newAuthors)
+
+        // // setUser(loggedInUser)
+        // // firebase.firestore()
+        // // .collection('following')
+        // // .doc(loggedInUser.uid)
+        // // .collection('userFollowing')
+        // // .get()
+        // // .then(snapshot => {
+        // //     const followingIds = [];
+        // //     snapshot.forEach(querySnapshot => {
+        // //         const followings = {
+        // //             ...querySnapshot.data(),
+        // //             id: querySnapshot.id
+        // //         }
+        // //         followingIds.push(followings);
+        // //     });
+        // //     setPosts(followingIds);
+        // // })
+        // if (loggedInUser == null){
+        //     return
+        // }
+        // firebase.firestore()
+        // .collection('following')
+        // .doc(loggedInUser.uid)
+        // .collection('userFollowing')
+        // .get()
+        // .then(snapshot => {
+        //     const followingIds = [];
+        //     snapshot.forEach(querySnapshot => {
+        //         followingIds.push(querySnapshot.id);
+        //     });
+        //     console.log(followingIds);
+        //     firebase.firestore()
+        //     .collection("posts")
+        //     .where(firebase.firestore.FieldPath.documentId(), 'in', followingIds)
+        //     .collection("userPosts")
+        //     .get()
+        //     .then(storySnapshot => {
+        //         const followingPosts = []
+        //         console.log('The stories i am following');
+        //         storySnapshot.forEach(posts => {
+        //             followingPosts.push(posts.data());
+        //         })
+        //         console.log(followingPosts)
+        //         setPosts(followingPosts)
+        //     }).catch(err => {
+        //         console.error(err)
+        //     })
+        // })
+    }, [])
+
+    // useEffect(()=> {
+    //     // setUser(loggedInUser)
+    //     // firebase.firestore()
+    //     // .collection('following')
+    //     // .doc(loggedInUser.uid)
+    //     // .collection('userFollowing')
+    //     // .get()
+    //     // .then(snapshot => {
+    //     //     const followingIds = [];
+    //     //     snapshot.forEach(querySnapshot => {
+    //     //         const followings = {
+    //     //             ...querySnapshot.data(),
+    //     //             id: querySnapshot.id
+    //     //         }
+    //     //         followingIds.push(followings);
+    //     //     });
+    //     //     setPosts(followingIds);
+    //     // })
+    //     if (loggedInUser == null){
+    //         return
+    //     }
+    //     firebase.firestore()
+    //     .collection('following')
+    //     .doc(loggedInUser.uid)
+    //     .collection('userFollowing')
+    //     .get()
+    //     .then(snapshot => {
+    //         const followingIds = [];
+    //         snapshot.forEach(querySnapshot => {
+    //             followingIds.push(querySnapshot.id);
+    //         });
+    //         console.log(followingIds);
+    //         firebase.firestore()
+    //         .collection("posts")
+    //         .where(firebase.firestore.FieldPath.documentId(), 'in', followingIds)
+    //         .collection("userPosts")
+    //         .get()
+    //         .then(storySnapshot => {
+    //             const followingPosts = []
+    //             console.log('The stories i am following');
+    //             storySnapshot.forEach(posts => {
+    //                 followingPosts.push(posts.data());
+    //             })
+    //             console.log(followingPosts)
+    //             setPosts(followingPosts)
+    //         }).catch(err => {
+    //             console.error(err)
+    //         })
+    //     })
+
+    // }, [])
         
-    })
+        // for ( let i = 0; i < props.posts.length; i++) {
+        //     firebase.firestore()
+        //     .collection('posts')
+        //     .doc(posts[i])
+        //     .collection('userPosts')
+        //     .get()
+        //     .then(snapshot => {
+        //         const posting = [];
+        //         snapshot.forEach(querySnapshot => {
+        //             const postings = {
+        //                 ...querySnapshot.data(),
+        //                 id: querySnapshot.id
+        //             }
+        //             posting.push(postings);
+        //         });
+        //         setPosts1(posting)
+        //         console.log(props.posts1[i])
+        //     })
+        // }
+    
 
             // console.log(firebase.firestore().collection("following").doc(loggedInUser.uid).collection("userFollowing").get())
         
@@ -80,7 +189,7 @@ function Feed(props) {
             // })
 
 
-    if (user === null) {
+    if (authors === null) {
         return <View/>
     }
     
@@ -108,11 +217,12 @@ function Feed(props) {
         // </View>
 
         <View style={styles.container}>
+            <Text>a</Text>
             <FlatList
                 numColumns={1}
                 horizontal={false}
-                data={posts}
-                keyExtractor={posts => posts.id}
+                data={authors}
+                keyExtractor={author => authors.id}
                 renderItem={({item}) => (
                     <View style={styles.containerImage}>
                         <Text style={styles.container}>{item.posting}</Text>

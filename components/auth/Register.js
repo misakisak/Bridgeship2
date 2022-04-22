@@ -3,7 +3,7 @@ import { View, Button, TextInput, SafeAreaView, Text, Image, StyleSheet, Touchab
 
 import firebase from 'firebase';
 
-const OpenURLButton = ({ url, children }) => {
+const OpenURLButton = ({ url, children, style, style2, style3, style4}) => {
     const handlePress = useCallback(async () => {
         const supported = await Linking.canOpenURL(url);
         if (supported) {
@@ -12,7 +12,10 @@ const OpenURLButton = ({ url, children }) => {
             Alert.alert(`Don't know how to open this URL: ${url}`);
         }
         }, [url]);
-    return <Button title={children} onPress={handlePress} />;
+
+    return <View style={style4}>
+         <TouchableOpacity onPress={handlePress} style={[style, style2]} ><Text style={style3}>{children}</Text></TouchableOpacity>
+        </View>;
 };
 
 export class Register extends Component {
@@ -38,7 +41,7 @@ export class Register extends Component {
                       name,
                       email
                   })
-              console.log(result)
+            //   console.log(result)
           })
           .catch((error) => {
              console.log(error)
@@ -95,17 +98,18 @@ export class Register extends Component {
                         >
                             <Text style={styles.buttonOutlineText}>Login</Text>
                         </TouchableOpacity>  
-
-                        <OpenURLButton url={'https://thirtytg88.wixsite.com/bridgeship'}>
-                            Official Web Site
-                        </OpenURLButton>
-                        
-                        <OpenURLButton url={'https://twitter.com/TgThirty'}>
-                            Twitter: @TgThirty
-                        </OpenURLButton>
                     </View>
 
-                    
+                    <View styles={[ styles.buttonContainer]}>
+
+                        <OpenURLButton url={'https://thirtytg88.wixsite.com/bridgeship'} style={styles.buttonOutline3} style2={styles.button3} style3={styles.buttonText3} style4={styles.button33} > 
+                            Official Web Site
+                        </OpenURLButton>
+                        <OpenURLButton url={'https://twitter.com/TgThirty'} style={styles.buttonOutline3} style2={styles.button3} style3={styles.buttonText3} > 
+                            Twitter: @TgThirty
+                        </OpenURLButton>
+
+                    </View>
 
                 </View>
             </SafeAreaView> 
@@ -162,7 +166,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginLeft:30,
         marginRight:30,
-        marginTop:10,
+        marginTop:5,
     },
     button2: {
         // buttonAlign:'center',
@@ -221,4 +225,37 @@ const styles = StyleSheet.create({
     container2: {
         height: '100%' 
     },
+    button3:{
+        backgroundColor: 'white',
+        width: '50%',
+        padding: 10,
+        alignItems: 'center',
+        margin:5,
+        borderRadius:40,
+        // marginLeft: 40,
+        // marginRight: 40,
+        // marginTop: 10,
+        alignSelf: 'center',
+    },
+    buttonOutline3:{
+        backgroundColor: 'white',
+        marginTop: 5,
+        borderColor: '#FCE38A',
+        borderWidth: 2,
+        alignItems: 'center',
+     },
+    buttonText3:{
+        textAlign:'center',
+        justifyContent:'center',
+        color:'grey',
+        fontWeight:'600',
+        fontSize:12,
+        margin:5,
+        alignItems: 'center',
+    },
+    button33: {
+        flexWrap: 'wrap',
+        alignContent: 'space-around',
+        marginTop: 8
+    }
 })
