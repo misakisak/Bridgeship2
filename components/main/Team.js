@@ -4,13 +4,13 @@ import firebase from 'firebase'
 require('firebase/firestore')
 
 
-export default function Teamup () {
+export default function Teamup ({route}) {
 
     return (
         <View>
-            <Text>a</Text>
-            <Text></Text>
-            <Text>{resultTeam}</Text>
+            <Text>{route.params.resultTeam.id}</Text>
+            <Text>{route.params.resultTeam.teamName}</Text>
+            <Text>{route.params.resultTeam.teamPassword}</Text>
             <Text></Text>
         </View>
     )

@@ -6,23 +6,26 @@ import { NavigationContainer } from '@react-navigation/native';
 import { backgroundColor } from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
 require('firebase/firestore')
 
+import Team from './Team'
 
-export default function Teamup (navigate) {
+
+export default function Teamup () {
     const [ teamMember, setTeamMember] = useState([])
     const [ teamName, setTeamName ] = useState("")
     const [ teamPassword, setTeamPassword] = useState("")
-    const [ teams2, setTeams2 ] = useState([])
+    // const [ teams2, setTeams2 ] = useState([])
     const [ teams, setTeams ] = useState([])
 
     const [ teamName2, setTeamName2 ] = useState("")
     const [ teamPassword2, setTeamPassword2 ] = useState("")
     const [ theTeam, setTheTeam] = useState("")
-    const [ theTeamPassword, setTheTeamPassword ] = useState("")
+    // const [ theTeamPassword, setTheTeamPassword ] = useState("")
     const [ resultTeam, setResultTeam ] = useState("") 
 
+    // const navigation = useNavigation()
     const navigation = useNavigation()
 
-    const onTeamUp = (navigate) => {
+    const onTeamUp = () => {
         console.log(teamName)
         firebase.firestore()
         .collection('teams')
@@ -41,17 +44,15 @@ export default function Teamup (navigate) {
         // console.log('onTeamUp teams2')
         // console.log(teams)
         console.log(teams.length)
-        for (let i = 0; i < 4; i++) {
+        for (let i = 0; i < teams.length; i++) {
             const team2 = teams[i]
-            if (team2.teamName === theTeam) {
+            if (team2.teamName === teamName) {
                 break
             }
             // console.log('onTeamUp team2')
             // console.log(team2.teamName)
         }
-            // if (team2.teamName === theTeam) {
-            //     return
-            // } else {
+            
         firebase.firestore()
         .collection('teams')
         // .doc()
@@ -76,11 +77,11 @@ export default function Teamup (navigate) {
             })
             console.log(teams)
 
-        for (let i = 0; i < 5; i++) {
+        for (let i = 0; i < teams.length; i++) {
             const team2 = teams[i]
             console.log(team2.teamName)
             if (team2.teamName === teamName) {
-                setResultTeam(team2.id)
+                setResultTeam(team2)
                 // console.log('onTeamUp resultTeam')
                 // console.log(resultTeam)
                 navigation.navigate("Team", {resultTeam})
@@ -88,11 +89,12 @@ export default function Teamup (navigate) {
                 console.log('onTeamup no')
             }
         }
+        console.log('-------------------')
     }
 
-    const onJoinTeam = async () => {
-        console.log(teamName2)
-        console.log(teamPassword2)
+    const onJoinTeam =  () => {
+        // console.log(teamName2)
+        // console.log(teamPassword2)
         firebase.firestore()
         .collection('teams')
         .get()
@@ -105,73 +107,25 @@ export default function Teamup (navigate) {
                     }
                 newAuthors.push(author);
                 })
-            setTeams2(newAuthors)
+            setTeams(newAuthors)
         })
-        console.log('onJoinTeam teams2')
-        console.log(teams2)
-
-        for (let i = 0; i < 5; i++) {
-            const team2 = teams2[i]
-            console.log('onJoinTeam team2')
-            console.log(team2)
-            // firebase.firestore()
-            // .collection('teams')
-            // .doc(team2)
-            // .collection('teamName')
-            // .get()
-            // .then(snapshot => {
-            //     const a = [];
-            //     snapshot.forEach(querySnapshot => {
-            //       a.push(querySnapshot.id);
-            //     });
-            //     console.log('onJoinTeam a')
-            //     console.log(a)
-            // setTheTeam(a)
-            // console.log('onJoinTeam theTeam')
-            // console.log(theTeam)
-            // })
-            const team2Snapshot = await
-            firebase.firestore()
-            .collection('teams')
-            .doc(team2)
-            .collection('teamName')
-            .get();
-            // team2Snapshot.forEach(querySnapshot => {
-            //     ...querySnapshot.data(),
-            //     id: querySnapshot.id
-            // });
-            setTheTeam(team2Snapshot)
-           
-            if (teamName2 === theTeam) {
-                const team2 = teams2[i]
-                firebase.firestore()
-                .collection('teams')
-                .doc(team2)
-                .collection('teamPassword')
-                .then(snapshot => {
-                    const a = [];
-                    snapshot.forEach(querySnapshot => {
-                      a.push(querySnapshot.id);
-                    });
-                setTheTeamPassword(a)
-                })
-
-                if ( teamPassword2 === theTeamPassword ) {
-                    setResultTeam(teams2)
-                    console.log('onJoinTeam resultTeam')
+        console.log(teams.length)
+        for (let i = 0; i < teams.length; i++) {
+            const team2 = teams[i]
+            console.log(team2.teamName)
+            if (team2.teamName === teamName2) {
+                if (team2.teamPassword == teamPassword2) {
+                    // const team2id = team2.id
+                    setResultTeam(team2)
+                    console.log('yay')
                     console.log(resultTeam)
-                    navigation.navigate("Team", {resultTeam})
-                } else {
-                    console.log('onJoinTeam resultTeam')
-                    console.log('no')
-                    break
+                    navigation.navigate("Team" , {resultTeam})
                 }
             } else {
-                console.log('onJoinTeam resultTeam')
-                console.log('no')
-                break
+                console.log('onTeamup no')
             }
         }
+        console.log('-------------------')
     }
 
     return (
