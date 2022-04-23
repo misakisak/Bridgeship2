@@ -65,7 +65,7 @@ export default function Add({navigation}) {
             </View>
 
             <View style={styles.buttonContainer}>
-                <TouchableOpacity
+                {/* <TouchableOpacity
                     onPress={() => {
                     setType(
                         type === Camera.Constants.Type.back
@@ -75,7 +75,7 @@ export default function Add({navigation}) {
                     style={styles.button1}
                 >
                     <Text style={styles.text}>Flip Image</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
 
                 <TouchableOpacity
                     onPress={() => takePicture()}
@@ -98,13 +98,11 @@ export default function Add({navigation}) {
                 >
                     <Text style={styles.text}>Save</Text>
                 </TouchableOpacity>
-
             </View>
 
             <View style={styles.container}>
             {image && <Image source={{uri: image}} style={styles.image}/>}
             </View>
-      
         </View>
     );
 }
@@ -176,7 +174,7 @@ const styles = StyleSheet.create({
       alignContent: "space-around"
   },
   text: {
-    color: 'white',
+      color: 'white',
   }
 })
 

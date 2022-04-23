@@ -1,12 +1,16 @@
 import React, {useState, useEffect} from 'react';
-import { StyleSheet, View, Text, Image, FlatList, Button, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, Image, FlatList, Button, TouchableOpacity, SafeAreaView } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 import firebase from 'firebase';
 require('firebase/firestore')
 import * as ImagePicker from 'expo-image-picker';
+import Constants from 'expo-constants';
+
 
 
 import { connect } from 'react-redux';
+// import { SafeAreaView } from 'react-native-web';
 
 
 function Profile(props) {
@@ -21,6 +25,10 @@ function Profile(props) {
     const [ icon, setIcon ] = useState(null)
     const [ userIcon, setUserIcon] = useState([])
     const [ followed, setFollowed ] = useState([])
+    const navigation = useNavigation()
+    const [ details, setDetails ] = useState('')
+    const [ bio, setBio ] =useState('')
+    // console.log(loggedInUser)
 
     useEffect(()=> {
         const { currentUser, posts } = props;
@@ -67,26 +75,26 @@ function Profile(props) {
                 newAuthors.push(author);
             });
             setPosts(newAuthors);
-            // console.log(snapshot.exists)
+            })
 
             // firebase.firestore()
-            // .collection('posts')
+            // .collection('users')
             // .doc(loggedInUser.uid)
-            // .collection('userIcon')
             // .get()
             // .then((snapshot) => {
-            //     const icon1 = [];
-            //     snapshot(querySnapshot => {
-            //         const icon2 ={
+            //     const newAuthors = [];
+            //     snapshot.forEach(querySnapshot => {
+            //         const author = {
             //             ...querySnapshot.data(),
             //             id: querySnapshot.id
             //         }
-            //         icon1.push(icon2)
-            //     })
-            //     setUserIcon(icon1)
-            // });
-            })
-            
+            //     newAuthors.push(author);
+            //     setDetails(newAuthors)
+            //     });
+            //     console.log(details.bio)
+            // }) 
+    
+
         } else {
             firebase.firestore()
                 .collection("users")
@@ -147,52 +155,69 @@ function Profile(props) {
         })
     }
 
-    const onLogout = () => {
-        firebase.auth().signOut();
-    }
+    // const onLogout = () => {
+    //     firebase.auth().signOut();
+    // }
 
-    const uploadImage = () => {
-        firebase.firestore()
-        .collection('posts')
-        .doc(loggedInUser)
-        .collection('userIcon')
-        .add({icon})
-        .then((function () {
-            props.navigation.popToTop()
-        }))
-    }
+    // const uploadImage = () => {
+    //     firebase.firestore()
+    //     .collection('posts')
+    //     .doc(loggedInUser)
+    //     .collection('userIcon')
+    //     .add({icon})
+    //     .then((function () {
+    //         props.navigation.popToTop()
+    //     }))
+    // }
 
-    const pickIcon = async () => {
-        let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-          //   mediaTypes: ImagePicker.MediaTypeOptions.All, <- if it was all it allow any type of image, video...
-            allowsEditing: true,
-            aspect: [1, 1],
-            quality: 1,
-        });
-        // console.log('result')
-        // console.log(result);
+    // const pickIcon = async () => {
+    //     let result = await ImagePicker.launchImageLibraryAsync({
+    //         mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    //       //   mediaTypes: ImagePicker.MediaTypeOptions.All, <- if it was all it allow any type of image, video...
+    //         allowsEditing: true,
+    //         aspect: [1, 1],
+    //         quality: 1,
+    //     });
+    //     // console.log('result')
+    //     // console.log(result);
   
-        if (!result.cancelled) {
-            setIcon(result.uri);
-        }
-        // console.log('icon')
-        // console.log(icon)
-    }; 
+    //     if (!result.cancelled) {
+    //         setIcon(result.uri);
+    //     }
+    //     // console.log('icon')
+    //     // console.log(icon)
+    // }; 
  
     if (user === null) {
         return <View/>
     }
     
     return (
-        <View style={[styles.container]}>
-            <View style={styles.containerInfo}>
-                <Text></Text>
+        <SafeAreaView style={[styles.container]}>
+        {/* <View style={[styles.container]}> */}
+            {/* <View style={styles.containerInfo}> */}
+            <View>
+
+            <Text></Text>
+                <View style={{flexDirection:'row'}}>
                 <Image
-                    source={{uri: userIcon.uri}}
+                   source={{ uri: 'http://d23dyxeqlo5psv.cloudfront.net/cat.gif' }}
+                   style={{ height: 70, width: 70}}
                 />
-                <Text style={styles.text}>{user.name}</Text>
-                <Text>{user.email}</Text>
+                {/* <Image
+                    source={{uri: userIcon.uri}}
+                /> */}
+                    <View style={{flexDirection:'column'}}>
+                        <Text style={styles.text}>{user.name}</Text>
+                        <Text>{user.email}</Text>
+                        <Text>{user.bio}</Text>
+                    </View>
+                </View>
+                <TouchableOpacity
+                    onPress={() => navigation.navigate('Setting', {loggedInUser})}
+                >
+                    <Text>edit</Text>
+                </TouchableOpacity>
 
                 {props.route.params.uid !== firebase.auth().currentUser.uid ? (
                     <View>
@@ -210,33 +235,19 @@ function Profile(props) {
                     </View>
                 ) : 
                     <TouchableOpacity 
-                        onPress={()=> onLogout()}
-                        style={[styles.button2, styles.buttonOutline]}
+                        // onPress={()=> onLogout()}
+                        // style={[styles.button2, styles.buttonOutline]}
                     >
-                        <Text>Logout</Text>
+                        {/* <Text>Logout</Text> */}
                     </TouchableOpacity>
                 }
 
             
             </View>
 
-            <View style={styles.containerGallery}>
-                <FlatList
-                    numColumns={3}
-                    horizontal={false}
-                    data={posts}
-                    keyExtractor={post => post.id}
-                    renderItem={({item}) => (
-                        <View style={styles.containerImage}>
-                            <Image
-                               style={styles.image}
-                               source={{uri: item.downloadURL}}
-                            />
-                        </View>
-                       
-                    )}
-                />
-                <View style={[styles.buttonContainer, { flexDirection: "columun"}]}>
+            <View >
+                {/* <View style={[styles.buttonContainer, { flexDirection: "row"}]}>
+                    
                     <TouchableOpacity
                         onPress={() => pickIcon()}
                         style={styles.button}
@@ -249,10 +260,32 @@ function Profile(props) {
                     >
                             <Text style={[styles.buttonText]}>Save Icon</Text>
                     </TouchableOpacity>
-                </View>
+                </View> */}
+                <FlatList
+                    numColumns={1}
+                    horizontal={false}
+                    data={posts}
+                    keyExtractor={post => post.id}
+                    renderItem={({item}) => (
+                        <View style={styles.containerImage}>
+                            <Image
+                               style={styles.image}
+                               source={{uri: item.downloadURL}}
+                            />
+                            <Text>
+                                {item.caption}
+                            </Text>
+                            <TouchableOpacity>
+                                <Text>Like</Text>
+                            </TouchableOpacity>
+                        </View>
+                       
+                    )}
+                />
             </View>
             
-        </View>
+        {/* </View> */}
+        </SafeAreaView>
     )
 }
 
@@ -261,19 +294,21 @@ const styles = StyleSheet.create({
     container:{
         flex: 1,
     },
-    containerInfo: {
-        margin: 20,
+    // containerInfo: {
+    //     margin: 20,
 
-    },
+    // },
     containerGallery: {
         flex: 1,
     },
     containerImage: {
         flex: 1/3,
+        alignItems: 'center'
     },
     image: {
         flex: 1,
         aspectRatio: 1/1,
+        width: '70%'
     },
     buttonText: {
         color: 'white',
@@ -284,7 +319,8 @@ const styles = StyleSheet.create({
         width: '30%',
         justifyContent: 'center',
         alignItems: 'center',
-        marginTop: 5,
+        alignSelf: 'center',
+        margin: 3
     },
     button: {
         // buttonAlign:'center',
@@ -313,24 +349,24 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
     },
     text: {
-        fontSize: 50
+        fontSize: 20,
     },
     button2: {
         // buttonAlign:'center',
         // buttonJustify:'center',
         backgroundColor: 'white',
-        width: '60%',
+        width: '30%',
         padding: 10,
         borderRadius: 0,
         alignItems: 'center',
-        marginLeft:30,
-        marginRight:30,
-        marginTop:20,
+        // marginLeft:30,
+        // marginRight:30,
+        // marginTop:20,
         alignSelf: 'center'
     },
     buttonOutline: {
         backgroundColor: 'white',
-        marginTop: 10,
+        marginTop: 5,
         // borderColor: '#F38181',
         borderWidth: 1,
     },

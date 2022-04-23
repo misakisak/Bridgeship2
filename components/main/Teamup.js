@@ -1,16 +1,17 @@
 import React, {useState, useEffect, Component} from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { StyleSheet, View, Text, TouchableOpacity, TextInput, Image } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, TextInput, Image, Alert } from 'react-native';
 import firebase from 'firebase'
 import { NavigationContainer } from '@react-navigation/native';
 import { backgroundColor } from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
 require('firebase/firestore')
 
 import Team from './Team'
+import AndroidTextInputNativeComponent from 'react-native/Libraries/Components/TextInput/AndroidTextInputNativeComponent';
 
 
 export default function Teamup () {
-    const [ teamMember, setTeamMember] = useState([])
+    // const [ teamMember, setTeamMember] = useState([])
     const [ teamName, setTeamName ] = useState("")
     const [ teamPassword, setTeamPassword] = useState("")
     // const [ teams2, setTeams2 ] = useState([])
@@ -21,11 +22,55 @@ export default function Teamup () {
     const [ theTeam, setTheTeam] = useState("")
     // const [ theTeamPassword, setTheTeamPassword ] = useState("")
     const [ resultTeam, setResultTeam ] = useState("") 
+    const [ state, setState ] = useState('b')
+    // const [ state1, setState1 ] = useState(true)
 
-    // const navigation = useNavigation()
     const navigation = useNavigation()
 
+    const createTwoButtonAlert = () =>
+        Alert.alert(
+        "Your Team is taken",
+        "Please change it to another team name.",
+            [
+                {
+                    text: "Cancel",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                },
+                { text: "OK", onPress: () => console.log("OK Pressed") }
+            ]
+        );
+
+    const createTwoButtonAlert2 = () =>
+        Alert.alert(
+        "Wrong Password",
+        "Your team name or password is incrrect",
+            [
+                {
+                    text: "Cancel",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                },
+                { text: "OK", onPress: () => console.log("OK Pressed") }
+            ]
+        );
+
+    const createTwoButtonAlert3 = () =>
+        Alert.alert(
+        "Successfully Teamup",
+        "Please Join Team",
+            [
+                {
+                    text: "Cancel",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                },
+                { text: "OK", onPress: () => console.log("OK Pressed") }
+            ]
+        );
+
     const onTeamUp = () => {
+        // setState(true)
         console.log(teamName)
         firebase.firestore()
         .collection('teams')
@@ -43,56 +88,34 @@ export default function Teamup () {
         })
         // console.log('onTeamUp teams2')
         // console.log(teams)
-        console.log(teams.length)
+        // console.log(teams.length)
         for (let i = 0; i < teams.length; i++) {
             const team2 = teams[i]
             if (team2.teamName === teamName) {
+                setState(false)
                 break
-            }
+            } 
             // console.log('onTeamUp team2')
             // console.log(team2.teamName)
         }
-            
-        firebase.firestore()
-        .collection('teams')
-        // .doc()
-        .add({
-            teamName,
-            teamPassword
-        })
-                    
-        firebase.firestore()
-            .collection('teams')
-            .get()
-            .then((snapshot) => {
-                const newAuthors = [];
-                    snapshot.forEach(querySnapshot => {
-                        const author = {
-                            ...querySnapshot.data(),
-                            id: querySnapshot.id
-                        }
-                        newAuthors.push(author);
-                    })
-                    setTeams(newAuthors)
-            })
-            console.log(teams)
-
-        for (let i = 0; i < teams.length; i++) {
-            const team2 = teams[i]
-            console.log(team2.teamName)
-            if (team2.teamName === teamName) {
-                setResultTeam(team2)
-                // console.log('onTeamUp resultTeam')
-                // console.log(resultTeam)
-                navigation.navigate("Team", {resultTeam})
-            } else {
-                console.log('onTeamup no')
-            }
+        if (state === true) {
+            firebase.firestore()
+                .collection('teams')
+                .add({
+                    teamName,
+                    teamPassword
+                })
+            createTwoButtonAlert3()
+            setTeamName('')
+            setTeamPassword('')
+        } else {
+            createTwoButtonAlert()
         }
         console.log('-------------------')
     }
 
     const onJoinTeam =  () => {
+        // const navigation = useNavigation()
         // console.log(teamName2)
         // console.log(teamPassword2)
         firebase.firestore()
@@ -109,21 +132,28 @@ export default function Teamup () {
                 })
             setTeams(newAuthors)
         })
-        console.log(teams.length)
+        // console.log(teams.length)
         for (let i = 0; i < teams.length; i++) {
             const team2 = teams[i]
             console.log(team2.teamName)
             if (team2.teamName === teamName2) {
-                if (team2.teamPassword == teamPassword2) {
-                    // const team2id = team2.id
+                if (team2.teamPassword === teamPassword2) {
                     setResultTeam(team2)
-                    console.log('yay')
-                    console.log(resultTeam)
+                    // console.log('yay')
+                    // console.log(resultTeam)
                     navigation.navigate("Team" , {resultTeam})
+                    console.log(resultTeam)
+                } else {
+                    setState('a')
                 }
             } else {
                 console.log('onTeamup no')
+                setState('a')
             }
+            //     createTwoButtonAlert2()
+        }
+        if (state === 'a') {
+            createTwoButtonAlert2()
         }
         console.log('-------------------')
     }
@@ -144,12 +174,15 @@ export default function Teamup () {
                     placeholder="new team name"
                     onChangeText={(teamName) => setTeamName( teamName )}
                     style={styles.input1}
+                    clearButtonMode="always"
                     />
+                    
                     <TextInput
                         placeholder="team password"
                         secureTextEntry={true}
                         onChangeText={(teamPassword) => setTeamPassword( teamPassword )}
                         style={styles.input1}
+                        clearButtonMode="always"
                     />
                     <TouchableOpacity
                         onPress={()=> onTeamUp()}

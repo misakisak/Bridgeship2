@@ -35,6 +35,8 @@ import AddScreen from './components/main/Add';
 import SaveScreen from './components/main/Save';
 import {Main} from './components/Main';
 import TeamScreen from './components/main/Team'
+import TeamPostScreen from './components/main/TeamPost'
+import SettingScreen from './components/main/Setting'
 
 const Stack = createStackNavigator();
 
@@ -117,6 +119,26 @@ export class App extends Component {
               <Stack.Screen 
                 name="Team" 
                 component={TeamScreen} 
+                navigation={this.props.navigation}
+                options={{
+                  headerStyle: {backgroundColor: "#95E1D3"},
+                  headerTintColor: "white",
+                  headerTitleStyle: {fontWeight: 'bold'},
+                }}
+              />
+              <Stack.Screen 
+                name="TeamPost" 
+                component={TeamPostScreen} 
+                navigation={this.props.navigation}
+                options={{
+                  headerStyle: {backgroundColor: "#95E1D3"},
+                  headerTintColor: "white",
+                  headerTitleStyle: {fontWeight: 'bold'},
+                }}
+              />
+              <Stack.Screen 
+                name="Setting" 
+                component={SettingScreen} 
                 navigation={this.props.navigation}
                 options={{
                   headerStyle: {backgroundColor: "#95E1D3"},
