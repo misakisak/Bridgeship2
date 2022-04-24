@@ -169,7 +169,7 @@ export default function Teamup () {
                 <View style={styles.container2}>
                     <Image
                         source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/instagram-dev-5878d.appspot.com/o/Ellipse%203.png?alt=media&token=fd22f7f9-09e4-4d11-86b7-15043784c2d6' }}
-                        style={{ height: 80, width: 80, shape: 'curcl', }}
+                        style={{ height: 80, width: 80, borderRadius: 100 }}
                     />
                 </View>
                 <View>

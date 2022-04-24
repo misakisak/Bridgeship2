@@ -33,6 +33,7 @@ function Profile(props) {
     const [ bio, setBio ] =useState('')
     // console.log(loggedInUser)
     const [ nowUser, setNowUser ] = useState('')
+    const [ state, setState ] = useState(false)
 
     useEffect(()=> {
         const { currentUser, posts } = props;
@@ -55,15 +56,15 @@ function Profile(props) {
             setFollowed(followingIds);
         })
 
-        // if (followed.indexOf(props.route.params.uid) > -1 ) {
-        //     setFollowing(true);
-        // } else {
-        //     setFollowing(false);
-        // }
+        if (followed.indexOf(props.route.params.uid) > -1 ) {
+            setFollowing(true);
+        } else {
+            setFollowing(false);
+        }
 
         if (props.route.params.uid === firebase.auth().currentUser.uid) {
-            // console.log(user.uid)
-            setUser(loggedInUser)
+            console.log(user.uid)
+            setUser(loggedInUser.uid)
             setNowUser(loggedInUser.uid)
             firebase.firestore()
             .collection('posts')
@@ -82,27 +83,16 @@ function Profile(props) {
             setPosts(newAuthors);
             })
 
-            // firebase.firestore()
-            // .collection('users')
-            // .doc(loggedInUser.uid)
-            // .get()
-            // .then((snapshot) => {
-            //     const newAuthors = [];
-            //     snapshot.forEach(querySnapshot => {
-            //         const author = {
-            //             ...querySnapshot.data(),
-            //             id: querySnapshot.id
-            //         }
-            //     newAuthors.push(author);
-            //     setDetails(newAuthors)
-            //     });
-            //     console.log(details.bio)
-            // }) 
-            // setDetails(loggedInUser)
-            // console.log('details')
-            // console.log(loggedInUser)
+            firebase.firestore()
+            .collection('users')
+            .doc(loggedInUser.uid)
+            .get()
+            .then((snapshot) => {
+                setDetails(snapshot.data())
+            })            
     
         } else {
+            setState(true)
             setNowUser(props.route.params.uid)
             firebase.firestore()
                 .collection("users")
@@ -127,7 +117,16 @@ function Profile(props) {
             });
             setPosts(newAuthors);
             // console.log(snapshot.exists)
-            // console.log(props.route.params.uid)
+            console.log(props.route.params.uid)
+
+            firebase.firestore()
+            .collection('users')
+            .doc(nowUser)
+            .get()
+            .then((snapshot) => {
+                setDetails(snapshot.data())
+            })  
+            console.log(details)
         })
         }
 
@@ -137,7 +136,7 @@ function Profile(props) {
         //     setFollowing(false);
         // }
 
-    }, [props.route.params.uid, props.following])
+    }, [props.route.params.uid, props.following, nowUser])
 
     const onFollow = () => {
         firebase.firestore()
@@ -173,6 +172,8 @@ function Profile(props) {
             .collection("likes")
             .doc(firebase.auth().currentUser.uid)
             .set({})
+
+
         }
     }
  
@@ -182,40 +183,39 @@ function Profile(props) {
     
     return (
         <SafeAreaView style={[styles.container]}>
-        {/* <View style={[styles.container]}> */}
-            {/* <View style={styles.containerInfo}> */}
             <View style={{backgroundColor: 'white'}}>
 
-            <Text></Text>
                 <View style={{flexDirection:'row'}}>
-                <Image
+                {/* <Image
                    source={{ uri: 'http://d23dyxeqlo5psv.cloudfront.net/cat.gif' }}
                    style={{ height: 70, width: 70}}
-                />
-                {/* <Image
-                    source={{uri: userIcon.uri}}
                 /> */}
-                    <View style={{flexDirection:'column'}}>
-                        <Text style={styles.text1}>{user.name}</Text>
-                        <Text>{user.email}</Text>
-                        {/* <Text>{user.bio}</Text> */}
-                    </View>
-                </View>
-                <View style={[styles.buttonContainer, {flexDirection: 'row'}]}>
-                
-                <TouchableOpacity
-                    onPress={() => navigation.navigate('Following', {nowUser})}
-                    style={styles.button}
-                >
-                    <Text style={styles.buttonText}>Following</Text>
-                </TouchableOpacity>
+                    <Image
+                        source={{uri: details.icon}}
+                        style={{ height: 70, width: 70, borderRadius: 100}}
+                    />
 
-                <TouchableOpacity
-                    onPress={() => navigation.navigate('Follower', {nowUser})}
-                    style={styles.button}
-                >
-                    <Text style={styles.buttonText}>Follower</Text>
-                </TouchableOpacity>
+                    <View style={{flexDirection:'column'}}>
+                        <Text style={styles.text1}>{details.name}</Text>
+                        <Text>{details.email}</Text>
+                        <Text style={{flexDirection:'column'}}>{details.bio}</Text>
+                    </View>
+
+                </View>
+
+                <View style={[styles.buttonContainer, {flexDirection: 'row'}]}>
+                    <TouchableOpacity
+                        onPress={() => navigation.navigate('Following', {nowUser})}
+                        style={styles.button}
+                    >
+                        <Text style={styles.buttonText}>Following</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={() => navigation.navigate('Follower', {nowUser})}
+                        style={styles.button}
+                    >
+                        <Text style={styles.buttonText}>Follower</Text>
+                    </TouchableOpacity>
                 </View>
 
                 {props.route.params.uid !== firebase.auth().currentUser.uid ? (
@@ -240,18 +240,17 @@ function Profile(props) {
                         <Text style={styles.buttonText}>edit</Text>
                     </TouchableOpacity>
                 }
-
-            
             </View>
 
             <ScrollView>
-            <View style={{backgroundColor: 'white'}} >
-                <FlatList
-                    numColumns={1}
-                    horizontal={false}
-                    data={posts}
-                    keyExtractor={post => post.id}
-                    renderItem={({item}) => (
+
+                <View style={{backgroundColor: 'white'}} >
+                    <FlatList
+                        numColumns={1}
+                        horizontal={false}
+                        data={posts}
+                        keyExtractor={post => post.id}
+                        renderItem={({item}) => (
                         <View style={styles.containerImage}>
                             <Image
                                style={styles.image}
@@ -260,27 +259,27 @@ function Profile(props) {
                             <Text style={styles.text}>
                                 {item.caption}
                             </Text>
+
                             <View style={{flexDirection: 'row', marginBottom: 3}}>
-                            <TouchableOpacity onPress={()=> onLikePress({postId: item.id})}>
-                                <MaterialCommunityIcons name="heart" color={'#FCE38A'} size={30}/>
-                            </TouchableOpacity>
-                            <TouchableOpacity>
-                                 <MaterialCommunityIcons name="account-group" color={'#FCE38A'} size={30}/>
-                            </TouchableOpacity>
-                            <TouchableOpacity>
-                                 <MaterialCommunityIcons name="hand-peace" color={'#FCE38A'} size={30}/>
-                            </TouchableOpacity>
-                            <TouchableOpacity onPress={() => navigation.navigate("PostComment")}>
-                                 <MaterialCommunityIcons name="chat" color={'#FCE38A'} size={30}/>
-                            </TouchableOpacity>
+                                <TouchableOpacity onPress={()=> onLikePress({postId: item.id})}>
+                                    <MaterialCommunityIcons name="heart" color={'#FCE38A'} size={30}/>
+                                </TouchableOpacity>
+                                <TouchableOpacity>
+                                    <MaterialCommunityIcons name="account-group" color={'#FCE38A'} size={30}/>
+                                </TouchableOpacity>
+                                <TouchableOpacity>
+                                    <MaterialCommunityIcons name="hand-peace" color={'#FCE38A'} size={30}/>
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={() => navigation.navigate("PostComment", {nowUser: nowUser, post: item.id})}>
+                                    <MaterialCommunityIcons name="chat" color={'#FCE38A'} size={30}/>
+                                </TouchableOpacity>
                             </View>
+
                         </View>
-                       
-                    )}
-                />
-            </View>
+                    )}/>
+                </View>
+
             </ScrollView>
-        {/* </View> */}
         </SafeAreaView>
     )
 }

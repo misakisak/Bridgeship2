@@ -11,9 +11,10 @@ require('firebase/firestore')
 
 export default function Setting ({route}) {
      const navigation = useNavigation()
-     const loggedInUser = route.params.loggedInUser
+     const loggedInUser = firebase.auth().currentUser
      const [post, setPost] = useState([])
      const [ bio, setBio] = useState('')
+     const [ icon, setIcon] = useState('')
      // console.log(loggedInUser.uid)
 
      const onLogout = () => {
@@ -23,23 +24,55 @@ export default function Setting ({route}) {
      const updateBio = () => {
           firebase.firestore()
           .collection('users')
-          .doc(loggedInUser)
+          .doc(loggedInUser.uid)
           // .collection('userIcon')
           .update({'bio': bio})
-     }
+    }
 
-     const uploadImage = () => {
+    const uploadImage = async() => {
           firebase.firestore()
-          .collection('posts')
-          .doc(loggedInUser)
-          .collection('userIcon')
-          .add({icon})
-          .then((function () {
-              props.navigation.popToTop()
-          }))
-     }
+          .collection('users')
+          .doc(loggedInUser.uid)
+          .update({'icon': icon })
+        const childPath = `profileImage/${firebase.auth().currentUser.uid}/${Math.random().toString(36)}`;
+          // console.log(childPath)
+
+        const response = await fetch(icon);
+          const blob = await response.blob();
+
+          const task = firebase
+               .storage()
+               .ref()
+               .child(childPath)
+               .put(blob);
+
+          const taskProgress = snapshot => {
+               // console.log(`transferred: ${snapshot.bytesTransferred}`)
+          }
+
+          const taskCompleted = () => {
+               task.snapshot.ref.getDownloadURL().then((snapshot) => {
+                    saveUserIcon(snapshot);
+                    // console.log(snapshot)
+               })
+          }
+
+          const taskError = snapshot => {
+               console.log(snapshot)
+          }
+
+          task.on("state_changed", taskProgress, taskError, taskCompleted);
+    }
+
+    const saveUserIcon = (downloadURL) => {
+        firebase.firestore()
+          .collection('users')
+          .doc(loggedInUser.uid)
+          .update({'icon': downloadURL })
+    }
+
   
-     const pickIcon = async () => {
+    const pickIcon = async () => {
           let result = await ImagePicker.launchImageLibraryAsync({
               mediaTypes: ImagePicker.MediaTypeOptions.Images,
             //   mediaTypes: ImagePicker.MediaTypeOptions.All, <- if it was all it allow any type of image, video...
@@ -54,12 +87,12 @@ export default function Setting ({route}) {
               setIcon(result.uri);
           }
           // console.log('icon')
-          // console.log(icon)
+          console.log(icon)
      }; 
      
-     useEffect(()=> {
+    //  useEffect(()=> {
          
-     }, [])
+    //  }, [])
 
     return (
                <View>

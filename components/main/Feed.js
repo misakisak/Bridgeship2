@@ -18,12 +18,12 @@ function Feed() {
     const [authors, setAuthors] = useState([]);
 
     useEffect(async()=> {
-        const user = loggedInUser;
+        // const user = loggedInUser;
 
         const followingResult = await
             firebase.firestore()
             .collection('following')
-            .doc(user.uid)
+            .doc(loggedInUser.uid)
             .collection('userFollowing')
             .get();
         
@@ -31,20 +31,14 @@ function Feed() {
         followingResult.forEach (following => {
             followingIds.push(following.id);
         });
+        console.log('followingIds')
+        console.log(followingIds)
 
-        // console.log(followingResult)
-        // console.log('---------A')
-        // console.log(followingIds)
-          
-        // console.log(following)
-        const newFollowing = []
+        // const newFollowing = []
         // for await (const followingId of followingIds) {
-        //     console.log(followingId)
-            // const authorResults = await 
+            let posts = [];
             for (let i = 0 ; i < followingIds.length; i++) {
                 const follow = followingIds[i]
-                // console.log('follow')
-                // console.log(follow)
                 firebase.firestore()
                 .collection("posts")
                 .doc(follow)
@@ -58,11 +52,49 @@ function Feed() {
                                 id: querySnapshot.id
                             }
                         newAuthors.push(author);
-                        })
-                    // console.log(newAuthors)
-                    setAuthors(newAuthors)
+                        posts=[...posts, ...newAuthors]
+                        console.log('-------------1')
+                        console.log(posts)
+                        console.log('-------------2')
+
+                    })
+                    // posts.sort(function(x,y) {
+                    //     return x.creation -y.creation;
+                    // })
+                    // setAuthors(posts)
+                    // console.log('posts')
+                    // console.log(posts)
+                    // setAuthors(newAuthors)
+                    // authors=[...authors, ...newAuthors]
+                    // [...theArray, `Entry ${theArray.length}`]
                 })
+                
             }
+            setAuthors(posts)
+            // console.log('posts')
+            // console.log(posts)
+            
+            console.log('authors')
+            console.log(authors)
+            // console.log('---------B')
+            // useEffect(() => {
+            //     let posts = [];
+            //     if(props.usersLoaded == props.following.length){
+            //         for (let i = 0; i < props.following.length; i++){
+            //             const user = props.users.find(el => el.uid === props.following[i]);
+            //             if(user != undefined){
+            //                 posts = [...posts, ...user.posts];
+            //             }
+            //         }
+        
+            //         posts.sort(function(x,y) {
+            //             return x.creation - y.creation;
+            //         })
+        
+            //         setPosts(posts);
+            //     }
+        
+            // }, [props.usersLoaded])
                 
             // authorResults.forEach(author => {
             //     newFollowing.push({
@@ -71,16 +103,12 @@ function Feed() {
             //     });
             // });
         // }
-        // setAuthors(newAuthors)
-        // console.log('---------B')
 
-        // console.log(newFollowing)
+    }, [loggedInUser])
 
-    }, [])
-
-    // if (authors === null) {
-    //     return <View/>
-    // }
+    if (authors === null) {
+        return <View/>
+    }
     
     return (
 

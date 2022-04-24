@@ -57,7 +57,7 @@ export class Login extends Component {
                         <TouchableOpacity>
                             <Image
                                 source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/instagram-dev-5878d.appspot.com/o/Ellipse%203.png?alt=media&token=fd22f7f9-09e4-4d11-86b7-15043784c2d6' }}
-                                style={{ height: 110, width: 110, shape:'cercle' }}
+                                style={{ height: 110, width: 110, borderRadius: 100}}
                             />
                         </TouchableOpacity>
                     </View>

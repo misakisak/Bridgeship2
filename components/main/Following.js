@@ -25,19 +25,20 @@ export default function Following ({route}) {
             .doc(nowUser)
             .collection('userFollowing')
             .then((snapshot) => {
-                const newAuthors = [];
-                    snapshot.forEach(querySnapshot => {
-                        const author = {
-                            ...querySnapshot.data(),
-                            id: querySnapshot.id
-                    }
-                newAuthors.push(author);
-                console.log(newAuthors)
+                // const newAuthors = [];
+                //     snapshot.forEach(querySnapshot => {
+                //         const author = {
+                //             ...querySnapshot.data(),
+                //             id: querySnapshot.id
+                //     }
+                // newAuthors.push(author);
+                // console.log(newAuthors)
+                setFollowing(snapshot)
             })
           setFollowing(newAuthors) 
           console.log('following')
-          console.log(following)
-          })
+        //   console.log(following)
+          
 
           // firebase.firestore()
           // .collection('users')

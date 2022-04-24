@@ -1,5 +1,5 @@
 import React, {useState, useEffect, Component} from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, TextInput, FlatList, ScrollView } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, TextInput, FlatList, ScrollView, Image } from 'react-native';
 import firebase from 'firebase'
 import { NavigationContainer } from '@react-navigation/native';
 require('firebase/firestore')
@@ -9,89 +9,121 @@ import { useNavigation } from '@react-navigation/native';
 
 export default function PostComment ({route}) {
      const [comment, setComment] = useState("")
-     // const resultTeam = route.params.resultTeam
+     const nowUser = route.params.nowUser
+     const post = route.params.post
      const [ state, setState ] = useState('')
      const loggedInUser = firebase.auth().currentUser
      const userId = loggedInUser.uid
      const [comments, setComments] =useState([])
-     // console.log(teamUser.id)
+     const [commentsUser, setCommentsUser] = useState([])
      const navigation = useNavigation()
-     // const post = route.params.post
-     // console.log(resultTeam.id)
+     const [details, setDetails] = useState([]) 
+     const [icon, setIcon] = useState([])
+     
+     // console.log('nowUser')
+     // console.log(nowUser)
+     // console.log('post')
      // console.log(post)
 
-     // const saveComments = (downloadURL) => {
-     //      firebase.firestore()
-     //          .collection('teams')
-     //          .doc(resultTeam.id)
-     //          .collection('teamPost')
-     //          .doc(post)
-     //          .collection("comments")
-     //          .add({
-     //           //    downloadURL,
-     //              userId,
-     //              comment,
-     //              creation: firebase.firestore.FieldValue.serverTimestamp()
-     //          })
-     //          setState('Success!!')
-     //          navigation.navigate('Team', {resultTeam})
-     // }
+     const saveComments = () => {
+          firebase.firestore()
+          .collection('users')
+          .doc(loggedInUser.uid)
+          .get()
+          .then((snapshot) => {
+               setDetails(snapshot.data())
+          })
+          // console.log('details')
+          // console.log(details.name)
 
-     // useEffect(() => {
-     //      firebase.firestore()
-     //      .collection('teams')
-     //      .doc(resultTeam.id)
-     //      .collection('teamPost')
-     //      .doc(post)
-     //      .collection('comments')
-     //      .then((snapshot) => {
-     //           const newAuthors = [];
-     //           snapshot.forEach(querySnapshot => {
-     //                const author = {
-     //                     ...querySnapshot.data(),
-     //                     id: querySnapshot.id
-     //                }
-     //           newAuthors.push(author);
-     //           setComments(newAuthors) 
-     //           // console.log(comments)
-     //           })
-     //      })
-     // },[])
+          setCommentsUser(details.name)
+          setIcon(details.icon)
+          console.log(icon)
+
+          firebase.firestore()
+              .collection('posts')
+              .doc(nowUser)
+              .collection('userPosts')
+              .doc(post)
+              .collection("comments")
+              .add({
+                  commentsUser,
+                  icon,
+                  userId,
+                  comment,
+                  creation: firebase.firestore.FieldValue.serverTimestamp()
+              })
+              setState('Success!!')
+          //     navigation.navigate('Team', {resultTeam})
+     }
+
+     useEffect(() => {
+          // const a = await
+          firebase.firestore()
+          .collection('posts')
+          .doc(nowUser)
+          .collection('userPosts')
+          .doc(post)
+          .collection('comments')
+          .get()
+
+          // const followingIds= [];
+          //      a.forEach (following => {
+          //      followingIds.push(following.id);
+          // });
+          // console.log(followingIds)
+          .then((snapshot) => {
+               const newAuthors = [];
+               snapshot.forEach(querySnapshot => {
+                    const author = {
+                         ...querySnapshot.data(),
+                         id: querySnapshot.id
+                    }
+               newAuthors.push(author);
+               setComments(newAuthors) 
+               console.log('author')
+               console.log(author)
+               })
+               // setComments(newAuthors) 
+               console.log(comments.icon)
+          })
+
+     },[])
      
     return (
-        <View>
+          <View>
             {/* <Text>{state}</Text> */}
-            <TextInput
-               placeholder="Write a Comment..."
-               onChangeText={(comment) => setComment(comment)}
-            />
-            <Text></Text>
-            <Text></Text>
-            <Text></Text>
-
-            <TouchableOpacity
-               onPress={() => saveComments()}
-            >
-                 <Text>Post</Text>
-            </TouchableOpacity>
-            <Text>{state}</Text>
-            <ScrollView>
-            <FlatList
-                    numColumns={1}
-                    horizontal={false}
-                    data={comments}
-                    keyExtractor={post => post.id}
-                    renderItem={({item}) => (
-                         <View style={styles.containerImage}>
-                              {/* <Text>{item.comment}</Text> */}
-                              {/* <Image
-                                   style={styles.image}
-                                   source={{uri: item.downloadURL}}
-                              /> */}
-                         </View>
-                       
-                    )}
+               <TextInput
+                    placeholder="Write a Comment..."
+                    onChangeText={(comment) => setComment(comment)}
                />
+               <Text></Text>
+               <Text></Text>
+               <Text></Text>
+
+               <TouchableOpacity
+                    onPress={() => saveComments()}
+               >
+                    <Text>Post</Text>
+               </TouchableOpacity>
+               <Text>{state}</Text>
+
+               <ScrollView>
+                    <FlatList
+                         numColumns={1}
+                         horizontal={false}
+                         data={comments}
+                         keyExtractor={post => post.id}
+                         renderItem={({item}) => (
+                         <View style={styles.containerImage}>
+                              <Image
+                                   style={{ height: 70, width: 70, borderRadius: 100}}
+                                   source={{uri: item.icon}}
+                              />
+                              <Text>{item.commentsUser}</Text>
+                              <Text>{item.comment}</Text>
+                         </View>
+                    )}/>
                </ScrollView>
 
         </View>

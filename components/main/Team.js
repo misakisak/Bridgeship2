@@ -31,7 +31,7 @@ export default function Teamup ({route}) {
                             ...querySnapshot.data(),
                             id: querySnapshot.id
                     }
-                         newAuthors.push(author);
+                    newAuthors.push(author);
                })
                setPost(newAuthors) 
           })
