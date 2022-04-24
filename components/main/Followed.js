@@ -12,7 +12,7 @@ require('firebase/firestore')
 export default function Following ({route}) {
     //  const navigation = useNavigation()
     //  const loggedInUser = route.params.loggedInUser
-     const [following, setFollowing] = useState([])
+    //  const [following, setFollowing] = useState([])
     //  const [ user, setUser] = useState([])
     //  // console.log(loggedInUser.uid)
     const nowUser = route.params.nowUser
@@ -20,24 +20,23 @@ export default function Following ({route}) {
     console.log(nowUser)
 
     //  useEffect (() => {
-            firebase.firestore()
-            .collection('following')
-            .doc(nowUser)
-            .collection('userFollowing')
-            .then((snapshot) => {
-                const newAuthors = [];
-                    snapshot.forEach(querySnapshot => {
-                        const author = {
-                            ...querySnapshot.data(),
-                            id: querySnapshot.id
-                    }
-                newAuthors.push(author);
-                console.log(newAuthors)
-            })
-          setFollowing(newAuthors) 
-          console.log('following')
-          console.log(following)
-          })
+    //       firebase.firestore()
+        //   .collection('following')
+        //   .doc(loggedInUser)
+        //   .collection('userFollowing')
+        //   .then((snapshot) => {
+        //        const newAuthors = [];
+        //            snapshot.forEach(querySnapshot => {
+        //                const author = {
+        //                     ...querySnapshot.data(),
+        //                     id: querySnapshot.id
+        //             }
+        //                  newAuthors.push(author);
+        //        })
+        //   setFollowing(newAuthors) 
+        //   console.log('following')
+        //   console.log(following)
+        //   })
 
           // firebase.firestore()
           // .collection('users')
@@ -64,7 +63,7 @@ export default function Following ({route}) {
                {/* <FlatList
                     numColumns={1}
                     horizontal={false}
-                    data={following}
+                    data={user}
                     keyExtractor={post => post.id}
                     renderItem={({item}) => (
                         <View style={styles.containerImage}>
@@ -73,7 +72,7 @@ export default function Following ({route}) {
                                source={{uri: item.downloadURL}}
                             />
                             <Text>
-                                {following}
+                                {item.name}
                             </Text>
                             <TouchableOpacity>
                                 <Text>Like</Text>

@@ -32,6 +32,7 @@ function Profile(props) {
     const [ details, setDetails ] = useState([])
     const [ bio, setBio ] =useState('')
     // console.log(loggedInUser)
+    const [ nowUser, setNowUser ] = useState('')
 
     useEffect(()=> {
         const { currentUser, posts } = props;
@@ -63,6 +64,7 @@ function Profile(props) {
         if (props.route.params.uid === firebase.auth().currentUser.uid) {
             // console.log(user.uid)
             setUser(loggedInUser)
+            setNowUser(loggedInUser.uid)
             firebase.firestore()
             .collection('posts')
             .doc(loggedInUser.uid)
@@ -102,6 +104,7 @@ function Profile(props) {
     
 
         } else {
+            setNowUser(props.route.params.uid)
             firebase.firestore()
                 .collection("users")
                 .doc(props.route.params.uid)
@@ -202,13 +205,14 @@ function Profile(props) {
                 <View style={[styles.buttonContainer, {flexDirection: 'row'}]}>
                 
                 <TouchableOpacity
-                    onPress={() => navigation.navigate('Following', {loggedInUser})}
+                    onPress={() => navigation.navigate('Following', {nowUser})}
                     style={styles.button}
                 >
                     <Text style={styles.buttonText}>Following</Text>
                 </TouchableOpacity>
+
                 <TouchableOpacity
-                    onPress={() => navigation.navigate('Following', {loggedInUser})}
+                    onPress={() => navigation.navigate('Follower', {nowUser})}
                     style={styles.button}
                 >
                     <Text style={styles.buttonText}>Follower</Text>

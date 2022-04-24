@@ -50,6 +50,7 @@ import CommentScreen from './components/main/Comment'
 import FollowingScreen from './components/main/Following'
 import TeamSearchScreen from './components/main/TeamSeach'
 import PostCommentScreen from './components/main/PostComment'
+import FollowedScreen from './components/main/Followed'
 
 const Stack = createStackNavigator();
 
@@ -172,6 +173,16 @@ export class App extends Component {
               <Stack.Screen 
                 name="Following" 
                 component={FollowingScreen} 
+                navigation={this.props.navigation}
+                options={{
+                  headerStyle: {backgroundColor: "#95E1D3"},
+                  headerTintColor: "white",
+                  headerTitleStyle: {fontWeight: 'bold'},
+                }}
+              />
+              <Stack.Screen 
+                name="Follower" 
+                component={FollowedScreen} 
                 navigation={this.props.navigation}
                 options={{
                   headerStyle: {backgroundColor: "#95E1D3"},
