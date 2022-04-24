@@ -5,53 +5,82 @@ import firebase from 'firebase';
 import { NavigationContainer } from '@react-navigation/native'
 require("firebase/firestore")
 require("firebase/firebase-storage")
+// import { useNavigation } from '@react-navigation/native';
 
 
-export default function Save(props) {
+
+export default function Post(props, {naivgation}) {
      // console.log(props.route.params.image)
      const [caption, setCaption] = useState("")
-     const uploadImage = async () => {
-          const uri = props.route.params.image;
-          const childPath = `post/${firebase.auth().currentUser.uid}/${Math.random().toString(36)}`;
-          // console.log(childPath)
+     const user = firebase.auth().currentUser.uid
+     const like = 0
+     const [icon, setIcon] = useState('')
+     const [details, setDetails] = useState([])
 
-          const response = await fetch(uri);
-          const blob = await response.blob();
 
-          const task = firebase
-               .storage()
-               .ref()
-               .child(childPath)
-               .put(blob);
+     firebase.firestore()
+          .collection('users')
+          .doc(user)
+          .get()
+          .then((snapshot) => { 
+               setDetails(snapshot.data().name)
+               setIcon(snapshot.data().icon)
+          })
+          // console.log('icon')
+          // console.log(icon)
+          // setIcon(details.icon)
+          
 
-          const taskProgress = snapshot => {
-               // console.log(`transferred: ${snapshot.bytesTransferred}`)
-          }
+     // const navigation = useNavigation()
 
-          const taskCompleted = () => {
-               task.snapshot.ref.getDownloadURL().then((snapshot) => {
-                    savePostData(snapshot);
-                    // console.log(snapshot)
-               })
-          }
+     // const uploadImage = async () => {
+     //      const uri = props.route.params.image;
+     //      const childPath = `post/${firebase.auth().currentUser.uid}/${Math.random().toString(36)}`;
+     //      // console.log(childPath)
 
-          const taskError = snapshot => {
-               console.log(snapshot)
-          }
+     //      const response = await fetch(uri);
+     //      const blob = await response.blob();
 
-          task.on("state_changed", taskProgress, taskError, taskCompleted);
-     }
+     //      const task = firebase
+     //           .storage()
+     //           .ref()
+     //           .child(childPath)
+     //           .put(blob);
 
-     const savePostData = (downloadURL) => {
+     //      const taskProgress = snapshot => {
+     //           // console.log(`transferred: ${snapshot.bytesTransferred}`)
+     //      }
+
+     //      const taskCompleted = () => {
+     //           task.snapshot.ref.getDownloadURL().then((snapshot) => {
+     //                savePostData(snapshot);
+     //                // console.log(snapshot)
+     //           })
+     //      }
+
+     //      const taskError = snapshot => {
+     //           console.log(snapshot)
+     //      }
+
+     //      task.on("state_changed", taskProgress, taskError, taskCompleted);
+     // }
+
+     const savePostData = () => {
+          
 
           firebase.firestore()
               .collection('posts')
               .doc(firebase.auth().currentUser.uid)
               .collection("userPosts")
               .add({
-                  downloadURL,
+               //    downloadURL,
                   caption,
-                  creation: firebase.firestore.FieldValue.serverTimestamp()
+                  creation: firebase.firestore.FieldValue.serverTimestamp(),
+                  user,
+                  like,
+                  icon,
+                  details,
+
               }).then((function () {
                   props.navigation.popToTop()
               }))
@@ -59,12 +88,13 @@ export default function Save(props) {
 
      return (
           <View style={{flex: 1}}>
-               <Image source={{uri: props.route.params.image}}/>
+               {/* <Image source={{uri: props.route.params.image}}/> */}
                <TextInput
                     placeholder="Write a Caption..."
                     onChangeText={(caption) => setCaption(caption)}
                />
-               <Button title="Save" onPress={() => uploadImage()}/>
+               {/* <Button title="Save" onPress={() => uploadImage()}/> */}
+               <Button title="Post" onPress={() => savePostData()}/>
           </View>
      )
 }

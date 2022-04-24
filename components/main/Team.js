@@ -40,7 +40,7 @@ export default function Teamup ({route}) {
           // console.log(post)
           // console.log('--------------')
           // console.log(post[0])
-     }, [])
+     }, [resultTeam])
 
      const onCountLike = () => {
           firebase.firestore()

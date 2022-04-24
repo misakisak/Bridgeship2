@@ -23,8 +23,8 @@ export default function Teamup () {
     const [ theTeam, setTheTeam] = useState("")
     // const [ theTeamPassword, setTheTeamPassword ] = useState("")
     const [ resultTeam, setResultTeam ] = useState("") 
-    const [ state, setState ] = useState('b')
-    // const [ state1, setState1 ] = useState(true)
+    const [ state, setState ] = useState(true)
+    const [ state1, setState1 ] = useState(false)
 
     const navigation = useNavigation()
 
@@ -93,34 +93,31 @@ export default function Teamup () {
         // console.log(teams.length)
         for (let i = 0; i < teams.length; i++) {
             const team2 = teams[i]
-            // console.log(team2)
+            console.log(team2)
             if (team2.teamName === teamName) {
                 setState(false)
                 break
-            } 
-            // console.log('onTeamUp team2')
-            // console.log(team2.teamName)
-        }
-        if (state === true) {
-            firebase.firestore()
+            }else{
+                firebase.firestore()
                 .collection('teams')
                 .add({
                     teamName,
                     teamPassword
                 })
-            createTwoButtonAlert3()
-            setTeamName('')
-            setTeamPassword('')
-        } else {
-            createTwoButtonAlert()
+                createTwoButtonAlert3()
+                setState(true)
+            }
+            // console.log('onTeamUp team2')
+            // console.log(team2.teamName)
         }
+
+        if (state === false) {
+            createTwoButtonAlert()
+        } 
         // console.log('-------------------')
     }
 
     const onJoinTeam =  () => {
-        // const navigation = useNavigation()
-        // console.log(teamName2)
-        // console.log(teamPassword2)
         firebase.firestore()
         .collection('teams')
         .get()
@@ -135,27 +132,22 @@ export default function Teamup () {
                 })
             setTeams(newAuthors)
         })
-        // console.log(teams.length)
+
         for (let i = 0; i < teams.length; i++) {
             const team2 = teams[i]
-            // console.log(team2.teamName)
-            if (team2.teamName === teamName2) {
-                if (team2.teamPassword === teamPassword2) {
-                    setResultTeam(team2)
-                    // console.log('yay')
-                    // console.log(resultTeam)
-                    navigation.navigate("Team" , {resultTeam})
-                    // console.log(resultTeam)
-                } else {
-                    setState('a')
-                }
+            if (team2.teamName !== teamName2) {
             } else {
-                // console.log('onTeamup no')
-                setState('a')
+                if (team2.teamPassword !== teamPassword2) {
+                } else {
+                    setResultTeam(team2)
+                    navigation.navigate("Team" , {resultTeam})
+                    setState1(true)
+                    break
+                }
             }
-            //     createTwoButtonAlert2()
         }
-        if (state === 'a') {
+        console.log(state1)
+        if (state1 === false) {
             createTwoButtonAlert2()
         }
         // console.log('-------------------')

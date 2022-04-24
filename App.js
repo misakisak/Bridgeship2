@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import React, {Component} from 'react';
+import React, {Component, useState} from 'react';
 
 import {View, Text} from 'react-native';
 
@@ -9,6 +9,7 @@ import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import rootReducer from './redux/reducers';
 import thunk from 'redux-thunk';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 const store = createStore(rootReducer, applyMiddleware(thunk))
 
 // const firebaseConfig = {
@@ -34,7 +35,7 @@ if(firebase.apps.length === 0){
   firebase.initializeApp(firebaseConfig)
 }
 
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, NavigationContext, NavigationHelpersContext } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import LandingScreen from './components/auth/Landing';
@@ -51,10 +52,14 @@ import FollowingScreen from './components/main/Following'
 import TeamSearchScreen from './components/main/TeamSeach'
 import PostCommentScreen from './components/main/PostComment'
 import FollowedScreen from './components/main/Followed'
+import LikeScreen from './components/main/Like'
+import FeedCommentScreen from './components/main/FeedComment'
 
 const Stack = createStackNavigator();
+// const [state1, setState1] = useState(true)
 
 export class App extends Component {
+  
   constructor(props){
     super(props);
     this.state = {
@@ -80,13 +85,7 @@ export class App extends Component {
 
   render() {
     const { loggedIn, loaded } = this.state;
-    if(!loaded){
-      return(
-        <View style={{ flex: 1, justifyContent: 'center'}}>
-          <Text>Loading</Text>
-        </View>
-      )
-    }
+    
     if (!loggedIn) {
       return (
         <NavigationContainer>
@@ -106,10 +105,18 @@ export class App extends Component {
       );
     }
 
-    return(
-      <Provider store={store}>
-        <NavigationContainer>
-          <Stack.Navigator initialRouteName="Main">
+    if(!loaded){
+      return(
+          <View style={{ flex: 1, justifyContent: 'center'}}>
+            <Text>Every single have rights and power to change the world. It is up to you!!</Text>
+          </View>
+      )
+    }
+
+      return(
+        <Provider store={store}>
+          <NavigationContainer>
+            <Stack.Navigator initialRouteName="Main">
               <Stack.Screen name="Main" component={Main} options={{headerShown: false}}/>
               <Stack.Screen 
                 name="Add" 
@@ -122,7 +129,7 @@ export class App extends Component {
                 }}
               />
               <Stack.Screen 
-                name="Save" 
+                name="Post" 
                 component={SaveScreen}
                 options={{
                   headerStyle: {backgroundColor: "#95E1D3"},
@@ -210,12 +217,31 @@ export class App extends Component {
                   headerTitleStyle: {fontWeight: 'bold'},
                 }}
               />
-          </Stack.Navigator>
-        </NavigationContainer>
-
-      </Provider>
-      
-    )
+              <Stack.Screen 
+                name="Like" 
+                component={LikeScreen} 
+                navigation={this.props.navigation}
+                options={{
+                  headerStyle: {backgroundColor: "#95E1D3"},
+                  headerTintColor: "white",
+                  headerTitleStyle: {fontWeight: 'bold'},
+                }}
+              />
+              <Stack.Screen 
+                name="FeedComment" 
+                component={FeedCommentScreen} 
+                navigation={this.props.navigation}
+                options={{
+                  headerStyle: {backgroundColor: "#95E1D3"},
+                  headerTintColor: "white",
+                  headerTitleStyle: {fontWeight: 'bold'},
+                }}
+              />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </Provider>
+      )
+    
   }
 }
 

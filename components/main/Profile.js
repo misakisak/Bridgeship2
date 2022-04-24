@@ -162,18 +162,40 @@ function Profile(props) {
         })
     }
 
-    const onLikePress = (postId) => {
-        if (props.route.params.uid === firebase.auth().currentUser.uid) {
+    const onLikePress = async(postId, like) => {
+        const loggedInUserId =  loggedInUser.uid
+        const likes = like + 1
+        if (nowUser === loggedInUser.id) { await
             firebase.firestore()
             .collection("posts")
-            .doc(loggedInUser)
+            .doc(nowUser)
             .collection("userPosts")
             .doc(postId)
             .collection("likes")
-            .doc(firebase.auth().currentUser.uid)
-            .set({})
+            // .doc(firebase.auth().currentUser.uid)
+            .add({
+                loggedInUserId
+            })
+            console.log(postId)
+        } else { await
+            firebase.firestore()
+            .collection("posts")
+            .doc(nowUser)
+            .collection("userPosts")
+            .doc(postId)
+            .collection("likes")
+            // .doc(firebase.auth().currentUser.uid)
+            .add({
+                loggedInUserId
+            })
 
-
+            firebase.firestore()
+            .collection("posts")
+            .doc(loggedInUser.uid)
+            .collection('userPosts')
+            .doc(postId)
+            .update({'like': likes})
+            console.log(postId)
         }
     }
  
@@ -186,10 +208,6 @@ function Profile(props) {
             <View style={{backgroundColor: 'white'}}>
 
                 <View style={{flexDirection:'row'}}>
-                {/* <Image
-                   source={{ uri: 'http://d23dyxeqlo5psv.cloudfront.net/cat.gif' }}
-                   style={{ height: 70, width: 70}}
-                /> */}
                     <Image
                         source={{uri: details.icon}}
                         style={{ height: 70, width: 70, borderRadius: 100}}
@@ -252,16 +270,19 @@ function Profile(props) {
                         keyExtractor={post => post.id}
                         renderItem={({item}) => (
                         <View style={styles.containerImage}>
-                            <Image
+                            {/* <Image
                                style={styles.image}
                                source={{uri: item.downloadURL}}
-                            />
+                            /> */}
                             <Text style={styles.text}>
                                 {item.caption}
                             </Text>
 
                             <View style={{flexDirection: 'row', marginBottom: 3}}>
-                                <TouchableOpacity onPress={()=> onLikePress({postId: item.id})}>
+                                {/* <TouchableOpacity onPress={()=> navigation.navigate("Like", {postId: item.id})}>
+                                    <MaterialCommunityIcons name="heart" color={'#FCE38A'} size={30}/>
+                                </TouchableOpacity> */}
+                                <TouchableOpacity onPress={()=> onLikePress({postId: item.id, like: item.like})}>
                                     <MaterialCommunityIcons name="heart" color={'#FCE38A'} size={30}/>
                                 </TouchableOpacity>
                                 <TouchableOpacity>
@@ -347,8 +368,8 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
     },
     text: {
-        fontSize: 15,
-        margin: 3
+        fontSize: 20,
+        margin: 5
     },
     text1: {
         fontSize: 20,

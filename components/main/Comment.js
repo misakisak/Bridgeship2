@@ -8,7 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 
 
 export default function Teamup ({route}) {
-     const [comment, setComment] = useState("")
+     const [comment, setComment] = useState([])
      const resultTeam = route.params.resultTeam
      const [ state, setState ] = useState('')
      const loggedInUser = firebase.auth().currentUser
@@ -17,45 +17,71 @@ export default function Teamup ({route}) {
      // console.log(teamUser.id)
      const navigation = useNavigation()
      const post = route.params.post
+     const [icon, setIcon] = useState([])
+     const [details, setDetails] =useState([])
+     const [commentsUser, setCommentsUser] = useState([])
      // console.log(resultTeam.id)
      // console.log(post)
 
+     useEffect(() => {
+          firebase.firestore()
+          .collection('teams')
+          .doc(resultTeam)
+          .collection('teamPost')
+          .doc(post)
+          .collection('comments')
+          .get()
+          .then((snapshot) => {
+               const newAuthors = [];
+               snapshot.forEach(querySnapshot => {
+                    const author = {
+                         ...querySnapshot.data(),
+                         id: querySnapshot.id
+                    }
+               newAuthors.push(author);
+               setComments(newAuthors) 
+               // console.log('comments')
+               // console.log(comments)
+               })
+          //      // })
+          })
+
+          console.log('hey')
+     },[])
+
+
      const saveComment = () => {
           firebase.firestore()
-              .collection('teams')
-              .doc(resultTeam)
-              .collection('teamPost')
-              .doc(post)
-              .collection("comments")
-              .add({
-                  userId,
-                  comment,
-                  creation: firebase.firestore.FieldValue.serverTimestamp()
-              })
-              setState('Success!!')
-          //     console.log(post)
-     }
+          .collection('users')
+          .doc(loggedInUser.uid)
+          .get()
+          .then((snapshot) => {
+               setDetails(snapshot.data())
+          })
+          console.log('details')
+          console.log(details.icon)
 
-     // useEffect(() => {
-     //      firebase.firestore()
-     //      .collection('teams')
-     //      .doc(resultTeam.id)
-     //      .collection('teamPost')
-     //      .doc(post)
-     //      .collection('comments')
-     //      .then((snapshot) => {
-     //           const newAuthors = [];
-     //           snapshot.forEach(querySnapshot => {
-     //                const author = {
-     //                     ...querySnapshot.data(),
-     //                     id: querySnapshot.id
-     //                }
-     //           newAuthors.push(author);
-     //           setComments(newAuthors) 
-     //           console.log(comments)
-     //           })
-     //      })
-     // },[])
+          // setCommentsUser(details.name)
+          // setIcon(details.icon)
+          // // console.log(icon)
+
+          // firebase.firestore()
+          //     .collection('teams')
+          //     .doc(resultTeam)
+          //     .collection('teamPost')
+          //     .doc(post)
+          //     .collection("comments")
+          //     .add({
+          //         userId,
+          //         icon,
+          //         commentsUser,
+          //         comment,
+          //         creation: firebase.firestore.FieldValue.serverTimestamp()
+          //     })
+          //     setState('Success!!')
+          // //     console.log(post)
+          
+     }
      
     return (
         <View>
@@ -82,32 +108,15 @@ export default function Teamup ({route}) {
                     keyExtractor={post => post.id}
                     renderItem={({item}) => (
                          <View style={styles.containerImage}>
-                              {/* <Text>{item.comment}</Text> */}
-                              {/* <Image
+                              {/* <Text>{item.comment}</Text>
+                              <Image
                                    style={styles.image}
                                    source={{uri: item.downloadURL}}
-                              /> */}
-                              {/* <Text style={styles.post}>
-                                   {item.caption}
-                              </Text>
-                              <View style={{ flexWrap: 'wrap', flexDirection: 'row', alignContent: 'stretch'}}>
-                                   <TouchableOpacity>
-                                        <Text>Like</Text>
-                                        <MaterialCommunityIcons name="heart" color={'#FCE38A'} size={25}/>
-                                   </TouchableOpacity>
-                                   <TouchableOpacity>
-                                        <Text>Like</Text>
-                                        <MaterialCommunityIcons name="account-group" color={'#FCE38A'} size={25}/>
-                                   </TouchableOpacity>
-                                   <TouchableOpacity>
-                                        <Text>Like</Text>
-                                        <MaterialCommunityIcons name="hand-peace" color={'#FCE38A'} size={25}/>
-                                   </TouchableOpacity>
-                                   <TouchableOpacity onPress={() => navigation.navigate("Comment", {resultTeam, post})}>
-                                        <Text>Like</Text>
-                                        <MaterialCommunityIcons name="chat" color={'#FCE38A'} size={25}/>
-                                   </TouchableOpacity>
-                              </View> */}
+                              />
+                              <Text style={styles.post}>
+                                   {item.comment}
+                              </Text> */}
+                             
                          </View>
                        
                     )}

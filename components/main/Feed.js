@@ -5,6 +5,8 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons'; 
 import firebase from 'firebase';
 require('firebase/firestore')
+import { useNavigation } from '@react-navigation/native';
+
 
 import { connect } from 'react-redux';
 
@@ -16,6 +18,8 @@ function Feed() {
     const [ following, setFollowing ] = useState([])
     // const [ posts1, setPosts1] = useState([])
     const [authors, setAuthors] = useState([]);
+    const navigation = useNavigation()
+
 
     useEffect(async()=> {
         // const user = loggedInUser;
@@ -31,17 +35,16 @@ function Feed() {
         followingResult.forEach (following => {
             followingIds.push(following.id);
         });
-        console.log('followingIds')
-        console.log(followingIds)
+        // console.log('followingIds')
+        // console.log(followingIds)
 
         // const newFollowing = []
         // for await (const followingId of followingIds) {
-            let posts = [];
-            for (let i = 0 ; i < followingIds.length; i++) {
-                const follow = followingIds[i]
+            let posts = []
+            for (let i = 0 ; i < followingIds.length; i++) { await
                 firebase.firestore()
                 .collection("posts")
-                .doc(follow)
+                .doc(followingIds[i])
                 .collection('userPosts')
                 .get()
                 .then(snapshot => {
@@ -53,14 +56,14 @@ function Feed() {
                             }
                         newAuthors.push(author);
                         posts=[...posts, ...newAuthors]
-                        console.log('-------------1')
-                        console.log(posts)
-                        console.log('-------------2')
+                        // console.log('-------------1')
+                        // console.log(posts)
+                        // console.log('-------------2')
 
                     })
-                    // posts.sort(function(x,y) {
-                    //     return x.creation -y.creation;
-                    // })
+                    posts.sort(function(x,y) {
+                        return x.creation -y.creation;
+                    })
                     // setAuthors(posts)
                     // console.log('posts')
                     // console.log(posts)
@@ -74,8 +77,8 @@ function Feed() {
             // console.log('posts')
             // console.log(posts)
             
-            console.log('authors')
-            console.log(authors)
+            // console.log('authors')
+            // console.log(authors)
             // console.log('---------B')
             // useEffect(() => {
             //     let posts = [];
@@ -124,28 +127,33 @@ function Feed() {
                 keyExtractor={post => post.id}
                 renderItem={({item}) => (
                     <View style={styles.containerImage}>
-                        <Image
-                            style={styles.image}
-                            source={{uri: item.downloadURL}}
-                        />
-                        <Text style={styles.container}>{item.caption}</Text>
+                        <View style={{ flexWrap: 'wrap', flexDirection: 'row', alignContent: 'stretch', marginLeft: 15}} >
+                            <Image
+                                style={styles.image}
+                                source={{uri: item.icon}}
+                            />
+                            <View style={{flexDirection: 'column'}}>
+                            <Text>{item.details}</Text>
+                            <Text style={{fontSize:20, marginLeft: 10, marginTop: 3}}>{item.caption}</Text>
+                            </View>
+                        </View>
                         <View style={{ flexWrap: 'wrap', flexDirection: 'row', alignContent: 'stretch', marginLeft: 15}}>
-                        <TouchableOpacity style={{margin: 5}}>
-                            <MaterialCommunityIcons name="thumb-up-outline" color={'#FCE38A'} size={25}/>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={{margin: 5}}>
-                            <FontAwesome name="handshake-o" size={25} color={'#FCE38A'} />
-                        </TouchableOpacity>
-                        {/* <TouchableOpacity>
-                            <Text>Like</Text>
-                            <FontAwsome5 name="thumbs-up" size={24} color={'#FCE38A'} />
-                        </TouchableOpacity> */}
-                        <TouchableOpacity 
-                            onPress={() => navigation.navigate("Comment", {resultTeam: resultTeam.id, post: item.id})}
-                            style={{margin: 5}}
-                        >
-                            <MaterialCommunityIcons name="chat-outline" color={'#FCE38A'} size={30}/>
-                        </TouchableOpacity>
+                            <TouchableOpacity style={{margin: 5}}>
+                                <MaterialCommunityIcons name="thumb-up-outline" color={'#FCE38A'} size={25}/>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={{margin: 5}}>
+                                <FontAwesome name="handshake-o" size={25} color={'#FCE38A'} />
+                            </TouchableOpacity>
+                            {/* <TouchableOpacity>
+                                <Text>Like</Text>
+                                <FontAwsome5 name="thumbs-up" size={24} color={'#FCE38A'} />
+                            </TouchableOpacity> */}
+                            <TouchableOpacity 
+                                onPress={() => navigation.navigate("FeedComment", {nowUser: item.user, userIcon: item.icon, post: item.id})}
+                                style={{margin: 5}}
+                            >
+                                <MaterialCommunityIcons name="chat-outline" color={'#FCE38A'} size={30}/>
+                            </TouchableOpacity>
                         </View>
                     </View>
                                
@@ -172,8 +180,11 @@ const styles = StyleSheet.create({
         flex: 1/3,
     },
     image: {
-        flex: 1,
-        aspectRatio: 1/1,
+        // flex: 1,
+        // aspectRatio: 1/1,
+        height: 50, 
+        width: 50, 
+        borderRadius: 100
     }
 })
 
