@@ -4,24 +4,24 @@ import firebase from 'firebase'
 import { NavigationContainer } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { FontAwesome5 } from '@expo/vector-icons'; 
-import { FontAwesome } from '@expo/vector-icons'; 
-import { backgroundColor } from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
+
 
 require('firebase/firestore')
+
 
 export default function Teamup ({route}) {
      const navigation = useNavigation()
      const resultTeam = route.params.resultTeam
      const [post, setPost] = useState([])
      const [post1, setPost1] = useState([])
-     //  
+
+     
 
      useEffect(()=> {
           // console.log(route.params.resultTeam)
           firebase.firestore()
           .collection('teams')
-          .doc(resultTeam.id)
+          .doc(resultTeam)
           .collection('teamPost')
           .get()
           .then((snapshot) => {
@@ -33,7 +33,7 @@ export default function Teamup ({route}) {
                     }
                          newAuthors.push(author);
                })
-               setPost(newAuthors) 
+          setPost(newAuthors) 
           })
 
 
@@ -42,34 +42,24 @@ export default function Teamup ({route}) {
           // console.log(post[0])
      }, [])
 
-     const onCountLike = () => {
-          firebase.firestore()
-          .collection("teams")
-          .doc(resultTeam.id)
-          .collection("like")
-          .set({})
-          .then(() => {
-              setFollowing(true)
-          })
-     }
-
-     // const onComment = () => {
+     // const onCountLike = () => {
      //      firebase.firestore()
      //      .collection("teams")
-     //      .doc(resultTeam.id)
-     //      .collection("comment")
+     //      .doc(resultTeam)
+     //      .collection("like")
      //      .set({})
      //      .then(() => {
      //          setFollowing(true)
      //      })
      // }
+
      // console.log('post.id')
 
-     // console.log(post.id)
+     // console.log(post)
 
     return (
-          // <ScrollView>
-          <View style={{backgroundColor: 'white'}}>
+          <ScrollView>
+          <View>
                <Text>{resultTeam.id}</Text>
                <Text>{resultTeam.teamName}</Text>
                <Text>{resultTeam.teamPassword}</Text>
@@ -79,7 +69,6 @@ export default function Teamup ({route}) {
                >
                     <Text>Post</Text>
                </TouchableOpacity>
-               <ScrollView>
                <Text></Text>
                     <FlatList
                          numColumns={1}
@@ -95,31 +84,30 @@ export default function Teamup ({route}) {
                                    <Text style={styles.post}>
                                         {item.caption}
                                    </Text>
-                                   <View style={{ flexWrap: 'wrap', flexDirection: 'row', alignContent: 'stretch', marginLeft: 15}}>
-                                        <TouchableOpacity style={{margin: 5}}>
-                                             <MaterialCommunityIcons name="thumb-up-outline" color={'#FCE38A'} size={25}/>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity style={{margin: 5}}>
-                                             <FontAwesome name="handshake-o" size={25} color={'#FCE38A'} />
-                                        </TouchableOpacity>
-                                        {/* <TouchableOpacity>
+                                   <View style={{ flexWrap: 'wrap', flexDirection: 'row', alignContent: 'stretch'}}>
+                                        <TouchableOpacity>
                                              <Text>Like</Text>
-                                             <FontAwsome5 name="thumbs-up" size={24} color={'#FCE38A'} />
-                                        </TouchableOpacity> */}
-                                        <TouchableOpacity 
-                                             onPress={() => navigation.navigate("Comment", {resultTeam: resultTeam.id, post: item.id})}
-                                             style={{margin: 5}}
-                                        >
-                                             <MaterialCommunityIcons name="chat-outline" color={'#FCE38A'} size={30}/>
+                                             <MaterialCommunityIcons name="heart" color={'#FCE38A'} size={25}/>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity>
+                                             <Text>Like</Text>
+                                             <MaterialCommunityIcons name="account-group" color={'#FCE38A'} size={25}/>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity>
+                                             <Text>Like</Text>
+                                             <MaterialCommunityIcons name="hand-peace" color={'#FCE38A'} size={25}/>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity onPress={() => navigation.navigate("Comment", {resultTeam: resultTeam, post: post})}>
+                                             <Text>Like</Text>
+                                             <MaterialCommunityIcons name="chat" color={'#FCE38A'} size={25}/>
                                         </TouchableOpacity>
                               </View>
                          </View>
                        
                     )}
                />
-               </ScrollView>
           </View>
-          // </ScrollView>
+          </ScrollView>
      )
 }
 
@@ -153,8 +141,8 @@ const styles = StyleSheet.create({
         marginTop: 5
     },
     post: {
-         fontSize: 15,
-         marginLeft: 15
+         fontSize: 20,
+         margin: 10
     },
     color: {
          color: '#EAFFD0'

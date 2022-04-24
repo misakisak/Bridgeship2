@@ -1,6 +1,8 @@
 import React, {useState, useEffect} from 'react';
-import { StyleSheet, View, Text, Image, FlatList, Button, TouchableOpacity, SafeAreaView } from 'react-native';
+import { StyleSheet, View, Text, Image, FlatList, Button, TouchableOpacity, SafeAreaView, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+
 
 import firebase from 'firebase';
 require('firebase/firestore')
@@ -10,6 +12,7 @@ import Constants from 'expo-constants';
 
 
 import { connect } from 'react-redux';
+import { backgroundColor } from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
 // import { SafeAreaView } from 'react-native-web';
 
 
@@ -26,7 +29,7 @@ function Profile(props) {
     const [ userIcon, setUserIcon] = useState([])
     const [ followed, setFollowed ] = useState([])
     const navigation = useNavigation()
-    const [ details, setDetails ] = useState('')
+    const [ details, setDetails ] = useState([])
     const [ bio, setBio ] =useState('')
     // console.log(loggedInUser)
 
@@ -93,6 +96,9 @@ function Profile(props) {
             //     });
             //     console.log(details.bio)
             // }) 
+            // setDetails(loggedInUser)
+            // console.log('details')
+            // console.log(loggedInUser)
     
 
         } else {
@@ -151,42 +157,22 @@ function Profile(props) {
         .doc(props.route.params.uid)
         .delete()
         .then(() => {
-            setFollowing(true)
+            setFollowing(false)
         })
     }
 
-    // const onLogout = () => {
-    //     firebase.auth().signOut();
-    // }
-
-    // const uploadImage = () => {
-    //     firebase.firestore()
-    //     .collection('posts')
-    //     .doc(loggedInUser)
-    //     .collection('userIcon')
-    //     .add({icon})
-    //     .then((function () {
-    //         props.navigation.popToTop()
-    //     }))
-    // }
-
-    // const pickIcon = async () => {
-    //     let result = await ImagePicker.launchImageLibraryAsync({
-    //         mediaTypes: ImagePicker.MediaTypeOptions.Images,
-    //       //   mediaTypes: ImagePicker.MediaTypeOptions.All, <- if it was all it allow any type of image, video...
-    //         allowsEditing: true,
-    //         aspect: [1, 1],
-    //         quality: 1,
-    //     });
-    //     // console.log('result')
-    //     // console.log(result);
-  
-    //     if (!result.cancelled) {
-    //         setIcon(result.uri);
-    //     }
-    //     // console.log('icon')
-    //     // console.log(icon)
-    // }; 
+    const onLikePress = (postId) => {
+        if (props.route.params.uid === firebase.auth().currentUser.uid) {
+            firebase.firestore()
+            .collection("posts")
+            .doc(loggedInUser)
+            .collection("userPosts")
+            .doc(postId)
+            .collection("likes")
+            .doc(firebase.auth().currentUser.uid)
+            .set({})
+        }
+    }
  
     if (user === null) {
         return <View/>
@@ -196,7 +182,7 @@ function Profile(props) {
         <SafeAreaView style={[styles.container]}>
         {/* <View style={[styles.container]}> */}
             {/* <View style={styles.containerInfo}> */}
-            <View>
+            <View style={{backgroundColor: 'white'}}>
 
             <Text></Text>
                 <View style={{flexDirection:'row'}}>
@@ -208,22 +194,32 @@ function Profile(props) {
                     source={{uri: userIcon.uri}}
                 /> */}
                     <View style={{flexDirection:'column'}}>
-                        <Text style={styles.text}>{user.name}</Text>
+                        <Text style={styles.text1}>{user.name}</Text>
                         <Text>{user.email}</Text>
-                        <Text>{user.bio}</Text>
+                        {/* <Text>{user.bio}</Text> */}
                     </View>
                 </View>
+                <View style={[styles.buttonContainer, {flexDirection: 'row'}]}>
+                
                 <TouchableOpacity
-                    onPress={() => navigation.navigate('Setting', {loggedInUser})}
+                    onPress={() => navigation.navigate('Following', {loggedInUser})}
+                    style={styles.button}
                 >
-                    <Text>edit</Text>
+                    <Text style={styles.buttonText}>Following</Text>
                 </TouchableOpacity>
+                <TouchableOpacity
+                    onPress={() => navigation.navigate('Following', {loggedInUser})}
+                    style={styles.button}
+                >
+                    <Text style={styles.buttonText}>Follower</Text>
+                </TouchableOpacity>
+                </View>
 
                 {props.route.params.uid !== firebase.auth().currentUser.uid ? (
                     <View>
                         {following ? (
                             <Button
-                                title= "Following"
+                                title= "Followed"
                                 onPress={() => onUnfollow()}
                             />
                         ) : (
@@ -234,33 +230,19 @@ function Profile(props) {
                         )}
                     </View>
                 ) : 
-                    <TouchableOpacity 
-                        // onPress={()=> onLogout()}
-                        // style={[styles.button2, styles.buttonOutline]}
+                    <TouchableOpacity
+                        onPress={() => navigation.navigate('Setting', {loggedInUser})}
+                        style={styles.buttonEdit}
                     >
-                        {/* <Text>Logout</Text> */}
+                        <Text style={styles.buttonText}>edit</Text>
                     </TouchableOpacity>
                 }
 
             
             </View>
 
-            <View >
-                {/* <View style={[styles.buttonContainer, { flexDirection: "row"}]}>
-                    
-                    <TouchableOpacity
-                        onPress={() => pickIcon()}
-                        style={styles.button}
-                    >
-                        <Text style={styles.buttonText}>Pick Icon</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        onPress={() => uploadImage()}
-                        style={styles.button}
-                    >
-                            <Text style={[styles.buttonText]}>Save Icon</Text>
-                    </TouchableOpacity>
-                </View> */}
+            <ScrollView>
+            <View style={{backgroundColor: 'white'}} >
                 <FlatList
                     numColumns={1}
                     horizontal={false}
@@ -272,18 +254,29 @@ function Profile(props) {
                                style={styles.image}
                                source={{uri: item.downloadURL}}
                             />
-                            <Text>
+                            <Text style={styles.text}>
                                 {item.caption}
                             </Text>
-                            <TouchableOpacity>
-                                <Text>Like</Text>
+                            <View style={{flexDirection: 'row', marginBottom: 3}}>
+                            <TouchableOpacity onPress={()=> onLikePress({postId: item.id})}>
+                                <MaterialCommunityIcons name="heart" color={'#FCE38A'} size={30}/>
                             </TouchableOpacity>
+                            <TouchableOpacity>
+                                 <MaterialCommunityIcons name="account-group" color={'#FCE38A'} size={30}/>
+                            </TouchableOpacity>
+                            <TouchableOpacity>
+                                 <MaterialCommunityIcons name="hand-peace" color={'#FCE38A'} size={30}/>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => navigation.navigate("PostComment")}>
+                                 <MaterialCommunityIcons name="chat" color={'#FCE38A'} size={30}/>
+                            </TouchableOpacity>
+                            </View>
                         </View>
                        
                     )}
                 />
             </View>
-            
+            </ScrollView>
         {/* </View> */}
         </SafeAreaView>
     )
@@ -293,6 +286,7 @@ function Profile(props) {
 const styles = StyleSheet.create({
     container:{
         flex: 1,
+        backgroundColor: 'white',
     },
     // containerInfo: {
     //     margin: 20,
@@ -314,6 +308,7 @@ const styles = StyleSheet.create({
         color: 'white',
         fontWeight: '500',
         fontSize: 12,
+        alignSelf: 'center'
     },
     buttonContainer: {
         width: '30%',
@@ -331,9 +326,10 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         alignItems: 'center',
         justifyContent: 'center',
-        marginLeft:30,
-        marginRight:30,
+        marginLeft:10,
+        marginRight:10,
         marginTop:10,
+        marginBottom: 3,
         alignSelf: 'center'
     },
     button3:{
@@ -349,7 +345,12 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
     },
     text: {
+        fontSize: 15,
+        margin: 3
+    },
+    text1: {
         fontSize: 20,
+        margin: 3
     },
     button2: {
         // buttonAlign:'center',
@@ -370,7 +371,13 @@ const styles = StyleSheet.create({
         // borderColor: '#F38181',
         borderWidth: 1,
     },
+    buttonEdit: {
+        width: '30%',
+        alignSelf: 'center',
+        backgroundColor: '#F38181',
+        borderRadius: 20,
 
+    }
 })
 
 const mapStateToProps = (store) => ({

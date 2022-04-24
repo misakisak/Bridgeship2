@@ -70,12 +70,14 @@ export class Register extends Component {
                             placeholder="name"
                             onChangeText={(name) => this.setState({ name })}
                             style={styles.input1}
+                            clearButtonMode="always"
                         />
 
                         <TextInput
                             placeholder="email"
                             onChangeText={(email) => this.setState({ email })}
                             style={styles.input1}
+                            clearButtonMode="always"
                         />
 
                         <TextInput
@@ -83,12 +85,14 @@ export class Register extends Component {
                             secureTextEntry={true}
                             onChangeText={(password) => this.setState({ password })}
                             style={styles.input1}
+                            clearButtonMode="always"
                         />
                         
                         <TextInput
                             placeholder="Bio"
                             onChangeText={(bio) => this.setState({ bio })}
                             style={styles.input1}
+                            clearButtonMode="always"
                         />
                     </View>
 

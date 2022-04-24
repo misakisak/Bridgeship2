@@ -1,11 +1,13 @@
 import React, {useState} from 'react';
-import { View, Text, TextInput, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TextInput, FlatList, TouchableOpacity, StyleSheet, Keyboard } from 'react-native';
 
 import firebase from 'firebase';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 require('firebase/firestore')
 
 export default function Search(props) {
      const [users, setUsers] = useState([])
+     const [teams, setTeams] = useState([])
 
      const fetchUsers = (search) => {
           firebase.firestore()
@@ -23,10 +25,30 @@ export default function Search(props) {
           
      }
 
+     const fetchTeams = (search) => {
+        firebase.firestore()
+             .collection('teams')
+             .where('teamName', '>=', search)
+             .get()
+             .then((snapshot) => {
+                  let users = snapshot.docs.map(doc => {
+                       const data = doc.data();
+                       const id = doc.id;
+                       return { id, ...data }
+                  });
+                  setTeams(users);
+             })        
+        
+        }
+
     return (
+        <TouchableWithoutFeedback
+            onPress={()=> {Keyboard.dismiss();
+            }}
+        >
         <View>
             <TextInput 
-               placeholder="Type Here..."
+               placeholder="Type Username Here..."
                onChangeText={(search)=> fetchUsers(search)}
                style={ styles.input1 }/>
             <FlatList
@@ -37,13 +59,34 @@ export default function Search(props) {
                     <TouchableOpacity
                         onPress={() => props.navigation.navigate("Profile", {uid: item.id})}
                     >
-                        <Text>{item.name}</Text>
+                        <Text style={styles.text}>{item.name}</Text>
                     </TouchableOpacity>
 
                )}
             />
 
         </View>
+        <View>
+            <TextInput 
+               placeholder="Type Teamname Here..."
+               onChangeText={(search)=> fetchTeams(search)}
+               style={ styles.input1 }/>
+            <FlatList
+               numColumns={1}
+               horizontal={false}
+               data={teams}
+               renderItem={({item}) => (
+                    <TouchableOpacity
+                        onPress={() => props.navigation.navigate("TeamSearch", {resultTeam: item.id})}
+                    >
+                        <Text style={styles.text}>{item.teamName}</Text>
+                    </TouchableOpacity>
+
+               )}
+            />
+
+        </View>
+        </TouchableWithoutFeedback>
     )
 }
 
@@ -64,5 +107,12 @@ const styles = StyleSheet.create({
     },
     flatlist: {
         fontSize: 30
+    },
+    text: {
+        marginLeft: 13,
+        fontSize: 15,
+        marginBottom: 3,
+        // fontStyle: addEventistener,
+        
     }
 })

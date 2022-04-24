@@ -69,6 +69,7 @@ export class Login extends Component {
                             placeholder="email"
                             onChangeText={(email) => this.setState({ email })}
                             style={ styles.input1 }
+                            clearButtonMode="always"
                         />
 
                         <TextInput
@@ -76,6 +77,7 @@ export class Login extends Component {
                             secureTextEntry={true}
                             onChangeText={(password) => this.setState({ password })}
                             style={ styles.input2 }
+                            clearButtonMode="always"
                         />
                     </View>
 

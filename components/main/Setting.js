@@ -1,10 +1,11 @@
 import React, {useState, useEffect, Component} from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Image, TextInput, FlatList } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, Image, TextInput, FlatList, Keyboard } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 
 import firebase from 'firebase'
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 require('firebase/firestore')
 
 
@@ -17,6 +18,14 @@ export default function Setting ({route}) {
 
      const onLogout = () => {
           firebase.auth().signOut();
+     }
+     
+     const updateBio = () => {
+          firebase.firestore()
+          .collection('users')
+          .doc(loggedInUser)
+          // .collection('userIcon')
+          .update({'bio': bio})
      }
 
      const uploadImage = () => {
@@ -48,74 +57,50 @@ export default function Setting ({route}) {
           // console.log(icon)
      }; 
      
-     // const onChangeBio = () => {
-     //      firebase.firestore()
-     //      .collection('posts')
-     //      .doc(loggedInUser)
-     //      .collection('userBio')
-     //      .get()
-     //      .then(() => {
-
-     //      })
-     //      .add({
-     //           bio,
-     //      })
-     // }
-     // const onUnfollow = () => {
-     //      firebase.firestore()
-     //      .collection("following")
-     //      .doc(firebase.auth().currentUser.uid)
-     //      .collection("userFollowing")
-     //      .doc(props.route.params.uid)
-     //      .delete()
-     //      .then(() => {
-     //          setFollowing(true)
-     //      })
-     //  }
      useEffect(()=> {
          
      }, [])
 
     return (
-          <View>
-               <Text>{loggedInUser.uid}</Text>
-               <TextInput
-                    placeholder="Write a Bio..."
-                    onChangeText={(bio) => setBio(bio)}
-               />
-               <Text></Text>
-               <Text></Text>
+               <View>
+                    <Text>{loggedInUser.uid}</Text> 
+                    <TextInput
+                         placeholder="Write a Bio..."
+                         onChangeText={(bio) => setBio(bio)}
+                    />
+                    <Text></Text>
+                    <Text></Text>
 
-               <TouchableOpacity 
-                        onPress={()=> onChangeBio()}
+                    <TouchableOpacity 
+                        onPress={()=> updateBio()}
                         style={[styles.button2, styles.buttonOutline]}
                     >
                         <Text>Update Bio</Text>
-               </TouchableOpacity>
+                    </TouchableOpacity>
 
-               <TouchableOpacity 
+                    <TouchableOpacity 
                         onPress={()=> onLogout()}
                         style={[styles.button2, styles.buttonOutline]}
                     >
                         <Text>Log out</Text>
-               </TouchableOpacity>
+                     </TouchableOpacity>
                
-               <View style={[styles.buttonContainer, { flexDirection: "row"}]}>
+                    <View style={[styles.buttonContainer, { flexDirection: "row"}]}>
                     
-                    <TouchableOpacity
-                        onPress={() => pickIcon()}
-                        style={styles.button}
-                    >
-                        <Text style={styles.buttonText}>Pick Icon</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        onPress={() => uploadImage()}
-                        style={styles.button}
-                    >
-                            <Text style={[styles.buttonText]}>Save Icon</Text>
-                    </TouchableOpacity>
-                </View>
-          </View>
+                         <TouchableOpacity
+                              onPress={() => pickIcon()}
+                              style={styles.button}
+                         >
+                              <Text style={styles.buttonText}>Pick Icon</Text>
+                         </TouchableOpacity>
+                         <TouchableOpacity
+                              onPress={() => uploadImage()}
+                              style={styles.button}
+                         >
+                              <Text style={[styles.buttonText]}>Save Icon</Text>
+                         </TouchableOpacity>
+                    </View>
+               </View>
      )
 }
 
@@ -123,10 +108,6 @@ const styles = StyleSheet.create({
      container:{
          flex: 1,
      },
-     // containerInfo: {
-     //     margin: 20,
- 
-     // },
      containerGallery: {
          flex: 1,
      },

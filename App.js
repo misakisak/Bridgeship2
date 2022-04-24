@@ -11,14 +11,23 @@ import rootReducer from './redux/reducers';
 import thunk from 'redux-thunk';
 const store = createStore(rootReducer, applyMiddleware(thunk))
 
+// const firebaseConfig = {
+//   apiKey: "AIzaSyAAHxpYwk9ef05B_Jlpa8S2DwP2T5hNgq8",
+//   authDomain: "instagram-dev-5878d.firebaseapp.com",
+//   projectId: "instagram-dev-5878d",
+//   storageBucket: "instagram-dev-5878d.appspot.com",
+//   messagingSenderId: "168302010238",
+//   appId: "1:168302010238:web:96caf38d7f946905ea1d2f",
+//   measurementId: "G-K1VFXSMWDG"
+// };
+
 const firebaseConfig = {
-  apiKey: "AIzaSyAAHxpYwk9ef05B_Jlpa8S2DwP2T5hNgq8",
-  authDomain: "instagram-dev-5878d.firebaseapp.com",
-  projectId: "instagram-dev-5878d",
-  storageBucket: "instagram-dev-5878d.appspot.com",
-  messagingSenderId: "168302010238",
-  appId: "1:168302010238:web:96caf38d7f946905ea1d2f",
-  measurementId: "G-K1VFXSMWDG"
+  apiKey: "AIzaSyDLl9Ee2hrtqWWmpr-0OgEuZtZ5dijx8X4",
+  authDomain: "bridgeship2.firebaseapp.com",
+  projectId: "bridgeship2",
+  storageBucket: "bridgeship2.appspot.com",
+  messagingSenderId: "768368078030",
+  appId: "1:768368078030:web:5b111b501f4503f8eb349f"
 };
 
 if(firebase.apps.length === 0){
@@ -37,6 +46,10 @@ import {Main} from './components/Main';
 import TeamScreen from './components/main/Team'
 import TeamPostScreen from './components/main/TeamPost'
 import SettingScreen from './components/main/Setting'
+import CommentScreen from './components/main/Comment'
+import FollowingScreen from './components/main/Following'
+import TeamSearchScreen from './components/main/TeamSeach'
+import PostCommentScreen from './components/main/PostComment'
 
 const Stack = createStackNavigator();
 
@@ -139,6 +152,46 @@ export class App extends Component {
               <Stack.Screen 
                 name="Setting" 
                 component={SettingScreen} 
+                navigation={this.props.navigation}
+                options={{
+                  headerStyle: {backgroundColor: "#95E1D3"},
+                  headerTintColor: "white",
+                  headerTitleStyle: {fontWeight: 'bold'},
+                }}
+              />
+              <Stack.Screen 
+                name="Comment" 
+                component={CommentScreen} 
+                navigation={this.props.navigation}
+                options={{
+                  headerStyle: {backgroundColor: "#95E1D3"},
+                  headerTintColor: "white",
+                  headerTitleStyle: {fontWeight: 'bold'},
+                }}
+              />
+              <Stack.Screen 
+                name="Following" 
+                component={FollowingScreen} 
+                navigation={this.props.navigation}
+                options={{
+                  headerStyle: {backgroundColor: "#95E1D3"},
+                  headerTintColor: "white",
+                  headerTitleStyle: {fontWeight: 'bold'},
+                }}
+              />
+              <Stack.Screen 
+                name="TeamSearch" 
+                component={TeamSearchScreen} 
+                navigation={this.props.navigation}
+                options={{
+                  headerStyle: {backgroundColor: "#95E1D3"},
+                  headerTintColor: "white",
+                  headerTitleStyle: {fontWeight: 'bold'},
+                }}
+              />
+              <Stack.Screen 
+                name="PostComment" 
+                component={PostCommentScreen} 
                 navigation={this.props.navigation}
                 options={{
                   headerStyle: {backgroundColor: "#95E1D3"},

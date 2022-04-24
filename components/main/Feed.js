@@ -21,7 +21,7 @@ function Feed() {
         const followingResult = await
             firebase.firestore()
             .collection('following')
-            .doc(user)
+            .doc(user.uid)
             .collection('userFollowing')
             .get();
         
@@ -30,31 +30,55 @@ function Feed() {
             followingIds.push(following.id);
         });
 
-        console.log(followingResult)
+        // console.log(followingResult)
+        // console.log('---------A')
+        // console.log(followingIds)
           
-        console.log(following)
+        // console.log(following)
         const newFollowing = []
-        for await (const followingId of followingIds) {
-            const authorResults = await 
+        // for await (const followingId of followingIds) {
+        //     console.log(followingId)
+            // const authorResults = await 
+            for (let i = 0 ; i < followingIds.length; i++) {
+                const follow = followingIds[i]
+                // console.log('follow')
+                // console.log(follow)
                 firebase.firestore()
                 .collection("posts")
-                .doc(followingId)
+                .doc(follow)
                 .collection('userPosts')
-                .get();
-            authorResults.forEach(author => {
-                newFollowing.push({
-                    ...author.data(),
-                    id: author.id,
-                });
-            });
-        }
-        setAuthors(newFollowing)
+                .get()
+                .then(snapshot => {
+                    const newAuthors = [];
+                        snapshot.forEach(querySnapshot => {
+                            const author = {
+                                ...querySnapshot.data(),
+                                id: querySnapshot.id
+                            }
+                        newAuthors.push(author);
+                        })
+                    // console.log(newAuthors)
+                    setAuthors(newAuthors)
+                })
+            }
+                
+            // authorResults.forEach(author => {
+            //     newFollowing.push({
+            //         ...author.data(),
+            //         id: author.id,
+            //     });
+            // });
+        // }
+        // setAuthors(newAuthors)
+        // console.log('---------B')
+
+        // console.log(newFollowing)
 
     }, [])
 
-    if (authors === null) {
-        return <View/>
-    }
+    // if (authors === null) {
+    //     return <View/>
+    // }
     
     return (
 
@@ -68,10 +92,10 @@ function Feed() {
                 numColumns={1}
                 horizontal={false}
                 data={authors}
-                keyExtractor={posts => authors.id}
+                keyExtractor={post => post.id}
                 renderItem={({item}) => (
                     <View style={styles.containerImage}>
-                        <Text style={styles.container}>{item.posting}</Text>
+                        <Text style={styles.container}>{item.caption}</Text>
                             <Image
                                 style={styles.image}
                                 source={{uri: item.downloadURL}}

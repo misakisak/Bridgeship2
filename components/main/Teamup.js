@@ -1,13 +1,14 @@
 import React, {useState, useEffect, Component} from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { StyleSheet, View, Text, TouchableOpacity, TextInput, Image, Alert } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, TextInput, Image, Alert, Keyboard } from 'react-native';
 import firebase from 'firebase'
 import { NavigationContainer } from '@react-navigation/native';
 import { backgroundColor } from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
 require('firebase/firestore')
 
 import Team from './Team'
-import AndroidTextInputNativeComponent from 'react-native/Libraries/Components/TextInput/AndroidTextInputNativeComponent';
+// import AndroidTextInputNativeComponent from 'react-native/Libraries/Components/TextInput/AndroidTextInputNativeComponent';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 
 export default function Teamup () {
@@ -70,7 +71,7 @@ export default function Teamup () {
         );
 
     const onTeamUp = () => {
-        // setState(true)
+        setState(true)
         console.log(teamName)
         firebase.firestore()
         .collection('teams')
@@ -85,12 +86,14 @@ export default function Teamup () {
                 newAuthors.push(author);
                 })
             setTeams(newAuthors)
+            // console.log(teams)
         })
         // console.log('onTeamUp teams2')
         // console.log(teams)
         // console.log(teams.length)
         for (let i = 0; i < teams.length; i++) {
             const team2 = teams[i]
+            // console.log(team2)
             if (team2.teamName === teamName) {
                 setState(false)
                 break
@@ -111,7 +114,7 @@ export default function Teamup () {
         } else {
             createTwoButtonAlert()
         }
-        console.log('-------------------')
+        // console.log('-------------------')
     }
 
     const onJoinTeam =  () => {
@@ -135,19 +138,19 @@ export default function Teamup () {
         // console.log(teams.length)
         for (let i = 0; i < teams.length; i++) {
             const team2 = teams[i]
-            console.log(team2.teamName)
+            // console.log(team2.teamName)
             if (team2.teamName === teamName2) {
                 if (team2.teamPassword === teamPassword2) {
                     setResultTeam(team2)
                     // console.log('yay')
                     // console.log(resultTeam)
                     navigation.navigate("Team" , {resultTeam})
-                    console.log(resultTeam)
+                    // console.log(resultTeam)
                 } else {
                     setState('a')
                 }
             } else {
-                console.log('onTeamup no')
+                // console.log('onTeamup no')
                 setState('a')
             }
             //     createTwoButtonAlert2()
@@ -155,7 +158,7 @@ export default function Teamup () {
         if (state === 'a') {
             createTwoButtonAlert2()
         }
-        console.log('-------------------')
+        // console.log('-------------------')
     }
 
     return (
@@ -195,12 +198,14 @@ export default function Teamup () {
                     placeholder="team name"
                     onChangeText={(teamName) => setTeamName2( teamName )}
                     style={styles.input}
+                    clearButtonMode="always"
                     />
                     <TextInput
                         placeholder="team password"
                         secureTextEntry={true}
                         onChangeText={(teamPassword) => setTeamPassword2( teamPassword )}
                         style={styles.input1}
+                        clearButtonMode="always"
                     />
                     <TouchableOpacity
                         onPress={()=> onJoinTeam()}
@@ -210,6 +215,7 @@ export default function Teamup () {
                     </TouchableOpacity>
                 </View>
         </View>
+        // </TouchableWithoutFeedback>
     )
 }
 
