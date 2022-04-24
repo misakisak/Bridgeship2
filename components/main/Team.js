@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { FontAwesome5 } from '@expo/vector-icons'; 
 import { FontAwesome } from '@expo/vector-icons'; 
-import { backgroundColor } from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
+// import { backgroundColor } from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
 
 require('firebase/firestore')
 

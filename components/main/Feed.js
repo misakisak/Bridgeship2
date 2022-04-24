@@ -1,6 +1,8 @@
 import React, {useState, useEffect} from 'react';
-import { StyleSheet, View, Text, Image, FlatList, Button } from 'react-native';
-
+import { StyleSheet, View, Text, Image, FlatList, Button, TouchableOpacity } from 'react-native';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { FontAwesome5 } from '@expo/vector-icons'; 
+import { FontAwesome } from '@expo/vector-icons'; 
 import firebase from 'firebase';
 require('firebase/firestore')
 
@@ -87,7 +89,6 @@ function Feed() {
             <Text></Text>
             <Text></Text>
             <Text></Text>
-            <Text>a</Text>
             <FlatList
                 numColumns={1}
                 horizontal={false}
@@ -95,11 +96,29 @@ function Feed() {
                 keyExtractor={post => post.id}
                 renderItem={({item}) => (
                     <View style={styles.containerImage}>
+                        <Image
+                            style={styles.image}
+                            source={{uri: item.downloadURL}}
+                        />
                         <Text style={styles.container}>{item.caption}</Text>
-                            <Image
-                                style={styles.image}
-                                source={{uri: item.downloadURL}}
-                            />
+                        <View style={{ flexWrap: 'wrap', flexDirection: 'row', alignContent: 'stretch', marginLeft: 15}}>
+                        <TouchableOpacity style={{margin: 5}}>
+                            <MaterialCommunityIcons name="thumb-up-outline" color={'#FCE38A'} size={25}/>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={{margin: 5}}>
+                            <FontAwesome name="handshake-o" size={25} color={'#FCE38A'} />
+                        </TouchableOpacity>
+                        {/* <TouchableOpacity>
+                            <Text>Like</Text>
+                            <FontAwsome5 name="thumbs-up" size={24} color={'#FCE38A'} />
+                        </TouchableOpacity> */}
+                        <TouchableOpacity 
+                            onPress={() => navigation.navigate("Comment", {resultTeam: resultTeam.id, post: item.id})}
+                            style={{margin: 5}}
+                        >
+                            <MaterialCommunityIcons name="chat-outline" color={'#FCE38A'} size={30}/>
+                        </TouchableOpacity>
+                        </View>
                     </View>
                                
                 )}
@@ -112,6 +131,7 @@ function Feed() {
 const styles = StyleSheet.create({
     container:{
         flex: 1,
+        backgroundColor: 'white',
     },
     containerInfo: {
         margin: 20,

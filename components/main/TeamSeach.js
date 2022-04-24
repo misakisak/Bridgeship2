@@ -14,8 +14,13 @@ export default function Teamup ({route}) {
      const resultTeam = route.params.resultTeam
      const [post, setPost] = useState([])
      const [post1, setPost1] = useState([])
+     const [ following, setFollowing ] = useState(false)
 
-     
+     if (followed.indexOf(props.route.params.uid) > -1 ) {
+          setFollowing(true);
+     } else {
+          setFollowing(false);
+     }
 
      useEffect(()=> {
           // console.log(route.params.resultTeam)
@@ -42,6 +47,30 @@ export default function Teamup ({route}) {
           // console.log(post[0])
      }, [])
 
+     const onFollow = () => {
+          firebase.firestore()
+          .collection("following")
+          .doc(firebase.auth().currentUser.uid)
+          .collection("teamFollowing")
+          .doc(resultTeam)
+          .set({})
+          .then(() => {
+              setFollowing(true)
+          })
+     }
+  
+     const onUnfollow = () => {
+          firebase.firestore()
+          .collection("following")
+          .doc(firebase.auth().currentUser.uid)
+          .collection("userFollowing")
+          .doc(props.route.params.uid)
+          .delete()
+          .then(() => {
+              setFollowing(false)
+          })
+     }
+
      // const onCountLike = () => {
      //      firebase.firestore()
      //      .collection("teams")
@@ -67,7 +96,12 @@ export default function Teamup ({route}) {
                <TouchableOpacity
                     onPress={() => navigation.navigate('TeamPost', {resultTeam})}
                >
-                    <Text>Post</Text>
+                    <Text>Follow</Text>
+               </TouchableOpacity>
+               <TouchableOpacity
+                    onPress={() => navigation.navigate('TeamPost', {resultTeam})}
+               >
+                    <Text>Followed</Text>
                </TouchableOpacity>
                <Text></Text>
                     <FlatList

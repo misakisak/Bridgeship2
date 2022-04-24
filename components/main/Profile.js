@@ -55,11 +55,11 @@ function Profile(props) {
             setFollowed(followingIds);
         })
 
-        if (followed.indexOf(props.route.params.uid) > -1 ) {
-            setFollowing(true);
-        } else {
-            setFollowing(false);
-        }
+        // if (followed.indexOf(props.route.params.uid) > -1 ) {
+        //     setFollowing(true);
+        // } else {
+        //     setFollowing(false);
+        // }
 
         if (props.route.params.uid === firebase.auth().currentUser.uid) {
             // console.log(user.uid)
@@ -102,7 +102,6 @@ function Profile(props) {
             // console.log('details')
             // console.log(loggedInUser)
     
-
         } else {
             setNowUser(props.route.params.uid)
             firebase.firestore()
