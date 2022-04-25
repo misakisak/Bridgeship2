@@ -4,7 +4,7 @@ import firebase from 'firebase'
 import { NavigationContainer } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-
+import { FontAwesome } from '@expo/vector-icons'; 
 
 require('firebase/firestore')
 
@@ -13,20 +13,12 @@ export default function Teamup ({route}) {
      const navigation = useNavigation()
      const resultTeam = route.params.resultTeam
      const [post, setPost] = useState([])
-     const [post1, setPost1] = useState([])
-     const [ following, setFollowing ] = useState(false)
 
-     if (followed.indexOf(props.route.params.uid) > -1 ) {
-          setFollowing(true);
-     } else {
-          setFollowing(false);
-     }
-
-     useEffect(()=> {
+     useEffect(async()=> {
           // console.log(route.params.resultTeam)
           firebase.firestore()
           .collection('teams')
-          .doc(resultTeam)
+          .doc(resultTeam.id)
           .collection('teamPost')
           .get()
           .then((snapshot) => {
@@ -47,30 +39,6 @@ export default function Teamup ({route}) {
           // console.log(post[0])
      }, [])
 
-     const onFollow = () => {
-          firebase.firestore()
-          .collection("following")
-          .doc(firebase.auth().currentUser.uid)
-          .collection("teamFollowing")
-          .doc(resultTeam)
-          .set({})
-          .then(() => {
-              setFollowing(true)
-          })
-     }
-  
-     const onUnfollow = () => {
-          firebase.firestore()
-          .collection("following")
-          .doc(firebase.auth().currentUser.uid)
-          .collection("userFollowing")
-          .doc(props.route.params.uid)
-          .delete()
-          .then(() => {
-              setFollowing(false)
-          })
-     }
-
      // const onCountLike = () => {
      //      firebase.firestore()
      //      .collection("teams")
@@ -88,22 +56,8 @@ export default function Teamup ({route}) {
 
     return (
           <ScrollView>
-          <View>
-               <Text>{resultTeam.id}</Text>
-               <Text>{resultTeam.teamName}</Text>
-               <Text>{resultTeam.teamPassword}</Text>
-               <Text></Text>
-               <TouchableOpacity
-                    onPress={() => navigation.navigate('TeamPost', {resultTeam})}
-               >
-                    <Text>Follow</Text>
-               </TouchableOpacity>
-               <TouchableOpacity
-                    onPress={() => navigation.navigate('TeamPost', {resultTeam})}
-               >
-                    <Text>Followed</Text>
-               </TouchableOpacity>
-               <Text></Text>
+          <View style={styles.containerImage}>
+               <Text style={styles.text}>{resultTeam.teamName}</Text>             
                     <FlatList
                          numColumns={1}
                          horizontal={false}
@@ -119,25 +73,20 @@ export default function Teamup ({route}) {
                                         {item.caption}
                                    </Text>
                                    <View style={{ flexWrap: 'wrap', flexDirection: 'row', alignContent: 'stretch'}}>
-                                        <TouchableOpacity>
-                                             <Text>Like</Text>
-                                             <MaterialCommunityIcons name="heart" color={'#FCE38A'} size={25}/>
+                                        <TouchableOpacity style={{margin: 5}}>
+                                             <MaterialCommunityIcons name="thumb-up-outline" color={'#FCE38A'} size={25}/>
                                         </TouchableOpacity>
-                                        <TouchableOpacity>
-                                             <Text>Like</Text>
-                                             <MaterialCommunityIcons name="account-group" color={'#FCE38A'} size={25}/>
+                                        <TouchableOpacity style={{margin: 5}}>
+                                             <FontAwesome name="handshake-o" size={25} color={'#FCE38A'} />
                                         </TouchableOpacity>
-                                        <TouchableOpacity>
-                                             <Text>Like</Text>
-                                             <MaterialCommunityIcons name="hand-peace" color={'#FCE38A'} size={25}/>
+                                        <TouchableOpacity 
+                                             onPress={() => navigation.navigate("Comment", {resultTeam: resultTeam, post: post})}
+                                             style={{margin: 5}}
+                                        >
+                                             <MaterialCommunityIcons name="chat-outline" color={'#FCE38A'} size={25}/>
                                         </TouchableOpacity>
-                                        <TouchableOpacity onPress={() => navigation.navigate("Comment", {resultTeam: resultTeam, post: post})}>
-                                             <Text>Like</Text>
-                                             <MaterialCommunityIcons name="chat" color={'#FCE38A'} size={25}/>
-                                        </TouchableOpacity>
+                                   </View>
                               </View>
-                         </View>
-                       
                     )}
                />
           </View>
@@ -157,7 +106,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     containerImage: {
-        flex: 1/3,
+        height: '100%',
         backgroundColor: 'white',
     },
     image: {

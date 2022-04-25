@@ -4,7 +4,6 @@ import firebase from 'firebase'
 import { NavigationContainer } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { FontAwesome5 } from '@expo/vector-icons'; 
 import { FontAwesome } from '@expo/vector-icons'; 
 // import { backgroundColor } from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
 
@@ -69,13 +68,14 @@ export default function Teamup ({route}) {
 
     return (
           // <ScrollView>
-          <View style={{backgroundColor: 'white'}}>
-               <Text>{resultTeam.id}</Text>
-               <Text>{resultTeam.teamName}</Text>
-               <Text>{resultTeam.teamPassword}</Text>
+          <View style={{backgroundColor: 'white', height: '100%'}}>
+               {/* <Text>{resultTeam.id}</Text> */}
+               <Text style={styles.text1}>{resultTeam.teamName}</Text>
+               {/* <Text>{resultTeam.teamPassword}</Text> */}
                <Text></Text>
                <TouchableOpacity
                     onPress={() => navigation.navigate('TeamPost', {resultTeam})}
+                    style={styles.button}
                >
                     <Text>Post</Text>
                </TouchableOpacity>
@@ -88,10 +88,6 @@ export default function Teamup ({route}) {
                          keyExtractor={post => post.id}
                          renderItem={({item}) => (
                               <View style={styles.containerImage}>
-                                   {/* <Image
-                                        style={styles.image}
-                                        source={{uri: item.downloadURL}}
-                                   /> */}
                                    <Text style={styles.post}>
                                         {item.caption}
                                    </Text>
@@ -102,10 +98,6 @@ export default function Teamup ({route}) {
                                         <TouchableOpacity style={{margin: 5}}>
                                              <FontAwesome name="handshake-o" size={25} color={'#FCE38A'} />
                                         </TouchableOpacity>
-                                        {/* <TouchableOpacity>
-                                             <Text>Like</Text>
-                                             <FontAwsome5 name="thumbs-up" size={24} color={'#FCE38A'} />
-                                        </TouchableOpacity> */}
                                         <TouchableOpacity 
                                              onPress={() => navigation.navigate("Comment", {resultTeam: resultTeam.id, post: item.id})}
                                              style={{margin: 5}}
@@ -142,21 +134,48 @@ const styles = StyleSheet.create({
         flex: 1,
         aspectRatio: 1/1,
     },
-    input1: {
-        backgroundColor: 'white',
-        paddingVertical:10,
-        borderRadius: 0,
-        borderColor:'#95E1D3',
-        borderWidth:2,
-        margin:10,
-        padding:10,
-        marginTop: 5
-    },
+    
     post: {
          fontSize: 15,
          marginLeft: 15
     },
     color: {
          color: '#EAFFD0'
-    }
-})
+    },
+     input1: {
+         backgroundColor: 'white',
+         paddingVertical:10,
+         borderRadius: 0,
+         borderColor:'#95E1D3',
+         borderWidth:2,
+         margin:10,
+         padding:10,
+         marginTop: 5,
+         height: '20%'
+     },
+     button: {
+      // buttonAlign:'center',
+      // buttonJustify:'center',
+      backgroundColor: '#F38181',
+      width: '85%',
+      padding: 8,
+      borderRadius: 20,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginLeft:30,
+      marginRight:30,
+      marginTop:10,
+      alignSelf: 'center'
+      },
+      text1: {
+           fontSize: 15,
+           marginLeft: 7,
+           marginBottom: 4
+      },
+      text2: {
+           fontSize: 18,
+           marginLeft: 7,
+           marginBottom: 4
+      },
+ })
+ 

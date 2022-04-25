@@ -77,7 +77,7 @@ export default function Search(props) {
                data={teams}
                renderItem={({item}) => (
                     <TouchableOpacity
-                        onPress={() => props.navigation.navigate("TeamSearch", {resultTeam: item.id})}
+                        onPress={() => props.navigation.navigate("TeamSearch", {resultTeam: item})}
                     >
                         <Text style={styles.text}>{item.teamName}</Text>
                     </TouchableOpacity>

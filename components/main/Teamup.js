@@ -2,29 +2,21 @@ import React, {useState, useEffect, Component} from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { StyleSheet, View, Text, TouchableOpacity, TextInput, Image, Alert, Keyboard } from 'react-native';
 import firebase from 'firebase'
-import { NavigationContainer } from '@react-navigation/native';
-import { backgroundColor } from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
 require('firebase/firestore')
 
-import Team from './Team'
-// import AndroidTextInputNativeComponent from 'react-native/Libraries/Components/TextInput/AndroidTextInputNativeComponent';
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
-
-
 export default function Teamup () {
-    // const [ teamMember, setTeamMember] = useState([])
     const [ teamName, setTeamName ] = useState("")
     const [ teamPassword, setTeamPassword] = useState("")
-    // const [ teams2, setTeams2 ] = useState([])
     const [ teams, setTeams ] = useState([])
-
     const [ teamName2, setTeamName2 ] = useState("")
     const [ teamPassword2, setTeamPassword2 ] = useState("")
-    const [ theTeam, setTheTeam] = useState("")
-    // const [ theTeamPassword, setTheTeamPassword ] = useState("")
     const [ resultTeam, setResultTeam ] = useState("") 
     const [ state, setState ] = useState(true)
     const [ state1, setState1 ] = useState(false)
+    const [ details, setDetails] = useState([])
+    const [ state2, setState2 ] = useState(true)
+    const [b, setB] = useState([])
+
 
     const navigation = useNavigation()
 
@@ -86,8 +78,9 @@ export default function Teamup () {
                 newAuthors.push(author);
                 })
             setTeams(newAuthors)
-            // console.log(teams)
+            console.log(teams)
         })
+
         // console.log('onTeamUp teams2')
         // console.log(teams)
         // console.log(teams.length)
@@ -98,13 +91,6 @@ export default function Teamup () {
                 setState(false)
                 break
             }else{
-                firebase.firestore()
-                .collection('teams')
-                .add({
-                    teamName,
-                    teamPassword
-                })
-                createTwoButtonAlert3()
                 setState(true)
             }
             // console.log('onTeamUp team2')
@@ -113,8 +99,65 @@ export default function Teamup () {
 
         if (state === false) {
             createTwoButtonAlert()
-        } 
-        // console.log('-------------------')
+        } else {
+            firebase.firestore()
+                .collection('teams')
+                .add({
+                    teamName,
+                    teamPassword,
+                })
+
+            firebase.firestore()
+                .collection('users')
+                .doc(firebase.auth().currentUser.uid)
+                .get()
+                .then((snapshot) => {
+                    setDetails(snapshot.data())
+                })   
+                const icon = details.icon
+                const name = details.name
+                const id = firebase.auth().currentUser.uid
+                
+            firebase.firestore()
+                .collection('teams')
+                .get()
+                .then((snapshot) => {
+                    const newAuthors = [];
+                    snapshot.forEach(querySnapshot => {
+                        const author = {
+                            ...querySnapshot.data(),
+                            id: querySnapshot.id
+                        }
+                        newAuthors.push(author);
+                    })
+                    setTeams(newAuthors)
+                })
+
+                for (let i = 0; i < teams.length; i++) {
+                    const team2 = teams[i]
+                    if (team2.teamName !== teamName) {
+                        setState2(true)
+                    } else {
+                        setState2(false)
+                        setB(team2)
+                        break
+                    }
+                }
+                if (state2 === false) {
+                    firebase.firestore()
+                        .collection('teams')
+                        .doc(b.id)
+                        .collection('teamMember')
+                        .add({
+                            icon,
+                            name,
+                            id
+                        }).then((function () {
+                            props.navigation.popToTop()
+                        }))
+                }
+                createTwoButtonAlert3()
+        }
     }
 
     const onJoinTeam =  () => {
@@ -136,8 +179,11 @@ export default function Teamup () {
         for (let i = 0; i < teams.length; i++) {
             const team2 = teams[i]
             if (team2.teamName !== teamName2) {
+                setState(false)
+                break
             } else {
                 if (team2.teamPassword !== teamPassword2) {
+                    setState(false)
                 } else {
                     setResultTeam(team2)
                     navigation.navigate("Team" , {resultTeam})
@@ -155,59 +201,57 @@ export default function Teamup () {
 
     return (
         <View style={[styles.color, {backgroundColor: 'white'}]}>
-                <View>
-                    <Text style={[styles.paragraph2, {flexDirection: "column"}]}>Bridgeship</Text>
-                </View>
-                <View style={styles.container2}>
-                    <Image
-                        source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/instagram-dev-5878d.appspot.com/o/Ellipse%203.png?alt=media&token=fd22f7f9-09e4-4d11-86b7-15043784c2d6' }}
-                        style={{ height: 80, width: 80, borderRadius: 100 }}
-                    />
-                </View>
-                <View>
-                    <TextInput
+            <View>
+                <Text style={[styles.paragraph2, {flexDirection: "column"}]}>Bridgeship</Text>
+            </View>
+            <View style={styles.container2}>
+                <Image
+                    source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/instagram-dev-5878d.appspot.com/o/Ellipse%203.png?alt=media&token=fd22f7f9-09e4-4d11-86b7-15043784c2d6' }}
+                    style={{ height: 80, width: 80, borderRadius: 100 }}
+                />
+            </View>
+            <View>
+                <TextInput
                     placeholder="new team name"
                     onChangeText={(teamName) => setTeamName( teamName )}
                     style={styles.input1}
                     clearButtonMode="always"
-                    />
+                />
                     
-                    <TextInput
-                        placeholder="team password"
-                        secureTextEntry={true}
-                        onChangeText={(teamPassword) => setTeamPassword( teamPassword )}
-                        style={styles.input1}
-                        clearButtonMode="always"
-                    />
-                    <TouchableOpacity
-                        onPress={()=> onTeamUp()}
-                        style={[ styles.button2, styles.buttonOutline ]}
-                    >
-                        <Text style={ styles.buttonOutlineText }>Create Team</Text>
-                    </TouchableOpacity>
-
-                    <TextInput
+                <TextInput
+                    placeholder="team password"
+                    secureTextEntry={true}
+                    onChangeText={(teamPassword) => setTeamPassword( teamPassword )}
+                    style={styles.input1}
+                    clearButtonMode="always"
+                />
+                <TouchableOpacity
+                    onPress={()=> onTeamUp()}
+                    style={[ styles.button2, styles.buttonOutline ]}
+                >
+                    <Text style={ styles.buttonOutlineText }>Create Team</Text>
+                </TouchableOpacity>
+                <TextInput
                     placeholder="team name"
                     onChangeText={(teamName) => setTeamName2( teamName )}
                     style={styles.input}
                     clearButtonMode="always"
-                    />
-                    <TextInput
-                        placeholder="team password"
-                        secureTextEntry={true}
-                        onChangeText={(teamPassword) => setTeamPassword2( teamPassword )}
-                        style={styles.input1}
-                        clearButtonMode="always"
-                    />
-                    <TouchableOpacity
-                        onPress={()=> onJoinTeam()}
-                        style={[ styles.button2, styles.buttonOutline ]}
-                    >
-                        <Text style={ styles.buttonOutlineText }>Join Team</Text>
-                    </TouchableOpacity>
-                </View>
+                />
+                <TextInput
+                    placeholder="team password"
+                    secureTextEntry={true}
+                    onChangeText={(teamPassword) => setTeamPassword2( teamPassword )}
+                    style={styles.input1}
+                    clearButtonMode="always"
+                />
+                <TouchableOpacity
+                    onPress={()=> onJoinTeam()}
+                    style={[ styles.button2, styles.buttonOutline ]}
+                >
+                    <Text style={ styles.buttonOutlineText }>Join Team</Text>
+                </TouchableOpacity>
+            </View>
         </View>
-        // </TouchableWithoutFeedback>
     )
 }
 

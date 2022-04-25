@@ -2,18 +2,11 @@ import React, {useState, useEffect} from 'react';
 import { StyleSheet, View, Text, Image, FlatList, Button, TouchableOpacity, SafeAreaView, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-
-
 import firebase from 'firebase';
 require('firebase/firestore')
-import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
-
-
-
+import { FontAwesome } from '@expo/vector-icons'; 
 import { connect } from 'react-redux';
-import { backgroundColor } from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
-// import { SafeAreaView } from 'react-native-web';
 
 
 function Profile(props) {
@@ -33,7 +26,8 @@ function Profile(props) {
     const [ bio, setBio ] =useState('')
     // console.log(loggedInUser)
     const [ nowUser, setNowUser ] = useState('')
-    const [ state, setState ] = useState(false)
+    const [ state, setState ] = useState(true)
+
 
     useEffect(()=> {
         const { currentUser, posts } = props;
@@ -130,13 +124,7 @@ function Profile(props) {
         })
         }
 
-        // if (followed.indexOf(props.route.params.uid) > -1 ) {
-        //     setFollowing(true);
-        // } else {
-        //     setFollowing(false);
-        // }
-
-    }, [props.route.params.uid, props.following, nowUser])
+    }, [props.route.params.uid, props.following, nowUser, state])
 
     const onFollow = () => {
         firebase.firestore()
@@ -162,41 +150,56 @@ function Profile(props) {
         })
     }
 
-    const onLikePress = async(postId, like) => {
-        const loggedInUserId =  loggedInUser.uid
-        const likes = like + 1
-        if (nowUser === loggedInUser.id) { await
-            firebase.firestore()
-            .collection("posts")
-            .doc(nowUser)
-            .collection("userPosts")
-            .doc(postId)
-            .collection("likes")
-            // .doc(firebase.auth().currentUser.uid)
-            .add({
-                loggedInUserId
-            })
-            console.log(postId)
-        } else { await
-            firebase.firestore()
-            .collection("posts")
-            .doc(nowUser)
-            .collection("userPosts")
-            .doc(postId)
-            .collection("likes")
-            // .doc(firebase.auth().currentUser.uid)
-            .add({
-                loggedInUserId
-            })
+    const onLikePress = async(postId) => {
+        // const likes = Number(postId.like) + 1
+        // firebase.firestore()
+        // .collection("posts")
+        // .doc(nowUser)
+        // .collection('userPosts')
+        // .doc(postId.postId)
+        // .update({'like': Number(likes)})
+        // console.log('postId.postId')
+        // console.log(postId.postId)
+        // console.log(Number(postId.like))
+        // console.log(like1)
+        // console.log(postId)
+        const x = 3
+        console.log(x+3)
 
-            firebase.firestore()
-            .collection("posts")
-            .doc(loggedInUser.uid)
-            .collection('userPosts')
-            .doc(postId)
-            .update({'like': likes})
-            console.log(postId)
-        }
+
+
+        // if (nowUser === loggedInUser.id) { await
+        //     firebase.firestore()
+        //     .collection("posts")
+        //     .doc(nowUser)
+        //     .collection("userPosts")
+        //     .doc(postId.postId)
+        //     .collection("likes")
+        //     // .doc(firebase.auth().currentUser.uid)
+        //     .add({
+        //         loggedInUserId
+        //     })
+        //     console.log(postId)
+        // } else { await
+        //     firebase.firestore()
+        //     .collection("posts")
+        //     .doc(nowUser)
+        //     .collection("userPosts")
+        //     .doc(postId)
+        //     .collection("likes")
+        //     // .doc(firebase.auth().currentUser.uid)
+        //     .add({
+        //         loggedInUserId
+        //     })
+
+        //     firebase.firestore()
+        //     .collection("posts")
+        //     .doc(loggedInUser.uid)
+        //     .collection('userPosts')
+        //     .doc(postId)
+        //     .update({'like': likes})
+        //     console.log(postId)
+        // }
     }
  
     if (user === null) {
@@ -210,7 +213,7 @@ function Profile(props) {
                 <View style={{flexDirection:'row'}}>
                     <Image
                         source={{uri: details.icon}}
-                        style={{ height: 70, width: 70, borderRadius: 100}}
+                        style={{ height: 70, width: 70, borderRadius: 100, margin: 5}}
                     />
 
                     <View style={{flexDirection:'column'}}>
@@ -263,6 +266,12 @@ function Profile(props) {
             <ScrollView>
 
                 <View style={{backgroundColor: 'white'}} >
+                    {/* <TouchableOpacity 
+                        style={{marginTop: 50, alignSelf: 'center'}}
+                        onPress={()=>setState(false)}
+                    >
+                        <MaterialCommunityIcons name="reload" color={'#F38181'} size={30}/>
+                    </TouchableOpacity> */}
                     <FlatList
                         numColumns={1}
                         horizontal={false}
@@ -278,21 +287,24 @@ function Profile(props) {
                                 {item.caption}
                             </Text>
 
-                            <View style={{flexDirection: 'row', marginBottom: 3}}>
+                            <View style={{flexDirection: 'row', marginBottom: 5}}>
                                 {/* <TouchableOpacity onPress={()=> navigation.navigate("Like", {postId: item.id})}>
                                     <MaterialCommunityIcons name="heart" color={'#FCE38A'} size={30}/>
                                 </TouchableOpacity> */}
-                                <TouchableOpacity onPress={()=> onLikePress({postId: item.id, like: item.like})}>
-                                    <MaterialCommunityIcons name="heart" color={'#FCE38A'} size={30}/>
+                                <TouchableOpacity 
+                                    onPress={()=> onLikePress({postId: item.id})}
+                                    style={{margin: 5}}
+                                >
+                                    <MaterialCommunityIcons name="thumb-up-outline" color={'#FCE38A'} size={30}/>
                                 </TouchableOpacity>
-                                <TouchableOpacity>
-                                    <MaterialCommunityIcons name="account-group" color={'#FCE38A'} size={30}/>
+                                <TouchableOpacity style={{margin: 5}}>
+                                    <FontAwesome name="handshake-o" size={25} color={'#FCE38A'} />
                                 </TouchableOpacity>
-                                <TouchableOpacity>
-                                    <MaterialCommunityIcons name="hand-peace" color={'#FCE38A'} size={30}/>
-                                </TouchableOpacity>
-                                <TouchableOpacity onPress={() => navigation.navigate("PostComment", {nowUser: nowUser, post: item.id})}>
-                                    <MaterialCommunityIcons name="chat" color={'#FCE38A'} size={30}/>
+                                <TouchableOpacity 
+                                    onPress={() => navigation.navigate("PostComment", {nowUser: nowUser, post: item.id})}
+                                    style={{margin: 5}}
+                                >
+                                    <MaterialCommunityIcons name="chat-outline" color={'#FCE38A'} size={30}/>
                                 </TouchableOpacity>
                             </View>
 
