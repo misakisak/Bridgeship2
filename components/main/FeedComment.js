@@ -62,39 +62,40 @@ export default function FeedComment ({route}) {
           setState1(true)
      }
 
-     // useEffect(() => {
-     //      firebase.firestore()
-     //      .collection('posts')
-     //      .doc(nowUser)
-     //      .collection('userPosts')
-     //      .doc(post)
-     //      .collection('comments')
-     //      .get()
-     //      .then((snapshot) => {
-     //           const newAuthors = [];
-     //           snapshot.forEach(querySnapshot => {
-     //                const author = {
-     //                     ...querySnapshot.data(),
-     //                     id: querySnapshot.id
-     //                }
-     //           newAuthors.push(author);
-     //           setComments(newAuthors) 
-     //           console.log('author')
-     //           console.log(author)
-     //           })
-     //           // setComments(newAuthors) 
-     //           console.log(comments.icon)
-     //      })
-     //      firebase.firestore()
-     //      .collection('users')
-     //      .doc(loggedInUser.uid)
-     //      .get()
-     //      .then((snapshot) => {
-     //           setCommentsUser(snapshot.data().name)
-     //      })
-     //      setState('')
+     useEffect(() => {
+          firebase.firestore()
+          .collection('posts')
+          .doc(nowUser)
+          .collection('userPosts')
+          .doc(post)
+          .collection('comments')
+          .get()
+          .then((snapshot) => {
+               const newAuthors = [];
+               snapshot.forEach(querySnapshot => {
+                    const author = {
+                         ...querySnapshot.data(),
+                         id: querySnapshot.id
+                    }
+               newAuthors.push(author);
+               setComments(newAuthors) 
+               console.log('author')
+               console.log(author)
+               })
+               // setComments(newAuthors) 
+               console.log(comments.icon)
+          })
+          firebase.firestore()
+          .collection('users')
+          .doc(loggedInUser.uid)
+          .get()
+          .then((snapshot) => {
+               setCommentsUser(snapshot.data().name)
+          })
+          setState('')
+          setState1(true)
 
-     // },[])
+     },[])
      
 
      const saveComments = () => {
@@ -133,6 +134,7 @@ export default function FeedComment ({route}) {
                </TouchableOpacity>
             {/* <Text>{state}</Text> */}
                <TextInput
+                    multiline
                     style={styles.input1}
                     placeholder="Write a Comment..."
                     onChangeText={(comment) => setComment(comment)}
@@ -142,7 +144,7 @@ export default function FeedComment ({route}) {
                     onPress={() => saveComments()}
                     style={styles.button}
                >
-                    <Text>Post</Text>
+                    <Text style={{color: 'white'}}>Post</Text>
                </TouchableOpacity>
                <Text>{state}</Text>
 
@@ -155,7 +157,7 @@ export default function FeedComment ({route}) {
                          renderItem={({item}) => (
                          <View style={styles.containerImage}>
                               <Image
-                                   style={{ height: 70, width: 70, borderRadius: 100}}
+                                   style={{ height: 70, width: 70, borderRadius: 100, margin: 4}}
                                    source={{uri: item.icon}}
                               />
                               <View style={{flexDirection: 'column'}}>
@@ -212,17 +214,19 @@ const styles = StyleSheet.create({
       marginLeft:30,
       marginRight:30,
       marginTop:10,
-      alignSelf: 'center'
+      alignSelf: 'center',
       },
       text1: {
-           fontSize: 15,
+           fontSize: 16,
            marginLeft: 7,
-           marginBottom: 4
+           marginBottom: 4,
+           fontWeight: '300'
       },
       text2: {
            fontSize: 18,
            marginLeft: 7,
-           marginBottom: 4
+           marginBottom: 4,
+           fontWeight: '300'
       },
  })
  

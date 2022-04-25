@@ -1,5 +1,5 @@
 import React, {useState, useEffect, Component} from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, TextInput, FlatList, ScrollView } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, TextInput, FlatList, ScrollView, Image } from 'react-native';
 import firebase from 'firebase'
 import { NavigationContainer } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
@@ -55,9 +55,17 @@ export default function Teamup ({route}) {
      // console.log(post)
 
     return (
-          <ScrollView>
-          <View style={styles.containerImage}>
-               <Text style={styles.text}>{resultTeam.teamName}</Text>             
+          <ScrollView style={{backgroundColor: 'white'}}>
+          <View style={{backgroundColor: '#EAFFD0', height: '100%'}}>
+               <View style={{flexDirection: 'row'}}>
+                    <Image
+                         style={{ height: 60, width: 60, borderRadius: 100, margin: 5}}
+                         source={{uri: 'https://cdn.discordapp.com/attachments/929157237929287811/941309322242170910/IMG_0568.jpg'}}
+                    />
+                    <Text style={styles.text1}>{resultTeam.teamName}</Text>
+               </View>
+               <Text style={{marginLeft: 15, marginBottom: 10, fontWeight: '300'}}>adklfajkfjaj</Text>
+               {/* <Text style={styles.text}>{resultTeam.teamName}</Text>              */}
                     <FlatList
                          numColumns={1}
                          horizontal={false}
@@ -72,20 +80,21 @@ export default function Teamup ({route}) {
                                    <Text style={styles.post}>
                                         {item.caption}
                                    </Text>
-                                   <View style={{ flexWrap: 'wrap', flexDirection: 'row', alignContent: 'stretch'}}>
-                                        <TouchableOpacity style={{margin: 5}}>
+                                   <View style={{ flexWrap: 'wrap', flexDirection: 'row', alignSelf: 'flex-end', marginRight: 15}}>
+                                        <TouchableOpacity style={{marginBottom: 5, marginLeft: 15,}}>
                                              <MaterialCommunityIcons name="thumb-up-outline" color={'#FCE38A'} size={25}/>
                                         </TouchableOpacity>
-                                        <TouchableOpacity style={{margin: 5}}>
+                                        <TouchableOpacity style={{marginBottom: 5, marginLeft: 15,}}>
                                              <FontAwesome name="handshake-o" size={25} color={'#FCE38A'} />
                                         </TouchableOpacity>
                                         <TouchableOpacity 
-                                             onPress={() => navigation.navigate("Comment", {resultTeam: resultTeam, post: post})}
-                                             style={{margin: 5}}
+                                             onPress={() => navigation.navigate("Comment", {resultTeam: resultTeam, post: post, caption: item.caption})}
+                                             style={{marginBottom: 5, marginLeft: 15,}}
                                         >
                                              <MaterialCommunityIcons name="chat-outline" color={'#FCE38A'} size={25}/>
                                         </TouchableOpacity>
                                    </View>
+                                   <View style={{backgroundColor: '#D8F5B4', height: 1}}></View>
                               </View>
                     )}
                />
@@ -124,10 +133,21 @@ const styles = StyleSheet.create({
         marginTop: 5
     },
     post: {
-         fontSize: 20,
-         margin: 10
-    },
+     fontSize: 16,
+     marginLeft: 15,
+     marginRight: 15,
+     marginTop: 10,
+     alignSelf: 'flex-start',
+     color: '#424949',
+     fontWeight: '300'
+ },
     color: {
          color: '#EAFFD0'
-    }
+    },
+    text1: {
+     fontSize: 20,
+     margin: 10,
+     color: '#424949',
+     fontWeight: '400'
+ },
 })

@@ -87,10 +87,12 @@ export default function Setting ({route}) {
 
     return (
         <View>
-            <Text>{loggedInUser.uid}</Text> 
+            <Text style={{margin: 5}}>Account Id: {loggedInUser.uid}</Text> 
             <TextInput
+                multiline
                 placeholder="Write a Bio..."
                 onChangeText={(bio) => setBio(bio)}
+                style={styles.input1}
             />
             <TouchableOpacity 
                 onPress={()=> updateBio()}
@@ -98,12 +100,7 @@ export default function Setting ({route}) {
             >
                 <Text>Update Bio</Text>
             </TouchableOpacity>
-            <TouchableOpacity 
-                onPress={()=> onLogout()}
-                style={[styles.button2, styles.buttonOutline]}
-            >
-                <Text>Log out</Text>
-            </TouchableOpacity>   
+               
             <View style={[styles.buttonContainer, { flexDirection: "row"}]}>
                 <TouchableOpacity
                     onPress={() => pickIcon()}
@@ -118,6 +115,12 @@ export default function Setting ({route}) {
                     <Text style={[styles.buttonText]}>Save Icon</Text>
                 </TouchableOpacity>
             </View>
+            <TouchableOpacity 
+                onPress={()=> onLogout()}
+                style={[styles.button2, styles.buttonOutline]}
+            >
+                <Text>Log out</Text>
+            </TouchableOpacity>
         </View>
      )
 }
@@ -197,5 +200,16 @@ const styles = StyleSheet.create({
         marginTop: 5,
         // borderColor: '#F38181',
         borderWidth: 1,
+    },
+    input1: {
+        backgroundColor: 'white',
+        paddingVertical:10,
+        borderRadius: 0,
+        borderColor:'#95E1D3',
+        borderWidth:2,
+        margin:10,
+        padding:10,
+        marginTop: 5,
+        height: '30%'
     },
  })

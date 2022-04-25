@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { View, Text, TextInput, FlatList, TouchableOpacity, StyleSheet, Keyboard } from 'react-native';
+import { View, Text, TextInput, FlatList, TouchableOpacity, StyleSheet, Keyboard, SafeAreaView } from 'react-native';
 
 import firebase from 'firebase';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
@@ -46,27 +46,33 @@ export default function Search(props) {
             onPress={()=> {Keyboard.dismiss();
             }}
         >
+        <SafeAreaView>
         <View>
+            <Text style={{marginLeft: 13, fontSize: 16, fontWeight: '200'}}>Search User</Text>
             <TextInput 
                placeholder="Type Username Here..."
                onChangeText={(search)=> fetchUsers(search)}
                style={ styles.input1 }/>
-            <FlatList
-               numColumns={1}
-               horizontal={false}
-               data={users}
-               renderItem={({item}) => (
+            <View style={{marginBottom: 10}}>
+                <FlatList
+                    numColumns={1}
+                    horizontal={false}
+                    data={users}
+                    renderItem={({item}) => (
                     <TouchableOpacity
                         onPress={() => props.navigation.navigate("Profile", {uid: item.id})}
                     >
                         <Text style={styles.text}>{item.name}</Text>
                     </TouchableOpacity>
 
-               )}
-            />
+                )}
+                />
+            </View>
 
         </View>
+        <View style={{backgroundColor: '#424949', height: 0.3, width: '100%'}}></View>
         <View>
+            <Text style={{marginLeft: 13, marginTop: 5, fontSize: 16, fontWeight: '200'}}>Search Team</Text>
             <TextInput 
                placeholder="Type Teamname Here..."
                onChangeText={(search)=> fetchTeams(search)}
@@ -86,6 +92,7 @@ export default function Search(props) {
             />
 
         </View>
+        </SafeAreaView>
         </TouchableWithoutFeedback>
     )
 }
@@ -99,7 +106,8 @@ const styles = StyleSheet.create({
         borderWidth:2,
         margin:10,
         padding:10,
-        marginTop: 50
+        fontWeight: '300'
+        // marginTop: 50
     },
     inputContainer: {
         width: '100%',
@@ -110,8 +118,9 @@ const styles = StyleSheet.create({
     },
     text: {
         marginLeft: 13,
-        fontSize: 15,
+        fontSize: 16,
         marginBottom: 3,
+        fontWeight: '300'
         // fontStyle: addEventistener,
         
     }

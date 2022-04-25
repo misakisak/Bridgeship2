@@ -7,6 +7,7 @@ require('firebase/firestore')
 import Constants from 'expo-constants';
 import { FontAwesome } from '@expo/vector-icons'; 
 import { connect } from 'react-redux';
+import { backgroundColor } from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
 
 
 function Profile(props) {
@@ -57,7 +58,7 @@ function Profile(props) {
         }
 
         if (props.route.params.uid === firebase.auth().currentUser.uid) {
-            console.log(user.uid)
+            // console.log(user.uid)
             setUser(loggedInUser.uid)
             setNowUser(loggedInUser.uid)
             firebase.firestore()
@@ -111,7 +112,7 @@ function Profile(props) {
             });
             setPosts(newAuthors);
             // console.log(snapshot.exists)
-            console.log(props.route.params.uid)
+            // console.log(props.route.params.uid)
 
             firebase.firestore()
             .collection('users')
@@ -120,7 +121,7 @@ function Profile(props) {
             .then((snapshot) => {
                 setDetails(snapshot.data())
             })  
-            console.log(details)
+            // console.log(details)
         })
         }
 
@@ -164,7 +165,7 @@ function Profile(props) {
         // console.log(like1)
         // console.log(postId)
         const x = 3
-        console.log(x+3)
+        // console.log(x+3)
 
 
 
@@ -208,21 +209,22 @@ function Profile(props) {
     
     return (
         <SafeAreaView style={[styles.container]}>
-            <View style={{backgroundColor: 'white'}}>
+            <View style={{backgroundColor: '#EAFFD0', width: '100%'}}>
 
-                <View style={{flexDirection:'row'}}>
+                <View style={{flexDirection:'row', alignItems: 'center'}}>
                     <Image
                         source={{uri: details.icon}}
-                        style={{ height: 70, width: 70, borderRadius: 100, margin: 5}}
+                        style={{ height: 60, width: 60, borderRadius: 100, margin: 5}}
                     />
 
                     <View style={{flexDirection:'column'}}>
                         <Text style={styles.text1}>{details.name}</Text>
-                        <Text>{details.email}</Text>
-                        <Text style={{flexDirection:'column'}}>{details.bio}</Text>
+                        <Text style={{color: '#424949', fontWeight: '300'}}>{details.email}</Text>
                     </View>
-
                 </View>
+                <Text style={{flexDirection:'column', marginRight: 10, marginLeft: 15, marginTop: 10, color: '#424949', fontSize: 15, fontWeight: '300'}}>
+                    {details.bio}
+                </Text>
 
                 <View style={[styles.buttonContainer, {flexDirection: 'row'}]}>
                     <TouchableOpacity
@@ -258,10 +260,11 @@ function Profile(props) {
                         onPress={() => navigation.navigate('Setting', {loggedInUser})}
                         style={styles.buttonEdit}
                     >
-                        <Text style={styles.buttonText}>edit</Text>
+                        <Text style={styles.buttonText1}>Setting</Text>
                     </TouchableOpacity>
                 }
             </View>
+            <View style={{backgroundColor: '#D8F5B4', height: 1}}></View>
 
             <ScrollView>
 
@@ -287,28 +290,30 @@ function Profile(props) {
                                 {item.caption}
                             </Text>
 
-                            <View style={{flexDirection: 'row', marginBottom: 5}}>
+                            <View style={{flexDirection: 'row', marginBottom: 5,  alignSelf: 'flex-end'}}>
                                 {/* <TouchableOpacity onPress={()=> navigation.navigate("Like", {postId: item.id})}>
                                     <MaterialCommunityIcons name="heart" color={'#FCE38A'} size={30}/>
                                 </TouchableOpacity> */}
                                 <TouchableOpacity 
                                     onPress={()=> onLikePress({postId: item.id})}
-                                    style={{margin: 5}}
+                                    style={{marginBottom: 5, marginLeft: 15,}}
                                 >
                                     <MaterialCommunityIcons name="thumb-up-outline" color={'#FCE38A'} size={30}/>
                                 </TouchableOpacity>
-                                <TouchableOpacity style={{margin: 5}}>
+                                <TouchableOpacity style={{marginBottom: 5, marginLeft: 15,}}>
                                     <FontAwesome name="handshake-o" size={25} color={'#FCE38A'} />
                                 </TouchableOpacity>
                                 <TouchableOpacity 
-                                    onPress={() => navigation.navigate("PostComment", {nowUser: nowUser, post: item.id})}
-                                    style={{margin: 5}}
+                                    onPress={() => navigation.navigate("PostComment", {nowUser: nowUser, post: item.id, caption: item.caption})}
+                                    style={{marginBottom: 5, marginLeft: 15,}}
                                 >
                                     <MaterialCommunityIcons name="chat-outline" color={'#FCE38A'} size={30}/>
                                 </TouchableOpacity>
                             </View>
-
+                            <View style={{backgroundColor: '#D8F5B4', height: 1, width: '100%'}}></View>
+                                
                         </View>
+                        
                     )}/>
                 </View>
 
@@ -321,7 +326,7 @@ function Profile(props) {
 const styles = StyleSheet.create({
     container:{
         flex: 1,
-        backgroundColor: 'white',
+        backgroundColor: '#EAFFD0',
     },
     // containerInfo: {
     //     margin: 20,
@@ -331,7 +336,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     containerImage: {
-        flex: 1/3,
+        // flex: 1/3,
         alignItems: 'center'
     },
     image: {
@@ -343,7 +348,14 @@ const styles = StyleSheet.create({
         color: 'white',
         fontWeight: '500',
         fontSize: 12,
-        alignSelf: 'center'
+        alignSelf: 'center',
+    },
+    buttonText1: {
+        color: 'white',
+        fontWeight: '500',
+        fontSize: 12,
+        alignSelf: 'center',
+        margin: 2
     },
     buttonContainer: {
         width: '30%',
@@ -355,7 +367,7 @@ const styles = StyleSheet.create({
     button: {
         // buttonAlign:'center',
         // buttonJustify:'center',
-        backgroundColor: '#F38181',
+        backgroundColor: '#95E1D3',
         width: '85%',
         padding: 8,
         borderRadius: 20,
@@ -380,12 +392,19 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
     },
     text: {
-        fontSize: 20,
-        margin: 5
+        fontSize: 15,
+        marginLeft: 15,
+        marginRight: 15,
+        marginTop: 10,
+        alignSelf: 'flex-start',
+        color: '#424949',
+        fontWeight: '300'
     },
     text1: {
         fontSize: 20,
-        margin: 3
+        margin: 3,
+        color: '#424949',
+        fontWeight: '300'
     },
     button2: {
         // buttonAlign:'center',
@@ -411,6 +430,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         backgroundColor: '#F38181',
         borderRadius: 20,
+        marginBottom: 10,
 
     }
 })

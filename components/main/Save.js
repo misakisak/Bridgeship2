@@ -90,6 +90,7 @@ export default function Post(props, {naivgation}) {
           <View style={{flex: 1}}>
                {/* <Image source={{uri: props.route.params.image}}/> */}
                <TextInput
+                    multiline
                     style={styles.input1}
                     placeholder="Write a Caption..."
                     onChangeText={(caption) => setCaption(caption)}

@@ -10,6 +10,7 @@ import { useNavigation } from '@react-navigation/native';
 export default function Teamup ({route}) {
      const [comment, setComment] = useState([])
      const resultTeam = route.params.resultTeam
+     const caption = route.params.caption
      const [ state, setState ] = useState('')
      const loggedInUser = firebase.auth().currentUser
      const userId = loggedInUser.uid
@@ -40,13 +41,13 @@ export default function Teamup ({route}) {
                     }
                newAuthors.push(author);
                setComments(newAuthors) 
-               console.log('comments')
-               console.log(comments)
+               // console.log('comments')
+               // console.log(comments)
                })
           //      // })
           })
 
-          console.log('hey')
+          // console.log('hey')
      },[])
 
 
@@ -58,14 +59,14 @@ export default function Teamup ({route}) {
           .then((snapshot) => {
                setDetails(snapshot.data())
           })
-          console.log('details')
-          console.log(details.icon)
+          // console.log('details')
+          // console.log(details.icon)
 
           setCommentsUser(details.name)
           setIcon(details.icon)
-          console.log('icon')
-          console.log(icon)
-          console.log(commentsUser)
+          // console.log('icon')
+          // console.log(icon)
+          // console.log(commentsUser)
 
           firebase.firestore()
               .collection('teams')
@@ -87,7 +88,9 @@ export default function Teamup ({route}) {
      
     return (
           <View>
+               <Text style={{margin: 13, fontSize: 15, fontWeight: '200'}}>{caption}</Text>
                <TextInput
+                    multiline
                     style={styles.input1}
                     placeholder="Write a Comment..."
                     onChangeText={(comment) => setComment(comment)}
@@ -96,7 +99,7 @@ export default function Teamup ({route}) {
                     style={styles.button}
                     onPress={() => saveComment()}
                >
-                    <Text>Comment</Text>
+                    <Text style={{color: 'white'}}>Comment</Text>
                </TouchableOpacity>
                <Text>{state}</Text>
                <ScrollView>
@@ -108,11 +111,11 @@ export default function Teamup ({route}) {
                          renderItem={({item}) => (
                          <View style={{flexDirection: 'row'}}>
                               <Image
-                                   style={{ height: 70, width: 70, borderRadius: 100}}
+                                   style={{ height: 50, width: 50, borderRadius: 100, margin: 3}}
                                    source={{uri: item.icon}}
                               />
                               <View style={{flexDirection: 'column'}}>
-                                   <Text>{item.commentsUser}</Text>
+                                   <Text style={styles.text1}>{item.commentsUser}</Text>
                                    <Text style={styles.text2}>
                                         {item.comment}
                                    </Text>
@@ -150,10 +153,10 @@ const styles = StyleSheet.create({
          borderRadius: 0,
          borderColor:'#95E1D3',
          borderWidth:2,
-         margin:10,
+         margin:15,
          padding:10,
          marginTop: 5,
-         height: '20%'
+         height: '30%'
      },
      button: {
       // buttonAlign:'center',
@@ -170,14 +173,16 @@ const styles = StyleSheet.create({
       alignSelf: 'center'
       },
       text1: {
-           fontSize: 15,
+           fontSize: 13,
            marginLeft: 7,
-           marginBottom: 4
+           marginBottom: 4,
+           fontWeight: '300'
       },
       text2: {
-           fontSize: 18,
+           fontSize: 16,
            marginLeft: 7,
-           marginBottom: 4
+           marginBottom: 4,
+           fontWeight: '300'
       },
  })
  

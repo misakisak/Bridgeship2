@@ -1,5 +1,5 @@
 import React, {useState, useEffect, Component} from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, TextInput, FlatList, ScrollView } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, TextInput, FlatList, ScrollView, Image } from 'react-native';
 import firebase from 'firebase'
 import { NavigationContainer } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
@@ -68,17 +68,26 @@ export default function Teamup ({route}) {
 
     return (
           // <ScrollView>
-          <View style={{backgroundColor: 'white', height: '100%'}}>
-               {/* <Text>{resultTeam.id}</Text> */}
-               <Text style={styles.text1}>{resultTeam.teamName}</Text>
-               {/* <Text>{resultTeam.teamPassword}</Text> */}
-               <Text></Text>
-               <TouchableOpacity
-                    onPress={() => navigation.navigate('TeamPost', {resultTeam})}
-                    style={styles.button}
-               >
-                    <Text>Post</Text>
-               </TouchableOpacity>
+          <View style={{backgroundColor: '#EAFFD0', height: '100%'}}>
+               <View style={{flexDirection: 'row'}}>
+                    <Image
+                         style={{ height: 60, width: 60, borderRadius: 100, margin: 5}}
+                         source={{uri: 'https://cdn.discordapp.com/attachments/929157237929287811/941309322242170910/IMG_0568.jpg'}}
+                    />
+                    <Text style={styles.text1}>{resultTeam.teamName}</Text>
+                    
+               </View>
+                    <Text style={{marginLeft: 15}}>adklfajkfjaj</Text>
+                    <View style={{alignSelf: 'flex-end', marginRight: 10, flexDirection: 'row'}}>
+               
+                         <TouchableOpacity
+                              onPress={() => navigation.navigate('TeamPost', {resultTeam})}
+                              style={styles.button}
+                         >
+                              <Text style={{color: 'white'}}>Post</Text>
+                         </TouchableOpacity>
+                    </View>
+               
                <ScrollView>
                <Text></Text>
                     <FlatList
@@ -91,20 +100,21 @@ export default function Teamup ({route}) {
                                    <Text style={styles.post}>
                                         {item.caption}
                                    </Text>
-                                   <View style={{ flexWrap: 'wrap', flexDirection: 'row', alignContent: 'stretch', marginLeft: 15}}>
-                                        <TouchableOpacity style={{margin: 5}}>
+                                   <View style={{ flexWrap: 'wrap', flexDirection: 'row', alignSelf: 'flex-end', marginRight: 15}}>
+                                        <TouchableOpacity style={{marginBottom: 5, marginLeft: 15,}}>
                                              <MaterialCommunityIcons name="thumb-up-outline" color={'#FCE38A'} size={25}/>
                                         </TouchableOpacity>
-                                        <TouchableOpacity style={{margin: 5}}>
+                                        <TouchableOpacity style={{marginBottom: 5, marginLeft: 15,}}>
                                              <FontAwesome name="handshake-o" size={25} color={'#FCE38A'} />
                                         </TouchableOpacity>
                                         <TouchableOpacity 
-                                             onPress={() => navigation.navigate("Comment", {resultTeam: resultTeam.id, post: item.id})}
-                                             style={{margin: 5}}
+                                             onPress={() => navigation.navigate("Comment", {resultTeam: resultTeam.id, post: item.id, caption: item.caption})}
+                                             style={{marginBottom: 5, marginLeft: 15,}}
                                         >
                                              <MaterialCommunityIcons name="chat-outline" color={'#FCE38A'} size={30}/>
                                         </TouchableOpacity>
                               </View>
+                              <View style={{backgroundColor: '#D8F5B4', height: 1, width: '100%'}}></View>
                          </View>
                        
                     )}
@@ -136,9 +146,14 @@ const styles = StyleSheet.create({
     },
     
     post: {
-         fontSize: 15,
-         marginLeft: 15
-    },
+     fontSize: 16,
+     marginLeft: 15,
+     marginRight: 15,
+     marginTop: 10,
+     alignSelf: 'flex-start',
+     color: '#424949',
+     fontWeight: '300'
+ },
     color: {
          color: '#EAFFD0'
     },
@@ -154,23 +169,20 @@ const styles = StyleSheet.create({
          height: '20%'
      },
      button: {
-      // buttonAlign:'center',
-      // buttonJustify:'center',
       backgroundColor: '#F38181',
-      width: '85%',
+      width: '45%',
       padding: 8,
       borderRadius: 20,
       alignItems: 'center',
       justifyContent: 'center',
-      marginLeft:30,
-      marginRight:30,
       marginTop:10,
       alignSelf: 'center'
-      },
+     },
       text1: {
-           fontSize: 15,
-           marginLeft: 7,
-           marginBottom: 4
+          fontSize: 20,
+          margin: 10,
+          color: '#424949',
+          fontWeight: '400'
       },
       text2: {
            fontSize: 18,

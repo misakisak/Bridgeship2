@@ -87,11 +87,12 @@ function Feed() {
 
         <View style={styles.container}>
             <TouchableOpacity 
-                style={{marginTop: 50, alignSelf: 'center'}}
+                style={{marginTop: 50, marginRight: 10, marginBottom: 10, alignSelf: 'flex-end'}}
                 onPress={()=>setState(false)}
             >
-                <MaterialCommunityIcons name="reload" color={'#F38181'} size={30}/>
+                <MaterialCommunityIcons name="reload" color={'#95E1D3'} size={30}/>
             </TouchableOpacity>
+            
             <FlatList
                 numColumns={1}
                 horizontal={false}
@@ -105,13 +106,13 @@ function Feed() {
                                 style={styles.image}
                                 source={{uri: item.icon}}
                             />
-                            <Text style={{fontSize: 19, margin: 10}}>{item.details}</Text>
+                            <Text style={{fontSize: 16, margin: 10, fontWeight: '300'}}>{item.details}</Text>
                             </View>
                             <View style={{flexDirection: 'column'}}>
-                            <Text style={{fontSize:20, marginLeft: 10, marginTop: 3}}>{item.caption}</Text>
+                            <Text style={{fontSize:16, marginLeft: 10, marginTop: 3, fontWeight: '300'}}>{item.caption}</Text>
                             </View>
                         </View>
-                        <View style={{ flexWrap: 'wrap', flexDirection: 'row', alignContent: 'stretch', marginLeft: 15}}>
+                        <View style={{ flexWrap: 'wrap', flexDirection: 'row', alignSelf: 'flex-end', marginRight: 15}}>
                             <TouchableOpacity style={{margin: 5}}>
                                 <MaterialCommunityIcons name="thumb-up-outline" color={'#FCE38A'} size={25}/>
                             </TouchableOpacity>
@@ -129,6 +130,7 @@ function Feed() {
                                 <MaterialCommunityIcons name="chat-outline" color={'#FCE38A'} size={30}/>
                             </TouchableOpacity>
                         </View>
+                        <View style={{backgroundColor: '#D8F5B4', height: 1}}></View>
                     </View>
                                
                 )}
@@ -141,7 +143,7 @@ function Feed() {
 const styles = StyleSheet.create({
     container:{
         flex: 1,
-        backgroundColor: 'white',
+        backgroundColor: '#EAFFD0',
     },
     containerInfo: {
         margin: 20,
@@ -152,12 +154,13 @@ const styles = StyleSheet.create({
     },
     containerImage: {
         flex: 1/3,
+        backgroundColor: 'white',
     },
     image: {
         // flex: 1,
         // aspectRatio: 1/1,
-        height: 50, 
-        width: 50, 
+        height: 40, 
+        width: 40, 
         borderRadius: 100,
         margin: 5
     }

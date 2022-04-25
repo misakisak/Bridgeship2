@@ -11,6 +11,7 @@ export default function PostComment ({route}) {
      const [comment, setComment] = useState("")
      const nowUser = route.params.nowUser
      const post = route.params.post
+     const caption = route.params.caption
      const [ state, setState ] = useState('')
      const loggedInUser = firebase.auth().currentUser
      const userId = loggedInUser.uid
@@ -93,23 +94,23 @@ export default function PostComment ({route}) {
     return (
           <View>
             {/* <Text>{state}</Text> */}
-               <TextInput
-                    style={styles.input1}
-                    placeholder="Write a Comment..."
-                    onChangeText={(comment) => setComment(comment)}
-               />
-               <Text></Text>
-               <Text></Text>
-               <Text></Text>
-
-               <TouchableOpacity
-                    onPress={() => saveComments()}
-                    style={styles.button}
-               >
-                    <Text>Post</Text>
-               </TouchableOpacity>
-               <Text>{state}</Text>
-
+               <View style={{height: '60%'}}>
+                    <Text style={{margin: 10, fontSize: 15, fontWeight: '200'}}>{caption}</Text>
+                    <TextInput
+                         multiline
+                         style={styles.input1}
+                         placeholder="Write a Comment..."
+                         onChangeText={(comment) => setComment(comment)}
+                    />
+            
+                    <TouchableOpacity
+                         onPress={() => saveComments()}
+                         style={styles.button}
+                    >
+                         <Text style={{color: 'white'}}>Post</Text>
+                    </TouchableOpacity>
+                    <Text>{state}</Text>
+               </View>
                <ScrollView>
                     <FlatList
                          numColumns={1}
@@ -162,7 +163,7 @@ const styles = StyleSheet.create({
         margin:10,
         padding:10,
         marginTop: 5,
-        height: '20%'
+        height: '40%'
     },
     button: {
      // buttonAlign:'center',
