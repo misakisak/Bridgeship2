@@ -81,8 +81,8 @@ function Profile(props) {
                 .then((snapshot) => {
                     setDetails(snapshot.data())
                 })
-                console.log('details')
-                console.log(details)
+                // console.log('details')
+                // console.log(details)
         } else {
             setState(true)
             setNowUser(props.route.params.uid)
@@ -115,8 +115,8 @@ function Profile(props) {
                         .then((snapshot) => {
                             setDetails(snapshot.data())
                         })  
-                        console.log('details')
-                        console.log(details)
+                        // console.log('details')
+                        // console.log(details)
                 })
                 if (followed.indexOf(props.route.params.uid) > -1 ) {
                     setFollowing(true);

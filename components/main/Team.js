@@ -33,6 +33,9 @@ export default function Teamup ({route}) {
                     newAuthors.push(author);
                })
                setPost(newAuthors) 
+               post.sort(function(x,y) {
+                    return x.creation -y.creation;
+                })
           })
 
 
@@ -77,7 +80,7 @@ export default function Teamup ({route}) {
                     <Text style={styles.text1}>{resultTeam.teamName}</Text>
                     
                </View>
-                    <Text style={{marginLeft: 15}}>adklfajkfjaj</Text>
+                    <Text style={{marginLeft: 15}}>We are team Bridgeship all consts in Japanese teenagers living in Japan, USA, and Canada.</Text>
                     <View style={{alignSelf: 'flex-end', marginRight: 10, flexDirection: 'row'}}>
                
                          <TouchableOpacity

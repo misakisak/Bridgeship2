@@ -18,6 +18,8 @@ export default function Teamup ({route}) {
      const [details, setDetails] =useState([])
      const [commentsUser, setCommentsUser] = useState([])
 
+     
+
      useEffect(async() => {
           firebase.firestore()
           .collection('teams')
@@ -39,18 +41,25 @@ export default function Teamup ({route}) {
                // console.log(comments)
                })
           })
-     },[])
-     const saveComment = () => {
           firebase.firestore()
                .collection('users')
                .doc(loggedInUser.uid)
                .get()
                .then((snapshot) => {
                     setDetails(snapshot.data())
+                    console.log(snapshot.data())
                })
-               // console.log(details.icon)
+               console.log('details')
+               
                setCommentsUser(details.name)
                setIcon(details.icon)
+               console.log(icon)
+          
+      
+     },[])
+     const saveComment = async() => {await
+          
+          
                // console.log(icon)
                // console.log(commentsUser)
           firebase.firestore()
@@ -66,8 +75,10 @@ export default function Teamup ({route}) {
                   comment,
                   creation: firebase.firestore.FieldValue.serverTimestamp()
               })
-              setState('Success!!')          
+              setState('Success!!')      
+              console.log('pressed')    
      }
+     // console.log(comments.icon)
      
     return (
           <View>

@@ -33,9 +33,10 @@ export default function Teamup ({route}) {
         <View>
             <Text>{state}</Text>
             <TextInput
-               style={styles.input1}
-               placeholder="Write a Caption..."
-               onChangeText={(caption) => setCaption(caption)}
+                multiline
+                style={styles.input1}
+                placeholder="Write a Caption..."
+                onChangeText={(caption) => setCaption(caption)}
             />
             <Text></Text>
             <Text></Text>

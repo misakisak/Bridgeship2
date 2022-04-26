@@ -34,7 +34,7 @@ export default function Teamup ({route}) {
           })
 
 
-          // console.log(post)
+          console.log(post)
           // console.log('--------------')
           // console.log(post[0])
      }, [])
@@ -55,7 +55,7 @@ export default function Teamup ({route}) {
      // console.log(post)
 
     return (
-          <ScrollView style={{backgroundColor: 'white'}}>
+          <View style={{backgroundColor: 'white'}}>
           <View style={{backgroundColor: '#EAFFD0', height: '100%'}}>
                <View style={{flexDirection: 'row'}}>
                     <Image
@@ -64,7 +64,7 @@ export default function Teamup ({route}) {
                     />
                     <Text style={styles.text1}>{resultTeam.teamName}</Text>
                </View>
-               <Text style={{marginLeft: 15, marginBottom: 10, fontWeight: '300'}}>adklfajkfjaj</Text>
+               <Text style={{marginLeft: 15, marginBottom: 10, fontWeight: '300'}}>We are team Bridgeship all consts in Japanese teenagers living in Japan, USA, and Canada.</Text>
                {/* <Text style={styles.text}>{resultTeam.teamName}</Text>              */}
                     <FlatList
                          numColumns={1}
@@ -99,7 +99,7 @@ export default function Teamup ({route}) {
                     )}
                />
           </View>
-          </ScrollView>
+          </View>
      )
 }
 
@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     containerImage: {
-        height: '100%',
+     //    height: '100%',
         backgroundColor: 'white',
     },
     image: {

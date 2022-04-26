@@ -22,13 +22,22 @@ const store = createStore(rootReducer, applyMiddleware(thunk))
 //   measurementId: "G-K1VFXSMWDG"
 // };
 
+// const firebaseConfig = {
+//   apiKey: "AIzaSyDLl9Ee2hrtqWWmpr-0OgEuZtZ5dijx8X4",
+//   authDomain: "bridgeship2.firebaseapp.com",
+//   projectId: "bridgeship2",
+//   storageBucket: "bridgeship2.appspot.com",
+//   messagingSenderId: "768368078030",
+//   appId: "1:768368078030:web:5b111b501f4503f8eb349f"
+// };
+
 const firebaseConfig = {
-  apiKey: "AIzaSyDLl9Ee2hrtqWWmpr-0OgEuZtZ5dijx8X4",
-  authDomain: "bridgeship2.firebaseapp.com",
-  projectId: "bridgeship2",
-  storageBucket: "bridgeship2.appspot.com",
-  messagingSenderId: "768368078030",
-  appId: "1:768368078030:web:5b111b501f4503f8eb349f"
+  apiKey: "AIzaSyDk9JZPBbcwXMAIb6wzbUS67xX93Di-GRY",
+  authDomain: "bridgeship-a9ee6.firebaseapp.com",
+  projectId: "bridgeship-a9ee6",
+  storageBucket: "bridgeship-a9ee6.appspot.com",
+  messagingSenderId: "61536606553",
+  appId: "1:61536606553:web:8ae4e2b6bdbea8b0151448"
 };
 
 if(firebase.apps.length === 0){

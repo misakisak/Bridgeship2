@@ -56,8 +56,8 @@ function Feed() {
                         return x.creation -y.creation;
                     })
                     // setAuthors(posts)
-                    console.log('p--------------------')
-                    console.log(posts)
+                    // console.log('p--------------------')
+                    // console.log(posts)
                     // setAuthors(newAuthors)
                     // authors=[...authors, ...newAuthors]
                     // [...theArray, `Entry ${theArray.length}`]
