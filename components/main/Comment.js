@@ -1,11 +1,8 @@
-import React, {useState, useEffect, Component} from 'react';
+import React, {useState, useEffect} from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, TextInput, FlatList, ScrollView, Image } from 'react-native';
 import firebase from 'firebase'
-import { NavigationContainer } from '@react-navigation/native';
 require('firebase/firestore')
 import { useNavigation } from '@react-navigation/native';
-
-
 
 export default function Teamup ({route}) {
      const [comment, setComment] = useState([])
@@ -15,14 +12,11 @@ export default function Teamup ({route}) {
      const loggedInUser = firebase.auth().currentUser
      const userId = loggedInUser.uid
      const [comments, setComments] =useState([])
-     // console.log(teamUser.id)
      const navigation = useNavigation()
      const post = route.params.post
      const [icon, setIcon] = useState([])
      const [details, setDetails] =useState([])
      const [commentsUser, setCommentsUser] = useState([])
-     // console.log(resultTeam.id)
-     // console.log(post)
 
      useEffect(async() => {
           firebase.firestore()
@@ -44,30 +38,21 @@ export default function Teamup ({route}) {
                // console.log('comments')
                // console.log(comments)
                })
-          //      // })
           })
-
-          // console.log('hey')
      },[])
-
-
      const saveComment = () => {
           firebase.firestore()
-          .collection('users')
-          .doc(loggedInUser.uid)
-          .get()
-          .then((snapshot) => {
-               setDetails(snapshot.data())
-          })
-          // console.log('details')
-          // console.log(details.icon)
-
-          setCommentsUser(details.name)
-          setIcon(details.icon)
-          // console.log('icon')
-          // console.log(icon)
-          // console.log(commentsUser)
-
+               .collection('users')
+               .doc(loggedInUser.uid)
+               .get()
+               .then((snapshot) => {
+                    setDetails(snapshot.data())
+               })
+               // console.log(details.icon)
+               setCommentsUser(details.name)
+               setIcon(details.icon)
+               // console.log(icon)
+               // console.log(commentsUser)
           firebase.firestore()
               .collection('teams')
               .doc(resultTeam)
@@ -81,9 +66,7 @@ export default function Teamup ({route}) {
                   comment,
                   creation: firebase.firestore.FieldValue.serverTimestamp()
               })
-              setState('Success!!')
-          //     console.log(post)
-          
+              setState('Success!!')          
      }
      
     return (
@@ -123,7 +106,6 @@ export default function Teamup ({route}) {
                          </View>
                     )}/>
                </ScrollView>
-
         </View>
     )
 }
@@ -159,30 +141,27 @@ const styles = StyleSheet.create({
          height: '30%'
      },
      button: {
-      // buttonAlign:'center',
-      // buttonJustify:'center',
-      backgroundColor: '#F38181',
-      width: '85%',
-      padding: 8,
-      borderRadius: 20,
-      alignItems: 'center',
-      justifyContent: 'center',
-      marginLeft:30,
-      marginRight:30,
-      marginTop:10,
-      alignSelf: 'center'
-      },
-      text1: {
-           fontSize: 13,
-           marginLeft: 7,
-           marginBottom: 4,
-           fontWeight: '300'
-      },
-      text2: {
-           fontSize: 16,
-           marginLeft: 7,
-           marginBottom: 4,
-           fontWeight: '300'
-      },
- })
- 
+          backgroundColor: '#F38181',
+          width: '85%',
+          padding: 8,
+          borderRadius: 20,
+          alignItems: 'center',
+          justifyContent: 'center',
+          marginLeft:30,
+          marginRight:30,
+          marginTop:10,
+          alignSelf: 'center'
+     },
+     text1: {
+          fontSize: 13,
+          marginLeft: 7,
+          marginBottom: 4,
+          fontWeight: '300'
+     },
+     text2: {
+          fontSize: 16,
+          marginLeft: 7,
+          marginBottom: 4,
+          fontWeight: '300'
+     },
+})

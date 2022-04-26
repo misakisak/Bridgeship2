@@ -1,7 +1,5 @@
 import React, { Component, useCallback } from 'react';
-import { View, Button, TextInput, StyleSheet, Image, SafeAreaView, Text, TouchableOpacity, Linking, Alert } from 'react-native';
-import { Constants } from 'expo-constants';
-
+import { View, TextInput, StyleSheet, Image, SafeAreaView, Text, TouchableOpacity, Linking, Alert } from 'react-native';
 import firebase from 'firebase';
 
 const OpenURLButton = ({ url, children, style, style2, style3, style4}) => {
@@ -19,6 +17,20 @@ const OpenURLButton = ({ url, children, style, style2, style3, style4}) => {
         </View>;
 };
 
+const createTwoButtonAlert2 = () =>
+        Alert.alert(
+        "Wrong Password",
+        "",
+            [
+                {
+                    text: "Cancel",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                },
+                { text: "OK", onPress: () => console.log("OK Pressed") }
+            ]
+        );
+
 export class Login extends Component {
 
     constructor(props){
@@ -28,7 +40,6 @@ export class Login extends Component {
             email: '',
             password: '',
         }
-
         this.onSignUp = this.onSignUp.bind(this)
     }
 
@@ -40,16 +51,15 @@ export class Login extends Component {
             })
             .catch((error) => {
                 console.log(error)
+                createTwoButtonAlert2()
             })
     }
-
 
     render () {
         return (
             <SafeAreaView style={{ backgroundColor: 'white' }}> 
                 <View style={styles.color}>
                     <Text style={[ styles.paragraph2, { flexDirection: "column" }]}> Bridgeship </Text>
-
                     <View 
                         style={ styles.container }
                         onPress={this.OpenWEB}
@@ -61,9 +71,7 @@ export class Login extends Component {
                             />
                         </TouchableOpacity>
                     </View>
-
                     <Text style={[ styles.paragraph1,{ flexDirection:"column" }]}>Let's start your journey to change the world with us!</Text>
-
                     <View style={[ styles.inputContainer, { flexDirection: "column" }]}>
                         <TextInput
                             placeholder="email"
@@ -71,7 +79,6 @@ export class Login extends Component {
                             style={ styles.input1 }
                             clearButtonMode="always"
                         />
-
                         <TextInput
                             placeholder="password"
                             secureTextEntry={true}
@@ -80,7 +87,6 @@ export class Login extends Component {
                             clearButtonMode="always"
                         />
                     </View>
-
                     <View styles={[ styles.buttonContainer, { flexDirection: "column" }]}>
                         <TouchableOpacity
                             style={ styles.button }
@@ -88,39 +94,32 @@ export class Login extends Component {
                         >
                             <Text style={ styles.buttonText }>Login</Text>
                         </TouchableOpacity>
-
                         <TouchableOpacity
                             onPress={()=> this.props.navigation.navigate('Register')}
                             style={[ styles.button2, styles.buttonOutline ]}
                         >
                             <Text style={ styles.buttonOutlineText }>Register</Text>
                         </TouchableOpacity>
-
                     </View>
-
                     <View styles={[ styles.buttonContainer]}>
-
                         <OpenURLButton url={'https://thirtytg88.wixsite.com/bridgeship'} style={styles.buttonOutline3} style2={styles.button3} style3={styles.buttonText3} style4={styles.button33} > 
                             Official Web Site
                         </OpenURLButton>
                         <OpenURLButton url={'https://twitter.com/TgThirty'} style={styles.buttonOutline3} style2={styles.button3} style3={styles.buttonText3} > 
                             Twitter: @TgThirty
                         </OpenURLButton>
-
                     </View>
                 </View>
             </SafeAreaView> 
         )
     }
 }
-
 export default Login
 
 const styles = StyleSheet.create({
     container: {
         alignItems: 'center',
         justifyContent: 'center',
-        // paddingTop: Constants.statusBarHeight,
         backgroundColor: 'white',
         padding:10,
         marginTop:5,
@@ -155,8 +154,6 @@ const styles = StyleSheet.create({
         marginTop: 10,
     },
     button: {
-        // buttonAlign:'center',
-        // buttonJustify:'center',
         backgroundColor: '#F38181',
         width: '85%',
         padding: 15,
@@ -167,8 +164,6 @@ const styles = StyleSheet.create({
         marginTop:1,
     },
     button2: {
-        // buttonAlign:'center',
-        // buttonJustify:'center',
         backgroundColor: 'white',
         width: '85%',
         padding: 15,
@@ -227,9 +222,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         margin:5,
         borderRadius:40,
-        // marginLeft: 40,
-        // marginRight: 40,
-        // marginTop: 10,
         alignSelf: 'center',
     },
     buttonOutline3:{

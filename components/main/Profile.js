@@ -29,27 +29,25 @@ function Profile(props) {
     const [ nowUser, setNowUser ] = useState('')
     const [ state, setState ] = useState(true)
 
-
     useEffect(()=> {
         const { currentUser, posts } = props;
-
         setUser(loggedInUser)
         firebase.firestore()
-        .collection('following')
-        .doc(loggedInUser.uid)
-        .collection('userFollowing')
-        .get()
-        .then(snapshot => {
-            const followingIds = [];
-            snapshot.forEach(querySnapshot => {
-                const followings = {
-                    ...querySnapshot.data(),
-                    id: querySnapshot.id
-                }
-                followingIds.push(followings);
-            });
-            setFollowed(followingIds);
-        })
+            .collection('following')
+            .doc(loggedInUser.uid)
+            .collection('userFollowing')
+            .get()
+            .then(snapshot => {
+                const followingIds = [];
+                snapshot.forEach(querySnapshot => {
+                    const followings = {
+                        ...querySnapshot.data(),
+                        id: querySnapshot.id
+                    }
+                    followingIds.push(followings);
+                });
+                setFollowed(followingIds);
+            })
 
         if (followed.indexOf(props.route.params.uid) > -1 ) {
             setFollowing(true);
@@ -58,34 +56,33 @@ function Profile(props) {
         }
 
         if (props.route.params.uid === firebase.auth().currentUser.uid) {
-            // console.log(user.uid)
             setUser(loggedInUser.uid)
             setNowUser(loggedInUser.uid)
             firebase.firestore()
-            .collection('posts')
-            .doc(loggedInUser.uid)
-            .collection('userPosts')
-            .get()
-            .then((snapshot) => {
-                const newAuthors = [];
-                snapshot.forEach(querySnapshot => {
-                    const author = {
-                        ...querySnapshot.data(),
-                        id: querySnapshot.id
-                    }
-                newAuthors.push(author);
-            });
-            setPosts(newAuthors);
-            })
-
+                .collection('posts')
+                .doc(loggedInUser.uid)
+                .collection('userPosts')
+                .get()
+                .then((snapshot) => {
+                    const newAuthors = [];
+                    snapshot.forEach(querySnapshot => {
+                        const author = {
+                            ...querySnapshot.data(),
+                            id: querySnapshot.id
+                        }
+                        newAuthors.push(author);
+                    });
+                    setPosts(newAuthors);
+                })
             firebase.firestore()
-            .collection('users')
-            .doc(loggedInUser.uid)
-            .get()
-            .then((snapshot) => {
-                setDetails(snapshot.data())
-            })            
-    
+                .collection('users')
+                .doc(loggedInUser.uid)
+                .get()
+                .then((snapshot) => {
+                    setDetails(snapshot.data())
+                })
+                console.log('details')
+                console.log(details)
         } else {
             setState(true)
             setNowUser(props.route.params.uid)
@@ -97,58 +94,63 @@ function Profile(props) {
                     setUser(snapshot.data())
                 })
             firebase.firestore()
-            .collection('posts')
-            .doc(props.route.params.uid)
-            .collection('userPosts')
-            .get()
-            .then((snapshot) => {
-                const newAuthors = [];
-                snapshot.forEach(querySnapshot => {
-                    const author = {
-                        ...querySnapshot.data(),
-                        id: querySnapshot.id
-                    }
-                newAuthors.push(author);
-            });
-            setPosts(newAuthors);
-            // console.log(snapshot.exists)
-            // console.log(props.route.params.uid)
-
-            firebase.firestore()
-            .collection('users')
-            .doc(nowUser)
-            .get()
-            .then((snapshot) => {
-                setDetails(snapshot.data())
-            })  
-            // console.log(details)
-        })
+                .collection('posts')
+                .doc(props.route.params.uid)
+                .collection('userPosts')
+                .get()
+                .then((snapshot) => {
+                    const newAuthors = [];
+                    snapshot.forEach(querySnapshot => {
+                        const author = {
+                            ...querySnapshot.data(),
+                            id: querySnapshot.id
+                        }
+                        newAuthors.push(author);
+                    });
+                    setPosts(newAuthors);
+                    firebase.firestore()
+                        .collection('users')
+                        .doc(nowUser)
+                        .get()
+                        .then((snapshot) => {
+                            setDetails(snapshot.data())
+                        })  
+                        console.log('details')
+                        console.log(details)
+                })
+                if (followed.indexOf(props.route.params.uid) > -1 ) {
+                    setFollowing(true);
+                } else {
+                    setFollowing(false);
+                }
+            // firebase.firestore()
+            //     .collection('following')
+            //     .doc()
         }
-
-    }, [props.route.params.uid, props.following, nowUser, state])
+    }, [props.route.params.uid, props.following, nowUser, ])
 
     const onFollow = () => {
         firebase.firestore()
-        .collection("following")
-        .doc(firebase.auth().currentUser.uid)
-        .collection("userFollowing")
-        .doc(props.route.params.uid)
-        .set({})
-        .then(() => {
-            setFollowing(true)
-        })
+            .collection("following")
+            .doc(firebase.auth().currentUser.uid)
+            .collection("userFollowing")
+            .doc(props.route.params.uid)
+            .set({})
+            .then(() => {
+                setFollowing(true)
+            })
     }
 
     const onUnfollow = () => {
         firebase.firestore()
-        .collection("following")
-        .doc(firebase.auth().currentUser.uid)
-        .collection("userFollowing")
-        .doc(props.route.params.uid)
-        .delete()
-        .then(() => {
-            setFollowing(false)
-        })
+            .collection("following")
+            .doc(firebase.auth().currentUser.uid)
+            .collection("userFollowing")
+            .doc(props.route.params.uid)
+            .delete()
+            .then(() => {
+                setFollowing(false)
+            })
     }
 
     const onLikePress = async(postId) => {
@@ -210,13 +212,11 @@ function Profile(props) {
     return (
         <SafeAreaView style={[styles.container]}>
             <View style={{backgroundColor: '#EAFFD0', width: '100%'}}>
-
                 <View style={{flexDirection:'row', alignItems: 'center'}}>
                     <Image
                         source={{uri: details.icon}}
                         style={{ height: 60, width: 60, borderRadius: 100, margin: 5}}
                     />
-
                     <View style={{flexDirection:'column'}}>
                         <Text style={styles.text1}>{details.name}</Text>
                         <Text style={{color: '#424949', fontWeight: '300'}}>{details.email}</Text>
@@ -225,7 +225,6 @@ function Profile(props) {
                 <Text style={{flexDirection:'column', marginRight: 10, marginLeft: 15, marginTop: 10, color: '#424949', fontSize: 15, fontWeight: '300'}}>
                     {details.bio}
                 </Text>
-
                 <View style={[styles.buttonContainer, {flexDirection: 'row'}]}>
                     <TouchableOpacity
                         onPress={() => navigation.navigate('Following', {nowUser})}
@@ -240,7 +239,6 @@ function Profile(props) {
                         <Text style={styles.buttonText}>Follower</Text>
                     </TouchableOpacity>
                 </View>
-
                 {props.route.params.uid !== firebase.auth().currentUser.uid ? (
                     <View>
                         {following ? (
@@ -267,7 +265,6 @@ function Profile(props) {
             <View style={{backgroundColor: '#D8F5B4', height: 1}}></View>
 
             <ScrollView>
-
                 <View style={{backgroundColor: 'white'}} >
                     {/* <TouchableOpacity 
                         style={{marginTop: 50, alignSelf: 'center'}}
@@ -282,14 +279,9 @@ function Profile(props) {
                         keyExtractor={post => post.id}
                         renderItem={({item}) => (
                         <View style={styles.containerImage}>
-                            {/* <Image
-                               style={styles.image}
-                               source={{uri: item.downloadURL}}
-                            /> */}
                             <Text style={styles.text}>
                                 {item.caption}
                             </Text>
-
                             <View style={{flexDirection: 'row', marginBottom: 5,  alignSelf: 'flex-end'}}>
                                 {/* <TouchableOpacity onPress={()=> navigation.navigate("Like", {postId: item.id})}>
                                     <MaterialCommunityIcons name="heart" color={'#FCE38A'} size={30}/>
@@ -311,32 +303,23 @@ function Profile(props) {
                                 </TouchableOpacity>
                             </View>
                             <View style={{backgroundColor: '#D8F5B4', height: 1, width: '100%'}}></View>
-                                
                         </View>
-                        
                     )}/>
                 </View>
-
             </ScrollView>
         </SafeAreaView>
     )
 }
-
 
 const styles = StyleSheet.create({
     container:{
         flex: 1,
         backgroundColor: '#EAFFD0',
     },
-    // containerInfo: {
-    //     margin: 20,
-
-    // },
     containerGallery: {
         flex: 1,
     },
     containerImage: {
-        // flex: 1/3,
         alignItems: 'center'
     },
     image: {
@@ -365,8 +348,6 @@ const styles = StyleSheet.create({
         margin: 3
     },
     button: {
-        // buttonAlign:'center',
-        // buttonJustify:'center',
         backgroundColor: '#95E1D3',
         width: '85%',
         padding: 8,
@@ -386,9 +367,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         margin:5,
         borderRadius:40,
-        // marginLeft: 40,
-        // marginRight: 40,
-        // marginTop: 10,
         alignSelf: 'center',
     },
     text: {
@@ -407,16 +385,11 @@ const styles = StyleSheet.create({
         fontWeight: '300'
     },
     button2: {
-        // buttonAlign:'center',
-        // buttonJustify:'center',
         backgroundColor: 'white',
         width: '30%',
         padding: 10,
         borderRadius: 0,
         alignItems: 'center',
-        // marginLeft:30,
-        // marginRight:30,
-        // marginTop:20,
         alignSelf: 'center'
     },
     buttonOutline: {

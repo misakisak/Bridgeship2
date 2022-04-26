@@ -1,35 +1,27 @@
 import React, {useState, useEffect} from 'react';
-import { StyleSheet, View, Text, Image, FlatList, Button, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, Image, FlatList, TouchableOpacity } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { FontAwesome } from '@expo/vector-icons'; 
 import firebase from 'firebase';
 require('firebase/firestore')
 import { useNavigation } from '@react-navigation/native';
-
-
 import { connect } from 'react-redux';
-
 
 function Feed() {
     const loggedInUser = firebase.auth().currentUser
-    const [ posts, setPosts ] = useState([])
-    // const [ user, setUser ] = useState({name: "", email: ""})
-    const [ following, setFollowing ] = useState([])
-    // const [ posts1, setPosts1] = useState([])
     const [authors, setAuthors] = useState([]);
     const navigation = useNavigation()
     const [state, setState] = useState(true)
 
 
-    useEffect(async()=> {
-        // const user = loggedInUser;
 
+    useEffect(async()=> {
         const followingResult = await
             firebase.firestore()
-            .collection('following')
-            .doc(loggedInUser.uid)
-            .collection('userFollowing')
-            .get();
+                .collection('following')
+                .doc(loggedInUser.uid)
+                .collection('userFollowing')
+                .get();
         
         const followingIds= [];
         followingResult.forEach (following => {
@@ -40,9 +32,9 @@ function Feed() {
 
         // const newFollowing = []
         // for await (const followingId of followingIds) {
-            let posts = []
-            for (let i = 0 ; i < followingIds.length; i++) { await
-                firebase.firestore()
+        let posts = []
+        for (let i = 0 ; i < followingIds.length; i++) { await
+            firebase.firestore()
                 .collection("posts")
                 .doc(followingIds[i])
                 .collection('userPosts')
@@ -54,41 +46,37 @@ function Feed() {
                                 ...querySnapshot.data(),
                                 id: querySnapshot.id
                             }
-                        newAuthors.push(author);
-                        posts=[...posts, ...newAuthors]
+                            newAuthors.push(author);
                         // console.log('-------------1')
                         // console.log(posts)
                         // console.log('-------------2')
-
-                    })
+                        })
+                    posts=[...posts, ...newAuthors]
                     posts.sort(function(x,y) {
                         return x.creation -y.creation;
                     })
                     // setAuthors(posts)
-                    // console.log('posts')
-                    // console.log(posts)
+                    console.log('p--------------------')
+                    console.log(posts)
                     // setAuthors(newAuthors)
                     // authors=[...authors, ...newAuthors]
                     // [...theArray, `Entry ${theArray.length}`]
                 })
                 
-            }
-            setAuthors(posts)
-            
+        }
+        setAuthors(posts)
         setState(true)
-
-    }, [loggedInUser])
+    }, [loggedInUser, state])
 
     if (authors === null) {
         return <View/>
     }
     
     return (
-
         <View style={styles.container}>
             <TouchableOpacity 
                 style={{marginTop: 50, marginRight: 10, marginBottom: 10, alignSelf: 'flex-end'}}
-                onPress={()=>setState(false)}
+                onPress={()=> setState(false)}
             >
                 <MaterialCommunityIcons name="reload" color={'#95E1D3'} size={30}/>
             </TouchableOpacity>
@@ -102,14 +90,14 @@ function Feed() {
                     <View style={styles.containerImage}>
                         <View style={{flexDirection: 'column', marginLeft: 15}} >
                             <View style={{flexDirection: 'row'}}>
-                            <Image
-                                style={styles.image}
-                                source={{uri: item.icon}}
-                            />
-                            <Text style={{fontSize: 16, margin: 10, fontWeight: '300'}}>{item.details}</Text>
+                                <Image
+                                    style={styles.image}
+                                    source={{uri: item.icon}}
+                                />
+                                <Text style={{fontSize: 16, margin: 10, fontWeight: '300'}}>{item.details}</Text>
                             </View>
                             <View style={{flexDirection: 'column'}}>
-                            <Text style={{fontSize:16, marginLeft: 10, marginTop: 3, fontWeight: '300'}}>{item.caption}</Text>
+                                <Text style={{fontSize:16, marginLeft: 10, marginTop: 3, fontWeight: '300'}}>{item.caption}</Text>
                             </View>
                         </View>
                         <View style={{ flexWrap: 'wrap', flexDirection: 'row', alignSelf: 'flex-end', marginRight: 15}}>
@@ -119,10 +107,6 @@ function Feed() {
                             <TouchableOpacity style={{margin: 5}}>
                                 <FontAwesome name="handshake-o" size={25} color={'#FCE38A'} />
                             </TouchableOpacity>
-                            {/* <TouchableOpacity>
-                                <Text>Like</Text>
-                                <FontAwsome5 name="thumbs-up" size={24} color={'#FCE38A'} />
-                            </TouchableOpacity> */}
                             <TouchableOpacity 
                                 onPress={() => navigation.navigate("FeedComment", {nowUser: item.user, userIcon: item.icon, post: item.id})}
                                 style={{margin: 5}}
@@ -131,14 +115,11 @@ function Feed() {
                             </TouchableOpacity>
                         </View>
                         <View style={{backgroundColor: '#D8F5B4', height: 1}}></View>
-                    </View>
-                               
-                )}
-            />
+                    </View>     
+            )}/>
         </View>
     )   
 }
-
 
 const styles = StyleSheet.create({
     container:{
@@ -147,7 +128,6 @@ const styles = StyleSheet.create({
     },
     containerInfo: {
         margin: 20,
-
     },
     containerGallery: {
         flex: 1,

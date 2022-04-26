@@ -1,7 +1,8 @@
 import React, { Component, useCallback } from 'react';
-import { View, Button, TextInput, SafeAreaView, Text, Image, StyleSheet, TouchableOpacity, Alert, Linking } from 'react-native';
-
+import { View, TextInput, SafeAreaView, Text, Image, StyleSheet, TouchableOpacity, Alert, Linking, ScrollView, Keyboard } from 'react-native';
 import firebase from 'firebase';
+import { useNavigation } from '@react-navigation/native';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 const OpenURLButton = ({ url, children, style, style2, style3, style4}) => {
     const handlePress = useCallback(async () => {
@@ -12,7 +13,6 @@ const OpenURLButton = ({ url, children, style, style2, style3, style4}) => {
             Alert.alert(`Don't know how to open this URL: ${url}`);
         }
         }, [url]);
-
     return <View style={style4}>
          <TouchableOpacity onPress={handlePress} style={[style, style2]} ><Text style={style3}>{children}</Text></TouchableOpacity>
         </View>;
@@ -21,19 +21,17 @@ const OpenURLButton = ({ url, children, style, style2, style3, style4}) => {
 export class Register extends Component {
     constructor(props){
         super(props);
-
         this.state = {
             email: '',
             password: '',
             name: '',
-            bio: ''
+            bio: '',
+            icon: 'https://firebasestorage.googleapis.com/v0/b/bridgeship2.appspot.com/o/noun-user-default-4154905.svg?alt=media&token=c7141944-6e88-4133-98bc-f749408765da'
         }
-
         this.onSignUp = this.onSignUp.bind(this)
     }
-
     onSignUp() {
-        const { email, password, name, bio } = this.state;
+        const { email, password, name, bio, icon } = this.state;
         firebase.auth().createUserWithEmailAndPassword(email, password)
           .then((result) => {
               firebase.firestore().collection("users")
@@ -42,44 +40,42 @@ export class Register extends Component {
                       name,
                       email,
                       bio,
+                      icon
                   })
-            //   console.log(result)
           })
           .catch((error) => {
              console.log(error)
           })
     }
-
+    
     render () {
         return (
             <SafeAreaView style={{backgroundColor: 'white'}}>
                 <View style={styles.color}>
+                    <TouchableWithoutFeedback onPress={()=> {Keyboard.dismiss();}}>
                     <Text style={[styles.paragraph2, {flexDirection: "column"}]}>Bridgeship</Text>
-
                     <View style={styles.container}>
-                    <Image
-                        source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/instagram-dev-5878d.appspot.com/o/Ellipse%203.png?alt=media&token=fd22f7f9-09e4-4d11-86b7-15043784c2d6' }}
-                        style={{ height: 110, width: 110, borderRadius: 100 }}
-                    />
+                        <Image
+                            source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/instagram-dev-5878d.appspot.com/o/Ellipse%203.png?alt=media&token=fd22f7f9-09e4-4d11-86b7-15043784c2d6' }}
+                            style={{ height: 110, width: 110, borderRadius: 100 }}
+                        />
                     </View>
-
                     <Text style={[styles.paragraph1, {flexDirection: "column"}]}>Let's start your journey to change the world with us!</Text>
-            
+                    </TouchableWithoutFeedback>
                     <View style={[styles.inputContainer, {flexDirection: "column"}]}>
+                    <ScrollView>
                         <TextInput
                             placeholder="name"
                             onChangeText={(name) => this.setState({ name })}
                             style={styles.input1}
                             clearButtonMode="always"
                         />
-
                         <TextInput
                             placeholder="email"
                             onChangeText={(email) => this.setState({ email })}
                             style={styles.input1}
                             clearButtonMode="always"
                         />
-
                         <TextInput
                             placeholder="password"
                             secureTextEntry={true}
@@ -87,15 +83,16 @@ export class Register extends Component {
                             style={styles.input1}
                             clearButtonMode="always"
                         />
-                        
                         <TextInput
+                            multiline
                             placeholder="Bio"
                             onChangeText={(bio) => this.setState({ bio })}
-                            style={styles.input1}
+                            style={styles.input2}
                             clearButtonMode="always"
                         />
+                         </ScrollView>
                     </View>
-
+                  
                     <View styles={[styles.buttonContainer, {flexDirection: "column"}]}>
                         <TouchableOpacity
                             onPress={() => this.onSignUp()}
@@ -103,7 +100,6 @@ export class Register extends Component {
                         >
                             <Text style={styles.buttonText}>Register</Text>
                         </TouchableOpacity>  
-
                         <TouchableOpacity
                             onPress={() => this.props.navigation.navigate('Login')}
                             style={[styles.button2, styles.buttonOutline]}
@@ -111,18 +107,15 @@ export class Register extends Component {
                             <Text style={styles.buttonOutlineText}>Login</Text>
                         </TouchableOpacity>  
                     </View>
-
                     <View styles={[ styles.buttonContainer]}>
-
                         <OpenURLButton url={'https://thirtytg88.wixsite.com/bridgeship'} style={styles.buttonOutline3} style2={styles.button3} style3={styles.buttonText3} style4={styles.button33} > 
                             Official Web Site
                         </OpenURLButton>
                         <OpenURLButton url={'https://twitter.com/TgThirty'} style={styles.buttonOutline3} style2={styles.button3} style3={styles.buttonText3} > 
                             Twitter: @TgThirty
                         </OpenURLButton>
-
                     </View>
-
+                     
                 </View>
             </SafeAreaView> 
         )
@@ -135,7 +128,6 @@ const styles = StyleSheet.create({
     container: {
         alignItems: 'center',
         justifyContent: 'center',
-        // paddingTop: Constants.statusBarHeight,
         backgroundColor: 'white',
         padding:10,
         marginTop:5,
@@ -161,6 +153,7 @@ const styles = StyleSheet.create({
         borderWidth:2,
         margin:10,
         padding:10,
+        height: '30%'
     },
     buttonContainer: {
         width: '60%',
@@ -169,8 +162,6 @@ const styles = StyleSheet.create({
         marginTop: 15,
     },
     button: {
-        // buttonAlign:'center',
-        // buttonJustify:'center',
         backgroundColor: '#F38181',
         width: '85%',
         padding: 15,
@@ -181,8 +172,6 @@ const styles = StyleSheet.create({
         marginTop:5,
     },
     button2: {
-        // buttonAlign:'center',
-        // buttonJustify:'center',
         backgroundColor: 'white',
         width: '85%',
         padding: 15,
@@ -222,7 +211,7 @@ const styles = StyleSheet.create({
         textAlign:'center',
         alignItems:'center',
         justifyContent:'center',
-        marginTop:20,
+        marginTop:10,
         color:'#FCE38A',
         fontWeight:'800',
         fontSize:30,
@@ -244,9 +233,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         margin:5,
         borderRadius:40,
-        // marginLeft: 40,
-        // marginRight: 40,
-        // marginTop: 10,
         alignSelf: 'center',
     },
     buttonOutline3:{

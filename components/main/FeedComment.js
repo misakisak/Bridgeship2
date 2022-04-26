@@ -1,12 +1,9 @@
-import React, {useState, useEffect, Component} from 'react';
+import React, {useState, useEffect} from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, TextInput, FlatList, ScrollView, Image } from 'react-native';
 import firebase from 'firebase'
-import { NavigationContainer } from '@react-navigation/native';
 require('firebase/firestore')
 import { useNavigation } from '@react-navigation/native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-
-
 
 export default function FeedComment ({route}) {
      const [comment, setComment] = useState("")
@@ -18,16 +15,9 @@ export default function FeedComment ({route}) {
      const userId = loggedInUser.uid
      const [comments, setComments] =useState([])
      const [commentsUser, setCommentsUser] = useState([])
-     const navigation = useNavigation()
-     const [details, setDetails] = useState([]) 
      // const [icon, setIcon] = useState([])
      const [state1, setState1] = useState(true)
- 
-     
-     // console.log('nowUser')
-     // console.log(nowUser)
-     // console.log('post')
-     // console.log(post)
+
      if (state1 === false) {
           firebase.firestore()
           .collection('posts')
@@ -64,49 +54,38 @@ export default function FeedComment ({route}) {
 
      useEffect(() => {
           firebase.firestore()
-          .collection('posts')
-          .doc(nowUser)
-          .collection('userPosts')
-          .doc(post)
-          .collection('comments')
-          .get()
-          .then((snapshot) => {
-               const newAuthors = [];
-               snapshot.forEach(querySnapshot => {
-                    const author = {
-                         ...querySnapshot.data(),
-                         id: querySnapshot.id
-                    }
-               newAuthors.push(author);
-               setComments(newAuthors) 
-               console.log('author')
-               console.log(author)
+               .collection('posts')
+               .doc(nowUser)
+               .collection('userPosts')
+               .doc(post)
+               .collection('comments')
+               .get()
+               .then((snapshot) => {
+                    const newAuthors = [];
+                    snapshot.forEach(querySnapshot => {
+                         const author = {
+                              ...querySnapshot.data(),
+                              id: querySnapshot.id
+                         }
+                         newAuthors.push(author);
+                         setComments(newAuthors) 
+                         console.log('author')
+                         console.log(author)
+                    })
+                    console.log(comments.icon)
                })
-               // setComments(newAuthors) 
-               console.log(comments.icon)
-          })
           firebase.firestore()
-          .collection('users')
-          .doc(loggedInUser.uid)
-          .get()
-          .then((snapshot) => {
-               setCommentsUser(snapshot.data().name)
-          })
-          setState('')
-          setState1(true)
-
+               .collection('users')
+               .doc(loggedInUser.uid)
+               .get()
+               .then((snapshot) => {
+                    setCommentsUser(snapshot.data().name)
+               })
+               setState('')
+               setState1(true)
      },[])
      
-
      const saveComments = () => {
-          
-          // console.log('details')
-          // console.log(details.name)
-
-          // setCommentsUser(details.name)
-          // setIcon(details.icon)
-          // console.log(icon)
-
           firebase.firestore()
               .collection('posts')
               .doc(nowUser)
@@ -121,7 +100,6 @@ export default function FeedComment ({route}) {
                   creation: firebase.firestore.FieldValue.serverTimestamp()
               })
               setState('Success!!')
-          //     navigation.navigate('Team', {resultTeam})
      }
 
     return (
@@ -139,7 +117,6 @@ export default function FeedComment ({route}) {
                     placeholder="Write a Comment..."
                     onChangeText={(comment) => setComment(comment)}
                />
-
                <TouchableOpacity
                     onPress={() => saveComments()}
                     style={styles.button}
@@ -147,7 +124,6 @@ export default function FeedComment ({route}) {
                     <Text style={{color: 'white'}}>Post</Text>
                </TouchableOpacity>
                <Text>{state}</Text>
-
                <ScrollView>
                     <FlatList
                          numColumns={1}
@@ -167,7 +143,6 @@ export default function FeedComment ({route}) {
                          </View>
                     )}/>
                </ScrollView>
-
         </View>
     )
 }
@@ -178,7 +153,6 @@ const styles = StyleSheet.create({
      },
      containerInfo: {
          margin: 20,
- 
      },
      containerGallery: {
          flex: 1,
@@ -203,30 +177,27 @@ const styles = StyleSheet.create({
          height: '20%'
      },
      button: {
-      // buttonAlign:'center',
-      // buttonJustify:'center',
-      backgroundColor: '#F38181',
-      width: '85%',
-      padding: 8,
-      borderRadius: 20,
-      alignItems: 'center',
-      justifyContent: 'center',
-      marginLeft:30,
-      marginRight:30,
-      marginTop:10,
-      alignSelf: 'center',
-      },
-      text1: {
-           fontSize: 16,
-           marginLeft: 7,
-           marginBottom: 4,
-           fontWeight: '300'
-      },
-      text2: {
-           fontSize: 18,
-           marginLeft: 7,
-           marginBottom: 4,
-           fontWeight: '300'
-      },
- })
- 
+          backgroundColor: '#F38181',
+          width: '85%',
+          padding: 8,
+          borderRadius: 20,
+          alignItems: 'center',
+          justifyContent: 'center',
+          marginLeft:30,
+          marginRight:30,
+          marginTop:10,
+          alignSelf: 'center',
+     },
+     text1: {
+          fontSize: 16,
+          marginLeft: 7,
+          marginBottom: 4,
+          fontWeight: '300'
+     },
+     text2: {
+          fontSize: 18,
+          marginLeft: 7,
+          marginBottom: 4,
+          fontWeight: '300'
+     },
+})

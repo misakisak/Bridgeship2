@@ -54,6 +54,7 @@ import PostCommentScreen from './components/main/PostComment'
 import FollowedScreen from './components/main/Followed'
 import LikeScreen from './components/main/Like'
 import FeedCommentScreen from './components/main/FeedComment'
+import EditProfileScreen from './components/main/EditProfile'
 
 const Stack = createStackNavigator();
 // const [state1, setState1] = useState(true)
@@ -99,6 +100,16 @@ export class App extends Component {
               name="Register" 
               component={RegisterScreen} 
               options={{headerShown: false}}
+            />
+            <Stack.Screen 
+                name="EditProfile" 
+                component={EditProfileScreen} 
+                navigation={this.props.navigation}
+                options={{
+                  headerStyle: {backgroundColor: "#95E1D3"},
+                  headerTintColor: "white",
+                  headerTitleStyle: {fontWeight: 'bold'},
+                }}
             />
           </Stack.Navigator>
         </NavigationContainer>

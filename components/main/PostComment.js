@@ -1,11 +1,11 @@
 import React, {useState, useEffect, Component} from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, TextInput, FlatList, ScrollView, Image } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, TextInput, FlatList, ScrollView, Image, Keyboard, SafeAreaView } from 'react-native';
 import firebase from 'firebase'
-import { NavigationContainer } from '@react-navigation/native';
 require('firebase/firestore')
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+
 import { useNavigation } from '@react-navigation/native';
-
-
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 export default function PostComment ({route}) {
      const [comment, setComment] = useState("")
@@ -17,30 +17,24 @@ export default function PostComment ({route}) {
      const userId = loggedInUser.uid
      const [comments, setComments] =useState([])
      const [commentsUser, setCommentsUser] = useState([])
-     const navigation = useNavigation()
      const [details, setDetails] = useState([]) 
      const [icon, setIcon] = useState([])
+     const [state1, setState1] = useState(true)
      
      // console.log('nowUser')
      // console.log(nowUser)
      // console.log('post')
      // console.log(post)
-
      const saveComments = () => {
           firebase.firestore()
-          .collection('users')
-          .doc(loggedInUser.uid)
-          .get()
-          .then((snapshot) => {
-               setDetails(snapshot.data())
-          })
-          // console.log('details')
-          // console.log(details.name)
-
-          setCommentsUser(details.name)
-          setIcon(details.icon)
-          console.log(icon)
-
+               .collection('users')
+               .doc(loggedInUser.uid)
+               .get()
+               .then((snapshot) => {
+                    setDetails(snapshot.data())
+               })
+               setCommentsUser(details.name)
+               setIcon(details.icon)
           firebase.firestore()
               .collection('posts')
               .doc(nowUser)
@@ -55,54 +49,46 @@ export default function PostComment ({route}) {
                   creation: firebase.firestore.FieldValue.serverTimestamp()
               })
               setState('Success!!')
-          //     navigation.navigate('Team', {resultTeam})
      }
 
      useEffect(() => {
           // const a = await
           firebase.firestore()
-          .collection('posts')
-          .doc(nowUser)
-          .collection('userPosts')
-          .doc(post)
-          .collection('comments')
-          .get()
-
-          // const followingIds= [];
-          //      a.forEach (following => {
-          //      followingIds.push(following.id);
-          // });
-          // console.log(followingIds)
-          .then((snapshot) => {
-               const newAuthors = [];
-               snapshot.forEach(querySnapshot => {
-                    const author = {
-                         ...querySnapshot.data(),
-                         id: querySnapshot.id
-                    }
-               newAuthors.push(author);
-               setComments(newAuthors) 
-               console.log('author')
-               console.log(author)
+               .collection('posts')
+               .doc(nowUser)
+               .collection('userPosts')
+               .doc(post)
+               .collection('comments')
+               .get()
+               .then((snapshot) => {
+                    const newAuthors = [];
+                    snapshot.forEach(querySnapshot => {
+                         const author = {
+                              ...querySnapshot.data(),
+                              id: querySnapshot.id
+                         }
+                         newAuthors.push(author);
+                         setComments(newAuthors) 
+                         // console.log('author')
+                         // console.log(author)
+                    })
+                    // console.log(comments.icon)
                })
-               // setComments(newAuthors) 
-               console.log(comments.icon)
-          })
-
-     },[])
+     },[state1])
      
     return (
           <View>
-            {/* <Text>{state}</Text> */}
-               <View style={{height: '60%'}}>
-                    <Text style={{margin: 10, fontSize: 15, fontWeight: '200'}}>{caption}</Text>
+               
+               <View >
+                    <TouchableWithoutFeedback onPress={()=> {Keyboard.dismiss();}}>
+                         <Text style={{margin: 10, fontSize: 15, fontWeight: '200'}}>{caption}</Text>
+                    </TouchableWithoutFeedback>
                     <TextInput
                          multiline
                          style={styles.input1}
                          placeholder="Write a Comment..."
                          onChangeText={(comment) => setComment(comment)}
                     />
-            
                     <TouchableOpacity
                          onPress={() => saveComments()}
                          style={styles.button}
@@ -110,6 +96,12 @@ export default function PostComment ({route}) {
                          <Text style={{color: 'white'}}>Post</Text>
                     </TouchableOpacity>
                     <Text>{state}</Text>
+                    <TouchableOpacity 
+                         style={{marginTop: 3, marginRight: 10, alignSelf: 'flex-end'}}
+                         onPress={()=> setState1(false)}
+                    >
+                         <MaterialCommunityIcons name="reload" color={'#95E1D3'} size={30}/>
+                    </TouchableOpacity>
                </View>
                <ScrollView>
                     <FlatList
@@ -130,54 +122,50 @@ export default function PostComment ({route}) {
                          </View>
                     )}/>
                </ScrollView>
-
         </View>
     )
 }
 
 const styles = StyleSheet.create({
-    container:{
-        flex: 1,
-    },
-    containerInfo: {
-        margin: 20,
-
-    },
-    containerGallery: {
-        flex: 1,
-    },
-    containerImage: {
-        flex: 1/3,
-        flexDirection: 'row'
-    },
-    image: {
-        flex: 1,
-        aspectRatio: 1/1,
-    },
-    input1: {
-        backgroundColor: 'white',
-        paddingVertical:10,
-        borderRadius: 0,
-        borderColor:'#95E1D3',
-        borderWidth:2,
-        margin:10,
-        padding:10,
-        marginTop: 5,
-        height: '40%'
-    },
-    button: {
-     // buttonAlign:'center',
-     // buttonJustify:'center',
-     backgroundColor: '#F38181',
-     width: '85%',
-     padding: 8,
-     borderRadius: 20,
-     alignItems: 'center',
-     justifyContent: 'center',
-     marginLeft:30,
-     marginRight:30,
-     marginTop:10,
-     alignSelf: 'center'
+     container:{
+          flex: 1,
+     },
+     containerInfo: {
+          margin: 20,
+     },
+     containerGallery: {
+          flex: 1,
+     },
+     containerImage: {
+          height: '100%',
+          // flexDirection: 'row'
+     },
+     image: {
+          flex: 1,
+          aspectRatio: 1/1,
+     },
+     input1: {
+          backgroundColor: 'white',
+          paddingVertical:10,
+          borderRadius: 0,
+          borderColor:'#95E1D3',
+          borderWidth:2,
+          margin:10,
+          padding:10,
+          marginTop: 5,
+          height: 90
+     },
+     button: {
+          backgroundColor: '#F38181',
+          width: '85%',
+          padding: 8,
+          borderRadius: 20,
+          alignItems: 'center',
+          justifyContent: 'center',
+          marginLeft:30,
+          marginRight:30,
+          marginTop:10,
+          alignSelf: 'center'
      },
      text1: {
           fontSize: 15,

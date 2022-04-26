@@ -15,14 +15,12 @@ export default function Add({navigation}) {
         (async () => {
             const cameraStatus = await Camera.requestCameraPermissionsAsync();
             setHasCameraPermission(cameraStatus.status === 'granted');
-
             // const galleryStatus = await ImagePicker.requestCameraRollPermissionsAsync();
             const galleryStatus = await ImagePicker.requestMediaLibraryPermissionsAsync();
             setHasGalleryPermission(galleryStatus.status === 'granted');
 
         })();
     }, []);
-
     const takePicture = async() => {
         if(camera) {
             const data = await camera.takePictureAsync(null);
@@ -30,7 +28,6 @@ export default function Add({navigation}) {
             setImage(data.uri);
         }
     }
-
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -39,14 +36,10 @@ export default function Add({navigation}) {
             aspect: [1, 1],
             quality: 1,
         });
-        // console.log(result);
-
         if (!result.cancelled) {
             setImage(result.uri);
         }
     }; 
-
-
     if (hasCameraPermission === null || hasGalleryPermission === false) {
         return <View />;
     }
@@ -76,7 +69,6 @@ export default function Add({navigation}) {
                 >
                     <Text style={styles.text}>Flip Image</Text>
                 </TouchableOpacity> */}
-
                 <TouchableOpacity
                     onPress={() => takePicture()}
                     style={styles.button}
@@ -91,7 +83,6 @@ export default function Add({navigation}) {
                 >
                     <Text style={styles.text}>Pick Image From Gallery</Text>
                 </TouchableOpacity>
-
                 <TouchableOpacity
                     onPress={() => navigation.navigate('Save', { image })}
                     style={styles.button}
@@ -99,7 +90,6 @@ export default function Add({navigation}) {
                     <Text style={styles.text}>Save</Text>
                 </TouchableOpacity>
             </View>
-
             <View style={styles.container}>
             {image && <Image source={{uri: image}} style={styles.image}/>}
             </View>
@@ -109,9 +99,6 @@ export default function Add({navigation}) {
 const styles = StyleSheet.create({
     cameraContainer: {
         flex: 1,
-        // flexDirection: 'row',
-        // width: 200,
-        // height: 200,
         alignSelf: 'center'
     },
     fixedRatio: {
@@ -120,14 +107,9 @@ const styles = StyleSheet.create({
     },
     image: {
         flex: 1,
-        // flexDirection: 'row',
         aspectRatio: 1.5,
         alignSelf: 'center'
     },
-    // button: {
-    //   alignItems: 'center',
-    //   justifyContent: 'center'
-    // },
     container: {
         aspectRatio: 1.5,
         flex: 1
@@ -140,8 +122,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row'
     },
     button: {
-        // buttonAlign:'center',
-        // buttonJustify:'center',
         backgroundColor: '#F38181',
         width: '85%',
         padding: 8,
@@ -157,24 +137,21 @@ const styles = StyleSheet.create({
         alignContent: "space-around"
     },
     button1: {
-      // buttonAlign:'center',
-      // buttonJustify:'center',
-      backgroundColor: '#F38181',
-      width: '85%',
-      padding: 8,
-      borderRadius: 20,
-      alignItems: 'center',
-      justifyContent: 'center',
-      marginLeft:180,
-      marginRight:2,
-      marginTop:2,
-      alignSelf: 'center',
-      justifyContent: 'space-between',
-      flexWrap: "wrap",
-      alignContent: "space-around"
-  },
-  text: {
-      color: 'white',
-  }
+        backgroundColor: '#F38181',
+        width: '85%',
+        padding: 8,
+        borderRadius: 20,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginLeft:180,
+        marginRight:2,
+        marginTop:2,
+        alignSelf: 'center',
+        justifyContent: 'space-between',
+        flexWrap: "wrap",
+        alignContent: "space-around"
+    },
+    text: {
+        color: 'white',
+    }
 })
-
